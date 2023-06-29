@@ -1,71 +1,99 @@
-import { Table } from "antd";
+import { Button, Col, Drawer, Row, Table } from "antd";
 import SearchStudent from "../../components/Admin/SearchStudent"
 import { useState } from "react";
+import StudentDetail from "../../components/Admin/StudentDetail";
 
 const ManageStudent = () => {
 
     const [current, setCurrent] = useState(1)
     const [total, setTotal] = useState(10)
     const [pageSize, setPageSize] = useState(2)
+    const [openDetail, setOpenDetail] = useState(false)
+    const [detailStudent, setDetailStudent] = useState()
 
     const columns = [
         {
+            title: 'Student ID',
+            dataIndex: 'studentID',
+            render: (text, record) => <button
+                onClick={() => showDetailStudent(text, record)}
+                style={{
+                    backgroundColor: "white",
+                    border: 'none',
+                    color: '#1677ff',
+                    cursor: "pointer"
+                }}
+            >
+                {text}
+            </button>,
+        },
+        {
             title: 'Name',
             dataIndex: 'name',
+            sorter: true
         },
         {
-            title: 'Chinese Score',
-            dataIndex: 'chinese',
-            sorter: {
-                compare: (a, b) => a.chinese - b.chinese,
-                multiple: 3,
-            },
+            title: 'Grade',
+            dataIndex: 'grade',
+            // sorter: {
+            //     compare: (a, b) => a.english - b.english,
+            //     multiple: 1,
+            // },
         },
         {
-            title: 'Math Score',
-            dataIndex: 'math',
-            sorter: {
-                compare: (a, b) => a.math - b.math,
-                multiple: 2,
-            },
+            title: 'Major',
+            dataIndex: 'major',
+            // sorter: {
+            //     compare: (a, b) => a.math - b.math,
+            //     multiple: 2,
+            // },
         },
         {
-            title: 'English Score',
-            dataIndex: 'english',
-            sorter: {
-                compare: (a, b) => a.english - b.english,
-                multiple: 1,
-            },
+            title: 'Topic',
+            dataIndex: 'topic',
+            // sorter: {
+            //     compare: (a, b) => a.english - b.english,
+            //     multiple: 1,
+            // },
         },
+
     ];
     const data = [
         {
             key: '1',
-            name: 'John Brown',
-            chinese: 98,
-            math: 60,
-            english: 70,
+            name: 'Luong Hoang Quoc Bao',
+            studentID: 'B1910616',
+            grade: 'K45',
+            major: 'Information and Technology High Quality',
+            topic: 'Scientific Research',
+
         },
         {
             key: '2',
-            name: 'Jim Green',
-            chinese: 98,
-            math: 66,
-            english: 89,
+            name: 'Luong Hoang Quoc Bao',
+            studentID: 'B1910699',
+            grade: 'K45',
+            major: 'Information and Technology High Quality',
+            topic: 'Scientific Research',
+
         },
         {
             key: '3',
-            name: 'Joe Black',
-            chinese: 98,
-            math: 90,
-            english: 70,
+            name: 'Luong Hoang Quoc Bao',
+            studentID: 'B1910616',
+            grade: 'K45',
+            major: 'Information and Technology High Quality',
+            topic: 'Scientific Research',
+
         },
         {
             key: '4',
-            name: 'Jim Red',
-            chinese: 88,
-            math: 99,
-            english: 89,
+            name: 'Luong Hoang Quoc Bao',
+            studentID: 'B1910616',
+            grade: 'K45',
+            major: 'Information and Technology High Quality',
+            topic: 'Scientific Research',
+
         },
     ];
 
@@ -79,13 +107,33 @@ const ManageStudent = () => {
         }
     };
 
+    const showDetailStudent = (text, record) => {
+        // console.log(record, text)
+        setOpenDetail(true);
+        setDetailStudent(record)
+    }
+
+
+    const onClose = () => {
+        setOpenDetail(false);
+    };
+
     const tableUserHeader = () => {
         return (
-            <div>
-                hehe
+            <div style={{ marginLeft: 23 }}>
+                <Row>
+                    <Col span={18}></Col>
+                    <Col span={6} style={{ display: "flex", gap: 15 }}>
+                        <Button type="primary" style={{ minWidth: 80 }}>Add</Button>
+                        <Button type="primary" style={{ minWidth: 80 }}>Import</Button>
+                        <Button type="primary" style={{ minWidth: 80 }}>Export</Button>
+                    </Col>
+                </Row>
             </div>
         )
     }
+
+
 
     return (
         <div>
@@ -105,6 +153,12 @@ const ManageStudent = () => {
                     showTotal: (total, range) => { return (<div>{range[0]} - {range[1]} on {total} results</div>) }
                 }}
             />
+            <StudentDetail
+                openDetail={openDetail}
+                setOpenDetail={setOpenDetail}
+                detailStudent={detailStudent}
+            />
+
         </div>
     )
 }
