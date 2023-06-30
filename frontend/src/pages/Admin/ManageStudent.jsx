@@ -2,6 +2,8 @@ import { Button, Col, Drawer, Row, Table } from "antd";
 import SearchStudent from "../../components/Admin/SearchStudent"
 import { useState } from "react";
 import StudentDetail from "../../components/Admin/StudentDetail";
+import AddStudent from "../../components/Admin/AddStudent";
+import ImportStudent from "../../components/Admin/ImportStudent";
 
 const ManageStudent = () => {
 
@@ -10,6 +12,9 @@ const ManageStudent = () => {
     const [pageSize, setPageSize] = useState(2)
     const [openDetail, setOpenDetail] = useState(false)
     const [detailStudent, setDetailStudent] = useState()
+    const [openModalAdd, setOpenModalAdd] = useState(false)
+    const [openModalImport, setOpenModalImport] = useState(false)
+
 
     const columns = [
         {
@@ -30,6 +35,11 @@ const ManageStudent = () => {
         {
             title: 'Name',
             dataIndex: 'name',
+            sorter: true
+        },
+        {
+            title: 'Email',
+            dataIndex: 'email',
             sorter: true
         },
         {
@@ -66,15 +76,16 @@ const ManageStudent = () => {
             grade: 'K45',
             major: 'Information and Technology High Quality',
             topic: 'Scientific Research',
-
+            email: 'baob1910616@student.ctu.edu.vn'
         },
         {
             key: '2',
-            name: 'Luong Hoang Quoc Bao',
+            name: 'Nguyễn Trâm Anh',
             studentID: 'B1910699',
             grade: 'K45',
-            major: 'Information and Technology High Quality',
+            major: 'International Bussiness High Quality',
             topic: 'Scientific Research',
+            email: 'anhb1910699@student.ctu.edu.vn'
 
         },
         {
@@ -118,14 +129,29 @@ const ManageStudent = () => {
         setOpenDetail(false);
     };
 
+    const openAddStudent = () => {
+        setOpenModalAdd(true)
+    }
+
+    const openImportStudent = () => {
+        setOpenModalImport(true)
+    }
     const tableUserHeader = () => {
         return (
             <div style={{ marginLeft: 23 }}>
                 <Row>
                     <Col span={18}></Col>
                     <Col span={6} style={{ display: "flex", gap: 15 }}>
-                        <Button type="primary" style={{ minWidth: 80 }}>Add</Button>
-                        <Button type="primary" style={{ minWidth: 80 }}>Import</Button>
+                        <Button type="primary" style={{ minWidth: 80 }} onClick={openAddStudent}>Add</Button>
+                        <AddStudent
+                            openModalAdd={openModalAdd}
+                            setOpenModalAdd={setOpenModalAdd}
+                        />
+                        <Button type="primary" style={{ minWidth: 80 }} onClick={openImportStudent}>Import</Button>
+                        <ImportStudent
+                            openModalImport={openModalImport}
+                            setOpenModalImport={setOpenModalImport}
+                        />
                         <Button type="primary" style={{ minWidth: 80 }}>Export</Button>
                     </Col>
                 </Row>
