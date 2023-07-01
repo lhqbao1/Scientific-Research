@@ -4,6 +4,8 @@ import { useState } from "react";
 import StudentDetail from "../../components/Admin/StudentDetail";
 import AddStudent from "../../components/Admin/AddStudent";
 import ImportStudent from "../../components/Admin/ImportStudent";
+import * as XLSX from 'xlsx'
+
 
 const ManageStudent = () => {
 
@@ -136,6 +138,14 @@ const ManageStudent = () => {
     const openImportStudent = () => {
         setOpenModalImport(true)
     }
+    const downloadFile = () => {
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+        //let buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
+        //XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
+        XLSX.writeFile(workbook, "DataStudent.csv");
+    }
     const tableUserHeader = () => {
         return (
             <div style={{ marginLeft: 23 }}>
@@ -152,7 +162,7 @@ const ManageStudent = () => {
                             openModalImport={openModalImport}
                             setOpenModalImport={setOpenModalImport}
                         />
-                        <Button type="primary" style={{ minWidth: 80 }}>Export</Button>
+                        <Button type="primary" style={{ minWidth: 80 }} onClick={downloadFile}>Export</Button>
                     </Col>
                 </Row>
             </div>
