@@ -37,7 +37,7 @@ const ManageStudent = () => {
         {
             title: 'Name',
             dataIndex: 'name',
-            sorter: true
+            sorter: true,
         },
         {
             title: 'Email',
