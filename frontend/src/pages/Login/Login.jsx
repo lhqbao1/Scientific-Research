@@ -6,6 +6,10 @@ import { useState } from "react";
 import { setToken, setUserData } from "../../lib/utils";
 import axios from "axios";
 import "./Login.scss";
+import { callLogin } from "../../../services/api";
+import { doGetAccountAction, doLoginAction } from "../../redux/account/accountSlice";
+import { useDispatch } from "react-redux";
+
 
 
 
@@ -14,8 +18,9 @@ const Login = () => {
   const [form] = useForm();
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(false);
+  const dispatch = useDispatch();
 
-  
+
 
   // const dispatch = useDispatch();
   const onSubmit = async (data) => {
@@ -23,23 +28,30 @@ const Login = () => {
   };
 
   const onFinish = async (data) => {
-    axios
-      .post("http://localhost:8080/api/auth/signin", data)
-      .then((response) => {
-        if (response.status === 200) {
-          const { accessToken, user } = response.data.payload;
-          console.log(response.data.payload)
-          setUserData(user);
-          setToken(accessToken);
-          navigate("/admin"); 
-        //   payload.onClose();
-        //   reset();
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-    console.log("login");
+    const { email, password } = data
+    const res = await callLogin(email, password)
+    if (res && res.data) {
+      console.log(res)
+      const { accessToken } = res.data.payload;
+      localStorage.setItem('access_token', accessToken)
+      dispatch(doLoginAction(res?.data?.payload?.user))
+      dispatch(doGetAccountAction(res?.data?.payload?.user))
+      setToken(accessToken);
+      navigate("/admin");
+
+    }
+    // await axios
+    //   .post("http://localhost:8080/api/auth/signin", data)
+    //   .then((response) => {
+    //     if (response.status === 200) {
+    //       console.log(response)
+
+
+    //   })
+    //   .catch((e) => {
+    //     console.log(e);
+    //   });
+
   };
   return (
     <div className="login-page">
@@ -109,7 +121,7 @@ const Login = () => {
               <Button
                 className="login-button"
                 htmlType="submit"
-                //  loading={isLogin}
+              //  loading={isLogin}
               >
                 LOGIN
               </Button>

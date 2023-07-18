@@ -29,6 +29,8 @@ import {
   getUserData,
   setCartCookies,
 } from "../../lib/utils";
+import { doGetAccountAction } from "../../redux/account/accountSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const AdminPage = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -41,14 +43,9 @@ const AdminPage = () => {
 
   const navigate = useNavigate();
 
-  const token = getToken();
-  useEffect(() => {
-    if (!token) {
-      navigate("/login");
-    }
-  }, [navigate, token]);
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.account.user)
 
-  const userData = getUserData();
 
   function getItem(label, key, icon, children, type) {
     return {
@@ -76,6 +73,7 @@ const AdminPage = () => {
 
   const onSignOut = () => {
     clearCookie();
+    localStorage.removeItem('access_token')
     navigate("/login");
   };
 
@@ -163,10 +161,10 @@ const AdminPage = () => {
             }}
           >
             <Content>
-              <h1>
+              {/* <h1>
                 {userData.firstName} {userData.lastName} dang dang nhap
               </h1>
-              <Button onClick={() => onSignOut()}>Đăng xuất</Button>
+              <Button onClick={() => onSignOut()}>Đăng xuất</Button> */}
               <div
                 style={{
                   padding: 20,
