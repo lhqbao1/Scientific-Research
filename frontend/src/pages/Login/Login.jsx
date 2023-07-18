@@ -28,7 +28,7 @@ const Login = () => {
       .then((response) => {
         if (response.status === 200) {
           const { accessToken, user } = response.data.payload;
-          console.log(response.data.payload)
+          console.log(accessToken)
           setUserData(user);
           setToken(accessToken);
           navigate("/admin"); 
