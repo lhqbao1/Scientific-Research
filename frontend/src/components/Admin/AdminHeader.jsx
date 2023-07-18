@@ -13,6 +13,8 @@ const AdminHeader = (props) => {
         console.log(collapsed)
     }
 
+
+
     return (
         <div className="admin-header-container">
             <div className="admin-header-page">

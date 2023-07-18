@@ -41,10 +41,12 @@ const AdminPage = () => {
   const [openManageTopic, setOpenManageTopic] = useState(false);
   const [openManageSchedule, setOpenManageSchedule] = useState(false);
 
+
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const user = useSelector(state => state.account.user)
+  console.log('check user', user)
 
 
   function getItem(label, key, icon, children, type) {
