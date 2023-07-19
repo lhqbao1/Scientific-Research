@@ -40,13 +40,17 @@ const AdminPage = () => {
   const [openManageInstructor, setOpenManageInstructor] = useState(false);
   const [openManageTopic, setOpenManageTopic] = useState(false);
   const [openManageSchedule, setOpenManageSchedule] = useState(false);
-
+  const [userInfo, setUserInfo] = useState()
 
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const user = useSelector(state => state.account.user)
   console.log('check user', user)
+
+  useEffect(() => {
+    setUserInfo(user)
+  }, [])
 
 
   function getItem(label, key, icon, children, type) {
@@ -131,7 +135,12 @@ const AdminPage = () => {
   return (
     <div>
       <Layout>
-        <AdminHeader collapsed={collapsed} setCollapsed={setCollapsed} />
+        <AdminHeader
+          collapsed={collapsed}
+          setCollapsed={setCollapsed}
+          userInfo={userInfo}
+          setUserInfo={setUserInfo}
+        />
 
         <Layout>
           <Sider

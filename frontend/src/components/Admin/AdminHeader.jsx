@@ -6,12 +6,13 @@ import { useState } from 'react';
 
 const AdminHeader = (props) => {
 
-    const { collapsed, setCollapsed } = props
+    const { collapsed, setCollapsed, userInfo, setUserInfo } = props
 
     const openCollapsed = () => {
         setCollapsed(!collapsed)
         console.log(collapsed)
     }
+
 
 
 
@@ -32,7 +33,7 @@ const AdminHeader = (props) => {
                     <Col span={3}>
                         <div>
                             <UserOutlined style={{ fontSize: 20, marginTop: 25, marginRight: 10 }} />
-                            <span style={{ fontSize: 16 }}>Hi, Admin</span>
+                            <span style={{ fontSize: 16 }}>Hi, {userInfo?.firstName}!</span>
                         </div>
                     </Col>
 

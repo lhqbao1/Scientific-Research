@@ -60,23 +60,22 @@ export default function App() {
   const dispatch = useDispatch();
   const isLoading = useSelector(state => state.account.isLoading)
   const user = useSelector(state => state.account.user)
-  const getAccountInfo = async () => {
-    if (window.location.pathname === '/login'
-      || window.location.pathname === '/register'
-    ) return;
-    console.log(user.id)
+  // const getAccountInfo = async () => {
+  //   if (window.location.pathname === '/login'
+  //     || window.location.pathname === '/register'
+  //   ) return;
 
 
-    // const res = await callGetUser(userID)
-    // if (res && res.data) {
-    //   dispatch(doGetAccountAction(res.data.payload.user))
-    // }
+  //   // const res = await callGetUser(userID)
+  //   // if (res && res.data) {
+  //   //   dispatch(doGetAccountAction(res.data.payload.user))
+  //   // }
 
-  }
+  // }
 
-  useEffect(() => {
-    getAccountInfo()
-  }, [])
+  // useEffect(() => {
+  //   getAccountInfo()
+  // }, [])
 
   const router = createBrowserRouter([
     {
