@@ -13,3 +13,18 @@ run: yarn dev
 ```
 
 SOUCE FRONTEND đổi localhost thành 127.0.0.1 example: 127.0.0.1:8000
+
+example http://localhost:8080/api/students:
+
+{
+    "status": true,
+    "message": "Tạo sinh viên thành công!",
+    "payload": {
+        "student_id": 10,
+        "user_id": "b0204010-746e-4ccf-93b6-2dc81028ff87",
+        "student_name": "Tran Van Cuong",
+        "grade": "K45",
+        "major_id": "1",
+        "topic_id": "1"
+    }
+}

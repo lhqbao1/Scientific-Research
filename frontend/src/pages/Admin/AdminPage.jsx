@@ -47,6 +47,7 @@ const AdminPage = () => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.account.user)
   console.log('check user', user)
+  console.log('token', getToken());
 
   useEffect(() => {
     setUserInfo(user)
