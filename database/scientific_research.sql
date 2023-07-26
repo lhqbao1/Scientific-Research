@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 11, 2023 at 09:55 AM
+-- Generation Time: Jul 26, 2023 at 09:12 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -108,6 +108,14 @@ CREATE TABLE `major` (
   `major_id` int(11) NOT NULL,
   `major_name` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `major`
+--
+
+INSERT INTO `major` (`major_id`, `major_name`) VALUES
+(1, 'Information and Technology High Quality'),
+(2, 'International Bussiness High Quality');
 
 -- --------------------------------------------------------
 
@@ -221,13 +229,27 @@ INSERT INTO `roles` (`id`, `name`, `roleCode`, `createdAt`, `updatedAt`) VALUES
 
 CREATE TABLE `students` (
   `student_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `user_id` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `class` text NOT NULL,
   `student_name` text NOT NULL,
   `grade` text NOT NULL,
   `major_id` int(11) NOT NULL,
   `topic_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `students`
+--
+
+INSERT INTO `students` (`student_id`, `user_id`, `class`, `student_name`, `grade`, `major_id`, `topic_id`) VALUES
+(1, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Luong Hoang Quoc Bao', 'K45', 1, 1),
+(2, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Quyenh', 'K45', 1, 1),
+(3, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test', 'K45', 1, 1),
+(4, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test2', 'K45', 1, 1),
+(5, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test3', 'K45', 1, 1),
+(6, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test4', 'K45', 1, 1),
+(7, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test5', 'K45', 1, 1),
+(8, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test6', 'K45', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -267,9 +289,18 @@ CREATE TABLE `topics` (
   `topic_name` text NOT NULL,
   `research_area` text NOT NULL,
   `basic_description` text NOT NULL,
-  `advisor_id` int(11) NOT NULL,
-  `topic_manager_id` int(11) NOT NULL
+  `advisor_id` int(11) DEFAULT NULL,
+  `topic_manager_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `topics`
+--
+
+INSERT INTO `topics` (`topic_id`, `topic_name`, `research_area`, `basic_description`, `advisor_id`, `topic_manager_id`) VALUES
+(1, 'Scientific Research', 'research', 'researchresearchresearchresearch', 0, 0),
+(2, 'Scientific Research', 'Scientific ResearchScientific ResearchScientific Research', 'Scientific ResearchScientific ResearchScientific ResearchScientific Research', NULL, NULL),
+(3, 'Scientific Research 2', 'Scientific Research 2Scientific Research 2', 'Scientific Research 2Scientific Research 2Scientific Research 2', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -394,7 +425,10 @@ ALTER TABLE `roles`
 -- Indexes for table `students`
 --
 ALTER TABLE `students`
-  ADD PRIMARY KEY (`student_id`);
+  ADD PRIMARY KEY (`student_id`),
+  ADD KEY `FK_student_user_2` (`user_id`),
+  ADD KEY `FK_student_major` (`major_id`),
+  ADD KEY `FK_student_topic` (`topic_id`);
 
 --
 -- Indexes for table `thesis`
@@ -449,7 +483,7 @@ ALTER TABLE `defenserequest`
 -- AUTO_INCREMENT for table `major`
 --
 ALTER TABLE `major`
-  MODIFY `major_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `major_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `meetingschedule`
@@ -467,7 +501,7 @@ ALTER TABLE `registrations`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `thesis`
@@ -485,7 +519,7 @@ ALTER TABLE `thesisreports`
 -- AUTO_INCREMENT for table `topics`
 --
 ALTER TABLE `topics`
-  MODIFY `topic_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `topic_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Constraints for dumped tables
@@ -548,6 +582,14 @@ ALTER TABLE `rattings`
 --
 ALTER TABLE `registrations`
   ADD CONSTRAINT `FK_topic_res` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`topic_id`);
+
+--
+-- Constraints for table `students`
+--
+ALTER TABLE `students`
+  ADD CONSTRAINT `FK_student_major` FOREIGN KEY (`major_id`) REFERENCES `major` (`major_id`),
+  ADD CONSTRAINT `FK_student_topic` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`topic_id`),
+  ADD CONSTRAINT `FK_student_user_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `thesis`
