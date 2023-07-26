@@ -23,5 +23,5 @@ module.exports = function (app) {
 
   app.delete("/api/students/delete/:id", controller.remove);
 
-  //   app.put("/api/students/:id", controller.updateStudent);
+  app.put("/api/students/:id", controller.updateStudent);
 };

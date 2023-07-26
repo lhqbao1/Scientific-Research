@@ -147,39 +147,66 @@ exports.remove = async (req, res) => {
   }
 };
 
-// exports.updateStudent = async (req, res) => {
-//   try {
-//     if (!req.params.id)
-//       return res
-//         .status(400)
-//         .json(responsePayload(false, "Đường dẫn thiêú id người dùng!", null));
-//     const user = await User.findOne({
-//       where: {
-//         id: req.params.id,
-//       },
-//     });
-//     if (!user)
-//       return res
-//         .status(400)
-//         .json(responsePayload(false, "Người dùng không tồn tại!", user));
-//     for (const key in req.body) {
-//       user[key] = req.body[key];
-//     }
-//     await user.save();
-//     const savedUser = await User.findOne({
-//       where: {
-//         id: req.params.id,
-//       },
-//       inclue: Role,
-//     });
-//     res.json(
-//       responsePayload(
-//         true,
-//         "Cập nhật thông tin người dùng thành công!",
-//         savedUser
-//       )
-//     );
-//   } catch (err) {
-//     res.status(500).json(responsePayload(false, err.message, null));
-//   }
-// };
+exports.updateStudent = async (req, res) => {
+  try {
+    if (!req.params.id) {
+      return res
+        .status(400)
+        .json(responsePayload(false, "Thiếu id người dùng!", null));
+    }
+
+    const student = await StudentModel.findOne({
+      where: {
+        student_id: req.params.id,
+      },
+    });
+
+    if (!student) {
+      return res
+        .status(400)
+        .json(responsePayload(false, "Người dùng không tồn tại!", null));
+    }
+
+    // Update the student record with the data from the request body
+    for (const key in req.body) {
+      student[key] = req.body[key];
+    }
+
+    // Save the updated student record
+    await student.save();
+
+    // Find the updated student record again to include the associated major and topic
+    const updatedStudent = await StudentModel.findOne({
+      where: {
+        student_id: req.params.id,
+      },
+      include: [
+        {
+          model: MajorModel,
+          as: "major",
+          attributes: ["major_id", "major_name"],
+        },
+        {
+          model: TopicModel,
+          as: "topic",
+          attributes: [
+            "topic_id",
+            "topic_name",
+            "research_area",
+            "basic_description",
+          ],
+        },
+      ],
+    });
+
+    res.json(
+      responsePayload(
+        true,
+        "Cập nhật thông tin người dùng thành công!",
+        updatedStudent
+      )
+    );
+  } catch (err) {
+    res.status(500).json(responsePayload(false, err.message, null));
+  }
+};
