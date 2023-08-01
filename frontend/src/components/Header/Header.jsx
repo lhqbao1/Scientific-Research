@@ -20,12 +20,12 @@ const Header = () => {
                     <Col span={5} ></Col>
                     <Col span={14}>
                         <Row>
-                            <div style={{ backgroundColor: 'white', padding: 10, marginTop: 5, borderRadius: 10 }} >
-                                <img
-                                    style={{ height: 130, width: '100%' }}
-                                    src="https://cit.ctu.edu.vn/encict/images/update2023/banner/banner_cict.jpg"
-                                />
-                            </div>
+                            {/* <div style={{  }} > */}
+                            <img
+                                style={{ height: 130, width: '100%', backgroundColor: 'white', padding: 10, marginTop: 5, borderRadius: 10 }}
+                                src="https://cit.ctu.edu.vn/encict/images/update2023/banner/banner_cict.jpg"
+                            />
+                            {/* </div> */}
                         </Row>
                         <Row style={{ backgroundColor: 'white', height: 50, marginBottom: 10, marginTop: 10, borderRadius: 10 }}>
                             <div className='header-button' >
@@ -53,6 +53,7 @@ const Header = () => {
 
                         </Row>
                     </Col>
+                    <Col span={5}></Col>
                 </Row>
 
             </div>
