@@ -1,0 +1,691 @@
+{
+	"info": {
+		"_postman_id": "b1a487c9-e5a7-4e9e-b31e-b451f1e7ee9e",
+		"name": "Student api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26156193"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/api/students",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM5NjkyOTAwLWU2NTctNDUwZi05YzNjLTc2MWVmYWJjNTMyZCIsImlhdCI6MTY4OTY2OTQzOSwiZXhwIjoxNjg5NzU1ODM5fQ.6FuCAWF6o19r5X4EYyEy8OOpPED64bjoDrFOoyy_fts",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "user_id",
+							"value": "b0204010-746e-4ccf-93b6-2dc81028ff87",
+							"type": "text"
+						},
+						{
+							"key": "class",
+							"value": "Class A",
+							"type": "text"
+						},
+						{
+							"key": "student_name",
+							"value": "Tran Van Tung",
+							"type": "text"
+						},
+						{
+							"key": "grade",
+							"value": "K45",
+							"type": "text"
+						},
+						{
+							"key": "major_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "topic_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "student_code",
+							"value": "34215",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "tranvantung@gmail.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/students/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students",
+						"2"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "http://localhost:8080/api/students",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM5NjkyOTAwLWU2NTctNDUwZi05YzNjLTc2MWVmYWJjNTMyZCIsImlhdCI6MTY4OTY2OTQzOSwiZXhwIjoxNjg5NzU1ODM5fQ.6FuCAWF6o19r5X4EYyEy8OOpPED64bjoDrFOoyy_fts",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "user_id",
+									"value": "b0204010-746e-4ccf-93b6-2dc81028ff87",
+									"type": "text"
+								},
+								{
+									"key": "class",
+									"value": "Class A",
+									"type": "text"
+								},
+								{
+									"key": "student_name",
+									"value": "Tran Van Cuong",
+									"type": "text"
+								},
+								{
+									"key": "grade",
+									"value": "K45",
+									"type": "text"
+								},
+								{
+									"key": "major_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "topic_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"students"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "0",
+							"value": "A"
+						},
+						{
+							"key": "1",
+							"value": "c"
+						},
+						{
+							"key": "2",
+							"value": "c"
+						},
+						{
+							"key": "3",
+							"value": "e"
+						},
+						{
+							"key": "4",
+							"value": "s"
+						},
+						{
+							"key": "5",
+							"value": "s"
+						},
+						{
+							"key": "6",
+							"value": "-"
+						},
+						{
+							"key": "7",
+							"value": "C"
+						},
+						{
+							"key": "8",
+							"value": "o"
+						},
+						{
+							"key": "9",
+							"value": "n"
+						},
+						{
+							"key": "10",
+							"value": "t"
+						},
+						{
+							"key": "11",
+							"value": "r"
+						},
+						{
+							"key": "12",
+							"value": "o"
+						},
+						{
+							"key": "13",
+							"value": "l"
+						},
+						{
+							"key": "14",
+							"value": "-"
+						},
+						{
+							"key": "15",
+							"value": "A"
+						},
+						{
+							"key": "16",
+							"value": "l"
+						},
+						{
+							"key": "17",
+							"value": "l"
+						},
+						{
+							"key": "18",
+							"value": "o"
+						},
+						{
+							"key": "19",
+							"value": "w"
+						},
+						{
+							"key": "20",
+							"value": "-"
+						},
+						{
+							"key": "21",
+							"value": "H"
+						},
+						{
+							"key": "22",
+							"value": "e"
+						},
+						{
+							"key": "23",
+							"value": "a"
+						},
+						{
+							"key": "24",
+							"value": "d"
+						},
+						{
+							"key": "25",
+							"value": "e"
+						},
+						{
+							"key": "26",
+							"value": "r"
+						},
+						{
+							"key": "27",
+							"value": "s"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:8000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "x-access-token, Origin, Content-Type, Accept"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "211"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"d3-Cl5x4tj8c8dvmSKUJav/brSIfwE\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 24 Jul 2023 09:15:51 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": true,\n    \"message\": \"Tạo sinh viên thành công!\",\n    \"payload\": {\n        \"student_id\": 10,\n        \"user_id\": \"b0204010-746e-4ccf-93b6-2dc81028ff87\",\n        \"student_name\": \"Tran Van Cuong\",\n        \"grade\": \"K45\",\n        \"major_id\": \"1\",\n        \"topic_id\": \"1\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "http://localhost:8080/api/students",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/students",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/api/students",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "x-access-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM5NjkyOTAwLWU2NTctNDUwZi05YzNjLTc2MWVmYWJjNTMyZCIsImlhdCI6MTY4OTY2OTQzOSwiZXhwIjoxNjg5NzU1ODM5fQ.6FuCAWF6o19r5X4EYyEy8OOpPED64bjoDrFOoyy_fts",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "user_id",
+							"value": "b0204010-746e-4ccf-93b6-2dc81028ff87",
+							"type": "text"
+						},
+						{
+							"key": "class",
+							"value": "Class A",
+							"type": "text"
+						},
+						{
+							"key": "student_name",
+							"value": "Tran Van Tuong",
+							"type": "text"
+						},
+						{
+							"key": "grade",
+							"value": "K45",
+							"type": "text"
+						},
+						{
+							"key": "major_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "topic_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "student_code",
+							"value": "342121",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "tranvantuong@gmail.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/students",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "http://localhost:8080/api/students",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "x-access-token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM5NjkyOTAwLWU2NTctNDUwZi05YzNjLTc2MWVmYWJjNTMyZCIsImlhdCI6MTY4OTY2OTQzOSwiZXhwIjoxNjg5NzU1ODM5fQ.6FuCAWF6o19r5X4EYyEy8OOpPED64bjoDrFOoyy_fts",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "user_id",
+									"value": "b0204010-746e-4ccf-93b6-2dc81028ff87",
+									"type": "text"
+								},
+								{
+									"key": "class",
+									"value": "Class A",
+									"type": "text"
+								},
+								{
+									"key": "student_name",
+									"value": "Tran Van Cuong",
+									"type": "text"
+								},
+								{
+									"key": "grade",
+									"value": "K45",
+									"type": "text"
+								},
+								{
+									"key": "major_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "topic_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"students"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "0",
+							"value": "A"
+						},
+						{
+							"key": "1",
+							"value": "c"
+						},
+						{
+							"key": "2",
+							"value": "c"
+						},
+						{
+							"key": "3",
+							"value": "e"
+						},
+						{
+							"key": "4",
+							"value": "s"
+						},
+						{
+							"key": "5",
+							"value": "s"
+						},
+						{
+							"key": "6",
+							"value": "-"
+						},
+						{
+							"key": "7",
+							"value": "C"
+						},
+						{
+							"key": "8",
+							"value": "o"
+						},
+						{
+							"key": "9",
+							"value": "n"
+						},
+						{
+							"key": "10",
+							"value": "t"
+						},
+						{
+							"key": "11",
+							"value": "r"
+						},
+						{
+							"key": "12",
+							"value": "o"
+						},
+						{
+							"key": "13",
+							"value": "l"
+						},
+						{
+							"key": "14",
+							"value": "-"
+						},
+						{
+							"key": "15",
+							"value": "A"
+						},
+						{
+							"key": "16",
+							"value": "l"
+						},
+						{
+							"key": "17",
+							"value": "l"
+						},
+						{
+							"key": "18",
+							"value": "o"
+						},
+						{
+							"key": "19",
+							"value": "w"
+						},
+						{
+							"key": "20",
+							"value": "-"
+						},
+						{
+							"key": "21",
+							"value": "H"
+						},
+						{
+							"key": "22",
+							"value": "e"
+						},
+						{
+							"key": "23",
+							"value": "a"
+						},
+						{
+							"key": "24",
+							"value": "d"
+						},
+						{
+							"key": "25",
+							"value": "e"
+						},
+						{
+							"key": "26",
+							"value": "r"
+						},
+						{
+							"key": "27",
+							"value": "s"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "Express"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "http://localhost:8000"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "x-access-token, Origin, Content-Type, Accept"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "211"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"d3-Cl5x4tj8c8dvmSKUJav/brSIfwE\""
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 24 Jul 2023 09:15:51 GMT"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=5"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"status\": true,\n    \"message\": \"Tạo sinh viên thành công!\",\n    \"payload\": {\n        \"student_id\": 10,\n        \"user_id\": \"b0204010-746e-4ccf-93b6-2dc81028ff87\",\n        \"student_name\": \"Tran Van Cuong\",\n        \"grade\": \"K45\",\n        \"major_id\": \"1\",\n        \"topic_id\": \"1\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "http://localhost:8080/api/students/2",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/students/2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/api/students/2",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/students/delete/5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students",
+						"delete",
+						"5"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
