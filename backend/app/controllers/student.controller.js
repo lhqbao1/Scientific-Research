@@ -108,10 +108,12 @@ exports.findById = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { user_id, student_name, grade, major_id, topic_id } = req.body;
+    const { user_id, student_code, email, student_name, grade, major_id, topic_id } = req.body;
     // Create the new student record
     const newStudent = await StudentModel.create({
       user_id,
+      student_code,
+      email,
       student_name,
       grade,
       major_id,
