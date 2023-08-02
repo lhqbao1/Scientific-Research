@@ -13,6 +13,7 @@
     "@ant-design/icons": "^5.1.4",
     "@reduxjs/toolkit": "1.9.3",
     "antd": "^5.6.3",
+    "api-query-params": "^5.4.0",
     "axios": "^1.4.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",

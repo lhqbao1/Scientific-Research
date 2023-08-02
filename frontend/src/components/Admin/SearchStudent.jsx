@@ -1,9 +1,18 @@
 import { Button, Col, Form, Input, Row } from "antd"
+import { useSearchParams } from "react-router-dom"
 
 const SearchStudent = () => {
 
-    const onFinish = (values) => {
-        console.log('Success:', values);
+    const [searchParam, setSearchParam] = useSearchParams()
+
+    const onFinish = (dataSearch) => {
+        // console.log('Success:', dataSearch);
+        // let param = ""
+        // if (dataSearch.student_name) {
+        //     param += `&student_name=${dataSearch.student_name}`
+        // }
+        // setSearchParam(param)
+        console.log('hehe', searchParam.get('sort'))
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -26,10 +35,9 @@ const SearchStudent = () => {
                     <Col span={6} >
                         <Form.Item
                             label="Student name"
-                            name="studentName"
+                            name="student_name"
                             rules={[
                                 {
-                                    required: true,
                                     message: 'Please input your username!',
                                 },
                             ]}
@@ -44,7 +52,6 @@ const SearchStudent = () => {
                             name="studentGrade"
                             rules={[
                                 {
-                                    required: true,
                                     message: 'Please input your username!',
                                 },
                             ]}
@@ -60,7 +67,6 @@ const SearchStudent = () => {
                             name="studentID"
                             rules={[
                                 {
-                                    required: true,
                                     message: 'Please input your password!',
                                 },
                             ]}

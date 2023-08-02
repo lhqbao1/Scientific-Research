@@ -7,3 +7,7 @@ export const callLogin = (email, password) => {
 export const callGetUser = (id) => {
     return axios.get(`http://localhost:8080/api/users/${id}`)
 }
+
+export const callGetStudents = () => {
+    return axios.get(`http://localhost:8080/api/students`)
+}

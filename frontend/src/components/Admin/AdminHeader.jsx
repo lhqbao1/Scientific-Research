@@ -1,16 +1,46 @@
 import './AdminHeader.scss'
-import { MenuOutlined, UserOutlined, } from '@ant-design/icons';
-import { Row, Col } from 'antd'
+import { DownOutlined, MenuOutlined, UserOutlined, } from '@ant-design/icons';
+import { Row, Col, Avatar, Space, Dropdown, message } from 'antd'
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { doLogoutAction } from '../../redux/account/accountSlice';
+import { useNavigate } from 'react-router-dom';
+
 
 
 const AdminHeader = (props) => {
 
     const { collapsed, setCollapsed, userInfo, setUserInfo } = props
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+
 
     const openCollapsed = () => {
         setCollapsed(!collapsed)
         console.log(collapsed)
+    }
+
+    const itemsDropdown = [
+        {
+            label: <label style={{ cursor: 'pointer' }}>Quản lý tài khoản</label>,
+            key: 'account',
+        },
+        {
+            label: <label
+                style={{ cursor: 'pointer' }}
+                onClick={() => handleLogout()}
+            >Đăng xuất</label>,
+            key: 'logout',
+        },
+
+    ];
+
+    const handleLogout = () => {
+        console.log('logout')
+        dispatch(doLogoutAction())
+        message.success('Log out success')
+        navigate('/')
+
     }
 
 
@@ -33,7 +63,15 @@ const AdminHeader = (props) => {
                     <Col span={3}>
                         <div>
                             <UserOutlined style={{ fontSize: 20, marginTop: 25, marginRight: 10 }} />
-                            <span style={{ fontSize: 16 }}>Hi, {userInfo?.firstName}!</span>
+                            <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
+                                <a onClick={(e) => e.preventDefault()}>
+                                    <Space>
+                                        {/* <Avatar size="large" src={userAvatar} /> */}
+                                        <span style={{ fontSize: 16 }}>Hi, {userInfo?.firstName}!</span>
+                                        {/* <DownOutlined /> */}
+                                    </Space>
+                                </a>
+                            </Dropdown>
                         </div>
                     </Col>
 

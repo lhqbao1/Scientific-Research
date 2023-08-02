@@ -28,31 +28,17 @@ const Login = () => {
   };
 
   const onFinish = async (data) => {
-    console.log(data)
-    // axios
-    //   .post("http://localhost:8080/api/auth/signin", data)
-    //   .then((response) => {
-    //     if (response.status === 200) {
-    //       const { accessToken, user } = response.data.payload;
-    //       console.log(response.data.payload)
-    //       setUserData(user);
-    //       setToken(accessToken);
-    //       navigate("/admin");
-    //       //   payload.onClose();
-    //       //   reset();
-    //     }
-    //   })
-    //   .catch((e) => {
-    //     console.log(e);
-    //   });
-    // console.log("login");
     const res = await callLogin(data.email, data.password)
     if (res && res.data) {
-      console.log(res)
-      dispatch(doLoginAction(res.data.payload.user))
-      dispatch(doGetAccountAction(res.data.payload.user))
-      localStorage.setItem('access_token', res.data.payload.accessToken)
-      navigate("/admin")
+      setIsLogin(true)
+      setTimeout(() => {
+        setIsLogin(false)
+        dispatch(doLoginAction(res.data.payload.user))
+        dispatch(doGetAccountAction(res.data.payload.user))
+        localStorage.setItem('access_token', res.data.payload.accessToken)
+        navigate("/admin")
+      }, 3000)
+
     }
   };
   return (
@@ -123,7 +109,7 @@ const Login = () => {
               <Button
                 className="login-button"
                 htmlType="submit"
-              //  loading={isLogin}
+                loading={isLogin}
               >
                 LOGIN
               </Button>
