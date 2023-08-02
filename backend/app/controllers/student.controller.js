@@ -14,10 +14,12 @@ exports.findAll = async (req, res) => {
   try {
     let query = {};
     if (req.query.status) query.status = req.query.status;
+    // Modify the query object to include search conditions for student_code and student_name
     if (req.query.keyword) {
       query[Op.or] = [
         { student_name: { [Op.like]: `%${req.query.keyword}%` } },
-        { class: { [Op.like]: `%${req.query.keyword}%` } },
+        { grade: { [Op.like]: `%${req.query.keyword}%` } },
+        { student_code: { [Op.like]: `%${req.query.keyword}%` } }, // Search by student_code
       ];
     }
     const page = req.query.page ? parseInt(req.query.page) - 1 : 0;
@@ -31,12 +33,12 @@ exports.findAll = async (req, res) => {
       include: [
         {
           model: MajorModel,
-          as: "major", // Specify the alias for MajorModel
+          as: "major",
           attributes: ["major_id", "major_name"],
         },
         {
           model: TopicModel,
-          as: "topic", // Specify the alias for TopicModel
+          as: "topic",
           attributes: [
             "topic_id",
             "topic_name",
@@ -50,9 +52,24 @@ exports.findAll = async (req, res) => {
     const total = await StudentModel.count({ where: query });
     const totalPage = Math.ceil(total / limit);
 
+    // Transform the students array to remove the parent "major" and "topic" properties
+    const transformedStudents = students.map((student) => ({
+      student_id: student.student_id,
+      user_id: student.user_id,
+      student_code: student.student_code,
+      email: student.email,
+      student_name: student.student_name,
+      grade: student.grade,
+      major_id: student.major_id,
+      topic_id: student.topic_id,
+      topic_name: student.topic ? student.topic.topic_name : null,
+      major_name: student.major ? student.major.major_name : null,
+      // Add other properties as needed...
+    }));
+
     res.json(
       responsePayload(true, "Tải danh sách sinh viên thành công!", {
-        items: students,
+        items: transformedStudents,
         meta: {
           currentPage: page + 1,
           limit,
@@ -108,7 +125,15 @@ exports.findById = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { user_id, student_code, email, student_name, grade, major_id, topic_id } = req.body;
+    const {
+      user_id,
+      student_code,
+      email,
+      student_name,
+      grade,
+      major_id,
+      topic_id,
+    } = req.body;
     // Create the new student record
     const newStudent = await StudentModel.create({
       user_id,

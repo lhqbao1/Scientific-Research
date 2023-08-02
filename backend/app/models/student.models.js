@@ -18,7 +18,7 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
         unique: true,
       },
       student_code: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.TEXT,
         allowNull: false,
         unique: true,
       },
