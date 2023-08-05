@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 26, 2023 at 09:12 AM
+-- Generation Time: Aug 02, 2023 at 12:05 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -234,22 +234,25 @@ CREATE TABLE `students` (
   `student_name` text NOT NULL,
   `grade` text NOT NULL,
   `major_id` int(11) NOT NULL,
-  `topic_id` int(11) NOT NULL
+  `topic_id` int(11) NOT NULL,
+  `student_code` varchar(255) NOT NULL,
+  `email` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`student_id`, `user_id`, `class`, `student_name`, `grade`, `major_id`, `topic_id`) VALUES
-(1, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Luong Hoang Quoc Bao', 'K45', 1, 1),
-(2, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Quyenh', 'K45', 1, 1),
-(3, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test', 'K45', 1, 1),
-(4, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test2', 'K45', 1, 1),
-(5, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test3', 'K45', 1, 1),
-(6, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test4', 'K45', 1, 1),
-(7, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test5', 'K45', 1, 1),
-(8, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test6', 'K45', 1, 1);
+INSERT INTO `students` (`student_id`, `user_id`, `class`, `student_name`, `grade`, `major_id`, `topic_id`, `student_code`, `email`) VALUES
+(1, 'b0204010-746e-4ccf-93b6-2dc81028ff87', 'Class A', 'Tran Van Cuong edit', 'K45', 1, 1, 'B34213', 'tranvancuong@gmail.com'),
+(2, 'b0204010-746e-4ccf-93b6-2dc81028ff87', 'Class A', 'Tran Van Tung', 'K45', 1, 1, '34215', 'tranvantung@gmail.com'),
+(3, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test', 'K45', 1, 1, '423232', 'a1@gmail.com'),
+(4, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test2', 'K45', 1, 1, '2131232', 'a2@gmail.com'),
+(6, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test4', 'K45', 1, 1, '5232', 'a3@gmail.com'),
+(7, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test5', 'K45', 1, 1, '12322', 'a6@gmail.com'),
+(8, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test6', 'K45', 1, 1, '12312312', 'a5@gmail.com'),
+(11, 'b0204010-746e-4ccf-93b6-2dc81028ff87', '', 'Tran Van Thang', 'K45', 1, 1, '34212', 'tranvanthang@gmail.com'),
+(12, 'b0204010-746e-4ccf-93b6-2dc81028ff87', '', 'Tran Van Tuong', 'K45', 1, 1, '342121', 'tranvantuong@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -426,6 +429,8 @@ ALTER TABLE `roles`
 --
 ALTER TABLE `students`
   ADD PRIMARY KEY (`student_id`),
+  ADD UNIQUE KEY `student_code` (`student_code`),
+  ADD UNIQUE KEY `student_email` (`email`) USING HASH,
   ADD KEY `FK_student_user_2` (`user_id`),
   ADD KEY `FK_student_major` (`major_id`),
   ADD KEY `FK_student_topic` (`topic_id`);
@@ -501,7 +506,7 @@ ALTER TABLE `registrations`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `thesis`

@@ -1,11 +1,11 @@
 import { Button, Col, Drawer, Row, Table } from "antd";
 import SearchStudent from "../../components/Admin/SearchStudent"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StudentDetail from "../../components/Admin/StudentDetail";
 import AddStudent from "../../components/Admin/AddStudent";
 import ImportStudent from "../../components/Admin/ImportStudent";
 import * as XLSX from 'xlsx'
-
+import { callGetStudents } from "../../../services/api";
 
 const ManageStudent = () => {
 
@@ -16,12 +16,13 @@ const ManageStudent = () => {
     const [detailStudent, setDetailStudent] = useState()
     const [openModalAdd, setOpenModalAdd] = useState(false)
     const [openModalImport, setOpenModalImport] = useState(false)
+    const [dataStudent, setDataStudent] = useState()
 
 
     const columns = [
         {
             title: 'Student ID',
-            dataIndex: 'studentID',
+            dataIndex: 'student_id',
             render: (text, record) => <button
                 onClick={() => showDetailStudent(text, record)}
                 style={{
@@ -36,7 +37,7 @@ const ManageStudent = () => {
         },
         {
             title: 'Name',
-            dataIndex: 'name',
+            dataIndex: 'student_name',
             sorter: true,
         },
         {
@@ -54,7 +55,7 @@ const ManageStudent = () => {
         },
         {
             title: 'Major',
-            dataIndex: 'major',
+            dataIndex: 'marjor_name',
             // sorter: {
             //     compare: (a, b) => a.math - b.math,
             //     multiple: 2,
@@ -62,7 +63,7 @@ const ManageStudent = () => {
         },
         {
             title: 'Topic',
-            dataIndex: 'topic',
+            dataIndex: 'topic_name',
             // sorter: {
             //     compare: (a, b) => a.english - b.english,
             //     multiple: 1,
@@ -109,6 +110,18 @@ const ManageStudent = () => {
 
         },
     ];
+
+    const getStudents = async () => {
+        const res = await callGetStudents()
+        if (res && res.data) {
+            setDataStudent(res.data.payload.items)
+        }
+        // console.log('hehehe', res.data.payload)
+    }
+
+    useEffect(() => {
+        getStudents()
+    }, [])
 
     const onChange = (pagination, filters, sorter, extra) => {
         console.log('params', pagination, filters, sorter, extra);
@@ -176,7 +189,7 @@ const ManageStudent = () => {
             <SearchStudent />
             <Table
                 title={tableUserHeader}
-                dataSource={data}
+                dataSource={dataStudent}
                 columns={columns}
                 onChange={onChange}
                 bordered={true}
