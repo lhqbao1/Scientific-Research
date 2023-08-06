@@ -24,6 +24,8 @@ import AdminPage from './pages/Admin/AdminPage';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import { doGetAccountAction } from './redux/account/accountSlice';
 import { callGetUser } from '../services/api';
+import StudentLecturer from './pages/Student/studentLecturer';
+import LecturerCNPM from './pages/Student/LecturerCNPM';
 
 const Layout = () => {
   return (
@@ -108,6 +110,16 @@ export default function App() {
     {
       path: "/login",
       element: <Login />,
+    },
+    {
+      path: "/lecturer",
+      // element: <StudentLecturer />,
+      children: [
+        {
+          path: "/lecturer/khoa-cong-nghe-phan-mem",
+          element: <LecturerCNPM />,
+        },
+      ],
     },
     // {
     //   path: "/register",

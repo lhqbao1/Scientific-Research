@@ -1,10 +1,14 @@
 import './Header.scss'
 import { Button, Col, Popover, Row } from 'antd'
 import { HomeOutlined, UserOutlined, LaptopOutlined } from "@ant-design/icons";
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 
 const Header = () => {
-
+    const navigate = useNavigate()
+    const userInfo = useSelector(state => state.account.user)
+    console.log(userInfo)
     const text = <span>Title</span>;
     const content = (
         <div>
@@ -13,11 +17,29 @@ const Header = () => {
         </div>
     );
 
+    const contentLecturer = (
+        <div >
+            <div ><a href='/lecturer/khoa-cong-nghe-phan-mem' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa công nghệ phần mềm</a>
+            </div>
+            <div><a style={{ color: 'black' }}>Khoa công nghệ thông tin</a></div>
+            <div><a style={{ color: 'black' }}>Khoa hệ thống thông tin</a>
+            </div>
+            <div><a style={{ color: 'black' }}>Khoa khoa học máy tính</a>
+            </div>
+            <div><a style={{ color: 'black' }}>Khoa mạng máy tính và truyền thông</a>
+            </div>
+            <div><a style={{ color: 'black' }}>Khoa truyền thông đa phương tiện</a>
+            </div>
+
+        </div>
+    )
+
     return (
         <div style={{ backgroundColor: '#efefef', margin: '-8px' }}>
             <div className="header-page">
                 <Row>
                     <Col span={5} ></Col>
+
                     <Col span={14}>
                         <Row>
                             {/* <div style={{  }} > */}
@@ -50,14 +72,22 @@ const Header = () => {
                                     </Popover>
                                 </div>
                             </div>
+                            <div className='header-button' >
+                                <div style={{ marginTop: 0 }} >
+                                    <Popover placement="bottomLeft" content={contentLecturer}  >
 
+                                        <LaptopOutlined style={{ marginRight: 6, marginLeft: 2 }} />
+                                        <span>Lecturer</span>
+                                    </Popover>
+                                </div>
+                            </div>
                         </Row>
                     </Col>
                     <Col span={5}></Col>
                 </Row>
 
-            </div>
-        </div>
+            </div >
+        </div >
     )
 }
 
