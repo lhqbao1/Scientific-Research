@@ -1,9 +1,24 @@
 import { Card, Col, Row, Statistic } from 'antd'
 import './AdminDashboard.scss'
 import { ArrowDownOutlined, ArrowUpOutlined, UserOutlined } from '@ant-design/icons'
+import { useEffect } from 'react'
+import { callGetStudents } from '../../../services/api'
+import { useState } from 'react'
 
 
 const AdminDashboard = () => {
+    const [amoutStudent, setAmoutStudent] = useState()
+
+    const getStudentAmount = async () => {
+        const res = await callGetStudents()
+        if (res && res.data) {
+            setAmoutStudent(res.data.payload.items.length)
+        }
+    }
+
+    useEffect(() => {
+        getStudentAmount()
+    }, [])
     return (
         <div className="admin-dashboard-container">
             <div className="admin-dashboard-page">
@@ -13,7 +28,7 @@ const AdminDashboard = () => {
                             <Card bordered={true}>
                                 <Statistic
                                     title="Students"
-                                    value={110}
+                                    value={amoutStudent}
                                     precision={0}
                                     valueStyle={{
                                         color: '#3f8600',

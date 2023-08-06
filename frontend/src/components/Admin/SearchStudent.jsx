@@ -1,18 +1,23 @@
 import { Button, Col, Form, Input, Row } from "antd"
+import { useState } from "react";
 import { useSearchParams } from "react-router-dom"
+import { searchStudent } from "../../../services/api";
 
-const SearchStudent = () => {
+const SearchStudent = (props) => {
 
-    const [searchParam, setSearchParam] = useSearchParams()
+    const [keyword, setKeyword] = useState()
+    const [userSearch, setUserSearch] = useState()
 
-    const onFinish = (dataSearch) => {
-        // console.log('Success:', dataSearch);
-        // let param = ""
-        // if (dataSearch.student_name) {
-        //     param += `&student_name=${dataSearch.student_name}`
-        // }
-        // setSearchParam(param)
-        console.log('hehe', searchParam.get('sort'))
+    const onFinish = async (dataSearch) => {
+        let keyword = '';
+        keyword = dataSearch?.student_name
+        const res = await searchStudent(`${keyword}`)
+        console.log('check search', res)
+        setUserSearch(res.data.payload.items)
+        if (res && res.data) {
+            props.handleSearch(res.data.payload)
+
+        }
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -32,9 +37,9 @@ const SearchStudent = () => {
                 autoComplete="off"
             >
                 <Row>
-                    <Col span={6} >
+                    <Col span={7} >
                         <Form.Item
-                            label="Student name"
+                            label="Find student (student name or grade or student ID)"
                             name="student_name"
                             rules={[
                                 {
@@ -46,7 +51,7 @@ const SearchStudent = () => {
                         </Form.Item>
                     </Col>
                     <Col span={3}></Col>
-                    <Col span={6}>
+                    {/* <Col span={6}>
                         <Form.Item
                             label="Student grade"
                             name="studentGrade"
@@ -58,10 +63,10 @@ const SearchStudent = () => {
                         >
                             <Input />
                         </Form.Item>
-                    </Col>
+                    </Col> */}
                     <Col span={3}></Col>
 
-                    <Col span={6}>
+                    {/* <Col span={6}>
                         <Form.Item
                             label="Student ID"
                             name="studentID"
@@ -74,7 +79,7 @@ const SearchStudent = () => {
                             <Input />
                         </Form.Item>
 
-                    </Col>
+                    </Col> */}
                 </Row>
 
 
@@ -83,7 +88,7 @@ const SearchStudent = () => {
 
                 <Form.Item
                     wrapperCol={{
-                        offset: 18,
+                        offset: 0,
                         span: 24,
                     }}
                 >

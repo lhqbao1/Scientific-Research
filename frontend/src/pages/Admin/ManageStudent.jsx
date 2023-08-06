@@ -5,13 +5,13 @@ import StudentDetail from "../../components/Admin/StudentDetail";
 import AddStudent from "../../components/Admin/AddStudent";
 import ImportStudent from "../../components/Admin/ImportStudent";
 import * as XLSX from 'xlsx'
-import { callGetStudents } from "../../../services/api";
+import { callGetStudents, searchStudent } from "../../../services/api";
 
 const ManageStudent = () => {
 
     const [current, setCurrent] = useState(1)
     const [total, setTotal] = useState(10)
-    const [pageSize, setPageSize] = useState(2)
+    const [pageSize, setPageSize] = useState(5)
     const [openDetail, setOpenDetail] = useState(false)
     const [detailStudent, setDetailStudent] = useState()
     const [openModalAdd, setOpenModalAdd] = useState(false)
@@ -22,7 +22,7 @@ const ManageStudent = () => {
     const columns = [
         {
             title: 'Student ID',
-            dataIndex: 'student_id',
+            dataIndex: 'student_code',
             render: (text, record) => <button
                 onClick={() => showDetailStudent(text, record)}
                 style={{
@@ -55,7 +55,7 @@ const ManageStudent = () => {
         },
         {
             title: 'Major',
-            dataIndex: 'marjor_name',
+            dataIndex: 'major_name',
             // sorter: {
             //     compare: (a, b) => a.math - b.math,
             //     multiple: 2,
@@ -112,11 +112,18 @@ const ManageStudent = () => {
     ];
 
     const getStudents = async () => {
-        const res = await callGetStudents()
+        let keyword = ''
+        const res = await searchStudent(`${keyword}`)
+        console.log(res.data)
         if (res && res.data) {
             setDataStudent(res.data.payload.items)
         }
         // console.log('hehehe', res.data.payload)
+    }
+
+    const handleSearch = (dataProps) => {
+        setDataStudent(dataProps.items)
+        setTotal(dataProps.meta.totalItems)
     }
 
     useEffect(() => {
@@ -186,7 +193,9 @@ const ManageStudent = () => {
 
     return (
         <div>
-            <SearchStudent />
+            <SearchStudent
+                handleSearch={handleSearch}
+            />
             <Table
                 title={tableUserHeader}
                 dataSource={dataStudent}
