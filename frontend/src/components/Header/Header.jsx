@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const Header = () => {
     const navigate = useNavigate()
     const userInfo = useSelector(state => state.account.user)
+    const checkHasLecturer = useSelector(state => state.account.user.status)
     console.log(userInfo)
     const text = <span>Title</span>;
     const content = (
@@ -19,16 +20,16 @@ const Header = () => {
 
     const contentLecturer = (
         <div >
-            <div ><a href='/lecturer/khoa-cong-nghe-phan-mem' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa công nghệ phần mềm</a>
+            <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-cong-nghe-phan-mem' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa công nghệ phần mềm</a>
             </div>
-            <div><a style={{ color: 'black' }}>Khoa công nghệ thông tin</a></div>
-            <div><a style={{ color: 'black' }}>Khoa hệ thống thông tin</a>
+            <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-cong-nghe-thong-tin' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa công nghệ thông tin</a></div>
+            <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-he-thong-thong-tin' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa hệ thống thông tin</a>
             </div>
-            <div><a style={{ color: 'black' }}>Khoa khoa học máy tính</a>
+            <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-khoa-hoc-may-tinh' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa khoa học máy tính</a>
             </div>
-            <div><a style={{ color: 'black' }}>Khoa mạng máy tính và truyền thông</a>
+            <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-mang-may-tinh-va-truyen-thong' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa mạng máy tính và truyền thông</a>
             </div>
-            <div><a style={{ color: 'black' }}>Khoa truyền thông đa phương tiện</a>
+            <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-truyen-thong-da-phuong-tien' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa truyền thông đa phương tiện</a>
             </div>
 
         </div>
@@ -44,7 +45,7 @@ const Header = () => {
                         <Row>
                             {/* <div style={{  }} > */}
                             <img
-                                style={{ height: 130, width: '100%', backgroundColor: 'white', padding: 10, marginTop: 5, borderRadius: 10 }}
+                                style={{ height: 130, width: '97.8%', backgroundColor: 'white', padding: 10, marginTop: 5, borderRadius: 10 }}
                                 src="https://cit.ctu.edu.vn/encict/images/update2023/banner/banner_cict.jpg"
                             />
                             {/* </div> */}
@@ -68,19 +69,28 @@ const Header = () => {
                                 <div style={{ marginTop: 0 }}>
                                     <Popover placement="bottomLeft" title={text} content={content}  >
                                         <LaptopOutlined style={{ marginRight: 6, marginLeft: 2 }} />
-                                        <span>Your topic</span>
+                                        <span onClick={() => navigate('/topic')}>Your topic</span>
                                     </Popover>
                                 </div>
                             </div>
+                            {/* {checkHasLecturer !== 'active' ?
+                                <div className='header-button' >
+                                    <div style={{ marginTop: 0 }} >
+                                        <Popover placement="bottomLeft" content={contentLecturer}  >
+                                            <LaptopOutlined style={{ marginRight: 6, marginLeft: 2 }} />
+                                            <span>Lecturer</span>
+                                        </Popover>
+                                    </div>
+                                </div> : ''} */}
                             <div className='header-button' >
                                 <div style={{ marginTop: 0 }} >
                                     <Popover placement="bottomLeft" content={contentLecturer}  >
-
                                         <LaptopOutlined style={{ marginRight: 6, marginLeft: 2 }} />
                                         <span>Lecturer</span>
                                     </Popover>
                                 </div>
                             </div>
+
                         </Row>
                     </Col>
                     <Col span={5}></Col>

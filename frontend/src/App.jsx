@@ -26,6 +26,12 @@ import { doGetAccountAction } from './redux/account/accountSlice';
 import { callGetUser } from '../services/api';
 import StudentLecturer from './pages/Student/studentLecturer';
 import LecturerCNPM from './pages/Student/LecturerCNPM';
+import LecturerCNTT from './pages/Student/LecturerCNTT';
+import LecturerHTTT from './pages/Student/LecturerHTTT';
+import LecturerKHMT from './pages/Student/LecturerKHMT';
+import LecturerMMTVTT from './pages/Student/LecturerMMTVTT';
+import LecturerTTDPT from './pages/Student/LecturerTTDPT';
+import StudentTopic from './pages/Student/StudentTopic';
 
 const Layout = () => {
   return (
@@ -112,6 +118,10 @@ export default function App() {
       element: <Login />,
     },
     {
+      path: "/topic",
+      element: <StudentTopic />,
+    },
+    {
       path: "/lecturer",
       // element: <StudentLecturer />,
       children: [
@@ -119,6 +129,24 @@ export default function App() {
           path: "/lecturer/khoa-cong-nghe-phan-mem",
           element: <LecturerCNPM />,
         },
+        {
+          path: "/lecturer/khoa-cong-nghe-thong-tin",
+          element: <LecturerCNTT />,
+        }, {
+          path: "/lecturer/khoa-he-thong-thong-tin",
+          element: <LecturerHTTT />,
+        }, {
+          path: "/lecturer/khoa-khoa-hoc-may-tinh",
+          element: <LecturerKHMT />,
+        }, {
+          path: "/lecturer/khoa-mang-may-tinh-va-truyen-thong",
+          element: <LecturerMMTVTT />,
+        },
+        {
+          path: "/lecturer/khoa-truyen-thong-da-phuong-tien",
+          element: <LecturerTTDPT />,
+        },
+
       ],
     },
     // {
