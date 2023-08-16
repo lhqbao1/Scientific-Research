@@ -2,10 +2,10 @@
 -- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Aug 02, 2023 at 12:05 PM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 8.2.0
+-- Máy chủ: 127.0.0.1
+-- Thời gian đã tạo: Th8 16, 2023 lúc 03:08 PM
+-- Phiên bản máy phục vụ: 10.4.24-MariaDB
+-- Phiên bản PHP: 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `scientific_research`
+-- Cơ sở dữ liệu: `scientific_research`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `advisors`
+-- Cấu trúc bảng cho bảng `advisors`
 --
 
 CREATE TABLE `advisors` (
@@ -34,12 +34,12 @@ CREATE TABLE `advisors` (
   `advisor_name` text NOT NULL,
   `major_id` int(11) NOT NULL,
   `advisor_degree` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `defense`
+-- Cấu trúc bảng cho bảng `defense`
 --
 
 CREATE TABLE `defense` (
@@ -50,12 +50,12 @@ CREATE TABLE `defense` (
   `decision` text NOT NULL,
   `evaluation` text NOT NULL,
   `defense_coucil_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `defenserequest`
+-- Cấu trúc bảng cho bảng `defenserequest`
 --
 
 CREATE TABLE `defenserequest` (
@@ -63,12 +63,12 @@ CREATE TABLE `defenserequest` (
   `registration_id` int(11) NOT NULL,
   `request_document` text NOT NULL,
   `request_date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `invoiceitems`
+-- Cấu trúc bảng cho bảng `invoiceitems`
 --
 
 CREATE TABLE `invoiceitems` (
@@ -79,12 +79,12 @@ CREATE TABLE `invoiceitems` (
   `updatedAt` datetime NOT NULL,
   `invoiceId` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `productId` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `invoices`
+-- Cấu trúc bảng cho bảng `invoices`
 --
 
 CREATE TABLE `invoices` (
@@ -96,21 +96,21 @@ CREATE TABLE `invoices` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   `userId` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `major`
+-- Cấu trúc bảng cho bảng `major`
 --
 
 CREATE TABLE `major` (
   `major_id` int(11) NOT NULL,
   `major_name` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `major`
+-- Đang đổ dữ liệu cho bảng `major`
 --
 
 INSERT INTO `major` (`major_id`, `major_name`) VALUES
@@ -120,7 +120,7 @@ INSERT INTO `major` (`major_id`, `major_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `meetingschedule`
+-- Cấu trúc bảng cho bảng `meetingschedule`
 --
 
 CREATE TABLE `meetingschedule` (
@@ -128,12 +128,12 @@ CREATE TABLE `meetingschedule` (
   `defense_id` int(11) NOT NULL,
   `date` date NOT NULL,
   `time` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `products`
+-- Cấu trúc bảng cho bảng `products`
 --
 
 CREATE TABLE `products` (
@@ -154,12 +154,12 @@ CREATE TABLE `products` (
   `status` varchar(255) DEFAULT 'active',
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `productsaveds`
+-- Cấu trúc bảng cho bảng `productsaveds`
 --
 
 CREATE TABLE `productsaveds` (
@@ -168,12 +168,12 @@ CREATE TABLE `productsaveds` (
   `updatedAt` datetime NOT NULL,
   `userId` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `productId` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `rattings`
+-- Cấu trúc bảng cho bảng `rattings`
 --
 
 CREATE TABLE `rattings` (
@@ -184,12 +184,12 @@ CREATE TABLE `rattings` (
   `updatedAt` datetime NOT NULL,
   `productId` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `userId` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `registrations`
+-- Cấu trúc bảng cho bảng `registrations`
 --
 
 CREATE TABLE `registrations` (
@@ -197,12 +197,12 @@ CREATE TABLE `registrations` (
   `topic_id` int(11) NOT NULL,
   `student_id` int(11) NOT NULL,
   `group_info` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `roles`
+-- Cấu trúc bảng cho bảng `roles`
 --
 
 CREATE TABLE `roles` (
@@ -211,20 +211,21 @@ CREATE TABLE `roles` (
   `roleCode` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `roles`
+-- Đang đổ dữ liệu cho bảng `roles`
 --
 
 INSERT INTO `roles` (`id`, `name`, `roleCode`, `createdAt`, `updatedAt`) VALUES
 ('37dcfe4d-c74a-469b-9a25-61961e568ce1', 'User', 'user', '2023-06-24 01:06:31', '2023-06-24 01:06:31'),
+('516385d8-3c2d-11ee-bbca-2cf05dd63cb7', 'Student', 'student', '2023-08-16 14:06:17', '2023-08-16 14:06:17'),
 ('82705bfa-cede-46e4-afca-5541b6068671', 'Admin', 'admin', '2023-06-24 01:06:31', '2023-06-24 01:06:31');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `students`
+-- Cấu trúc bảng cho bảng `students`
 --
 
 CREATE TABLE `students` (
@@ -235,29 +236,31 @@ CREATE TABLE `students` (
   `grade` text NOT NULL,
   `major_id` int(11) NOT NULL,
   `topic_id` int(11) NOT NULL,
-  `student_code` varchar(255) NOT NULL,
+  `student_code` int(11) NOT NULL,
   `email` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `students`
+-- Đang đổ dữ liệu cho bảng `students`
 --
 
 INSERT INTO `students` (`student_id`, `user_id`, `class`, `student_name`, `grade`, `major_id`, `topic_id`, `student_code`, `email`) VALUES
-(1, 'b0204010-746e-4ccf-93b6-2dc81028ff87', 'Class A', 'Tran Van Cuong edit', 'K45', 1, 1, 'B34213', 'tranvancuong@gmail.com'),
-(2, 'b0204010-746e-4ccf-93b6-2dc81028ff87', 'Class A', 'Tran Van Tung', 'K45', 1, 1, '34215', 'tranvantung@gmail.com'),
-(3, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test', 'K45', 1, 1, '423232', 'a1@gmail.com'),
-(4, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test2', 'K45', 1, 1, '2131232', 'a2@gmail.com'),
-(6, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test4', 'K45', 1, 1, '5232', 'a3@gmail.com'),
-(7, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test5', 'K45', 1, 1, '12322', 'a6@gmail.com'),
-(8, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test6', 'K45', 1, 1, '12312312', 'a5@gmail.com'),
-(11, 'b0204010-746e-4ccf-93b6-2dc81028ff87', '', 'Tran Van Thang', 'K45', 1, 1, '34212', 'tranvanthang@gmail.com'),
-(12, 'b0204010-746e-4ccf-93b6-2dc81028ff87', '', 'Tran Van Tuong', 'K45', 1, 1, '342121', 'tranvantuong@gmail.com');
+(1, 'b0204010-746e-4ccf-93b6-2dc81028ff87', 'Class A', 'Tran Van Cuong edit', 'K45', 1, 1, 34213, 'tranvancuong@gmail.com'),
+(2, 'b0204010-746e-4ccf-93b6-2dc81028ff87', 'Class A', 'Tran Van Tung', 'K45', 1, 1, 34215, 'tranvantung@gmail.com'),
+(3, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test', 'K45', 1, 1, 423232, 'a1@gmail.com'),
+(4, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test2', 'K45', 1, 1, 2131232, 'a2@gmail.com'),
+(6, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test4', 'K45', 1, 1, 5232, 'a3@gmail.com'),
+(7, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test5', 'K45', 1, 1, 12322, 'a6@gmail.com'),
+(8, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test6', 'K45', 1, 1, 12312312, 'a5@gmail.com'),
+(11, 'b0204010-746e-4ccf-93b6-2dc81028ff87', '', 'Tran Van Thang', 'K45', 1, 1, 34212, 'tranvanthang@gmail.com'),
+(12, 'b0204010-746e-4ccf-93b6-2dc81028ff87', '', 'Tran Van Tuong', 'K45', 1, 1, 342121, 'tranvantuong@gmail.com'),
+(13, '079c6270-3c2d-11ee-bbca-2cf05dd63cb7', 'F1', 'Lương Hoàng Quốc bảo', 'K45', 1, 1, 1910616, 'bao@gmail.com'),
+(14, '6cc0e1ff-3c2d-11ee-bbca-2cf05dd63cb7', 'F1', 'Lê Duy Tân', 'K45', 1, 2, 1910699, 'tan@gmail.com');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `thesis`
+-- Cấu trúc bảng cho bảng `thesis`
 --
 
 CREATE TABLE `thesis` (
@@ -266,12 +269,12 @@ CREATE TABLE `thesis` (
   `submission_date` date NOT NULL,
   `thesis_document` text NOT NULL,
   `thesis_council_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `thesisreports`
+-- Cấu trúc bảng cho bảng `thesisreports`
 --
 
 CREATE TABLE `thesisreports` (
@@ -279,12 +282,12 @@ CREATE TABLE `thesisreports` (
   `registration_id` int(11) NOT NULL,
   `report_document` text NOT NULL,
   `report_date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `topics`
+-- Cấu trúc bảng cho bảng `topics`
 --
 
 CREATE TABLE `topics` (
@@ -294,10 +297,10 @@ CREATE TABLE `topics` (
   `basic_description` text NOT NULL,
   `advisor_id` int(11) DEFAULT NULL,
   `topic_manager_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `topics`
+-- Đang đổ dữ liệu cho bảng `topics`
 --
 
 INSERT INTO `topics` (`topic_id`, `topic_name`, `research_area`, `basic_description`, `advisor_id`, `topic_manager_id`) VALUES
@@ -308,7 +311,7 @@ INSERT INTO `topics` (`topic_id`, `topic_name`, `research_area`, `basic_descript
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Cấu trúc bảng cho bảng `users`
 --
 
 CREATE TABLE `users` (
@@ -325,23 +328,25 @@ CREATE TABLE `users` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   `roleId` char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `users`
+-- Đang đổ dữ liệu cho bảng `users`
 --
 
 INSERT INTO `users` (`id`, `email`, `password`, `firstName`, `lastName`, `address`, `city`, `country`, `phonenumber`, `status`, `createdAt`, `updatedAt`, `roleId`) VALUES
+('079c6270-3c2d-11ee-bbca-2cf05dd63cb7', 'bao@gmail.com', '123456', 'Lương', 'Bảo', 'Can Tho', 'Can Tho', 'Viet Nam', '0937660696', 'active', '2023-08-16 14:03:44', '2023-08-16 14:03:44', '37dcfe4d-c74a-469b-9a25-61961e568ce1'),
+('6cc0e1ff-3c2d-11ee-bbca-2cf05dd63cb7', 'tan@gmail.com', '123456', 'Le', 'Tan', 'Can Tho', 'Can Tho', 'Viet Nam', '0123123456', 'active', '2023-08-16 14:06:38', '2023-08-16 14:06:38', '516385d8-3c2d-11ee-bbca-2cf05dd63cb7'),
 ('b0204010-746e-4ccf-93b6-2dc81028ff87', 'quocdai072@gmail.com', '$2a$08$SqMUiWE6nZeLsf97agjReuEjf.IgpjiC6xQ70Y6uX4zk7ZCc0LBQe', 'phạm', 'đại', 'đqưd', 'Hồ Chí Minh', NULL, '0769870337', 'active', '2023-07-05 03:12:29', '2023-07-05 03:13:07', '37dcfe4d-c74a-469b-9a25-61961e568ce1'),
 ('b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'devcuongbui1@gmail.com', '$2a$08$ketnf96siz8UJPyFh8rZLOXA15sJyJvYcEIz60fUe0DKmBT6cykQu', 'Bui Duc', 'Cuong', NULL, NULL, NULL, '0705859416', 'active', '2023-07-06 08:53:28', '2023-07-06 08:53:28', '37dcfe4d-c74a-469b-9a25-61961e568ce1'),
 ('c9692900-e657-450f-9c3c-761efabc532d', 'admin@gmail.com', '$2a$08$Jr/n6gIKQhtGjnf82jy1au6f21zuPyX9UBbTkOCBKHhRLK0y0yR7C', 'Admin', 'Project', NULL, NULL, NULL, '123456789', 'active', '2023-06-24 01:06:31', '2023-06-24 01:06:31', '82705bfa-cede-46e4-afca-5541b6068671');
 
 --
--- Indexes for dumped tables
+-- Chỉ mục cho các bảng đã đổ
 --
 
 --
--- Indexes for table `advisors`
+-- Chỉ mục cho bảng `advisors`
 --
 ALTER TABLE `advisors`
   ADD PRIMARY KEY (`advisor_id`),
@@ -349,20 +354,21 @@ ALTER TABLE `advisors`
   ADD KEY `FK_Advisor_topic` (`topic_id`);
 
 --
--- Indexes for table `defense`
+-- Chỉ mục cho bảng `defense`
 --
 ALTER TABLE `defense`
-  ADD PRIMARY KEY (`defense_id`);
+  ADD PRIMARY KEY (`defense_id`),
+  ADD KEY `FK_defense_res` (`registration_id`);
 
 --
--- Indexes for table `defenserequest`
+-- Chỉ mục cho bảng `defenserequest`
 --
 ALTER TABLE `defenserequest`
   ADD PRIMARY KEY (`request_id`),
   ADD KEY `FK_res_defen` (`registration_id`);
 
 --
--- Indexes for table `invoiceitems`
+-- Chỉ mục cho bảng `invoiceitems`
 --
 ALTER TABLE `invoiceitems`
   ADD PRIMARY KEY (`id`),
@@ -370,33 +376,33 @@ ALTER TABLE `invoiceitems`
   ADD KEY `productId` (`productId`);
 
 --
--- Indexes for table `invoices`
+-- Chỉ mục cho bảng `invoices`
 --
 ALTER TABLE `invoices`
   ADD PRIMARY KEY (`id`),
   ADD KEY `userId` (`userId`);
 
 --
--- Indexes for table `major`
+-- Chỉ mục cho bảng `major`
 --
 ALTER TABLE `major`
   ADD PRIMARY KEY (`major_id`);
 
 --
--- Indexes for table `meetingschedule`
+-- Chỉ mục cho bảng `meetingschedule`
 --
 ALTER TABLE `meetingschedule`
   ADD PRIMARY KEY (`schedule_id`),
   ADD KEY `fk_defense_sche` (`defense_id`);
 
 --
--- Indexes for table `products`
+-- Chỉ mục cho bảng `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `productsaveds`
+-- Chỉ mục cho bảng `productsaveds`
 --
 ALTER TABLE `productsaveds`
   ADD PRIMARY KEY (`id`),
@@ -404,7 +410,7 @@ ALTER TABLE `productsaveds`
   ADD KEY `productId` (`productId`);
 
 --
--- Indexes for table `rattings`
+-- Chỉ mục cho bảng `rattings`
 --
 ALTER TABLE `rattings`
   ADD PRIMARY KEY (`id`),
@@ -412,20 +418,20 @@ ALTER TABLE `rattings`
   ADD KEY `userId` (`userId`);
 
 --
--- Indexes for table `registrations`
+-- Chỉ mục cho bảng `registrations`
 --
 ALTER TABLE `registrations`
   ADD PRIMARY KEY (`registration_id`),
   ADD KEY `FK_topic_res` (`topic_id`);
 
 --
--- Indexes for table `roles`
+-- Chỉ mục cho bảng `roles`
 --
 ALTER TABLE `roles`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `students`
+-- Chỉ mục cho bảng `students`
 --
 ALTER TABLE `students`
   ADD PRIMARY KEY (`student_id`),
@@ -436,160 +442,160 @@ ALTER TABLE `students`
   ADD KEY `FK_student_topic` (`topic_id`);
 
 --
--- Indexes for table `thesis`
+-- Chỉ mục cho bảng `thesis`
 --
 ALTER TABLE `thesis`
   ADD PRIMARY KEY (`thesis_id`),
   ADD KEY `FK_thesis_res` (`registration_id`);
 
 --
--- Indexes for table `thesisreports`
+-- Chỉ mục cho bảng `thesisreports`
 --
 ALTER TABLE `thesisreports`
   ADD PRIMARY KEY (`report_id`),
   ADD KEY `FK_thesisrp_res` (`registration_id`);
 
 --
--- Indexes for table `topics`
+-- Chỉ mục cho bảng `topics`
 --
 ALTER TABLE `topics`
   ADD PRIMARY KEY (`topic_id`);
 
 --
--- Indexes for table `users`
+-- Chỉ mục cho bảng `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD KEY `roleId` (`roleId`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT cho các bảng đã đổ
 --
 
 --
--- AUTO_INCREMENT for table `advisors`
+-- AUTO_INCREMENT cho bảng `advisors`
 --
 ALTER TABLE `advisors`
   MODIFY `advisor_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `defense`
+-- AUTO_INCREMENT cho bảng `defense`
 --
 ALTER TABLE `defense`
   MODIFY `defense_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `defenserequest`
+-- AUTO_INCREMENT cho bảng `defenserequest`
 --
 ALTER TABLE `defenserequest`
   MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `major`
+-- AUTO_INCREMENT cho bảng `major`
 --
 ALTER TABLE `major`
   MODIFY `major_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `meetingschedule`
+-- AUTO_INCREMENT cho bảng `meetingschedule`
 --
 ALTER TABLE `meetingschedule`
   MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `registrations`
+-- AUTO_INCREMENT cho bảng `registrations`
 --
 ALTER TABLE `registrations`
   MODIFY `registration_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `students`
+-- AUTO_INCREMENT cho bảng `students`
 --
 ALTER TABLE `students`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT for table `thesis`
+-- AUTO_INCREMENT cho bảng `thesis`
 --
 ALTER TABLE `thesis`
   MODIFY `thesis_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `thesisreports`
+-- AUTO_INCREMENT cho bảng `thesisreports`
 --
 ALTER TABLE `thesisreports`
   MODIFY `report_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `topics`
+-- AUTO_INCREMENT cho bảng `topics`
 --
 ALTER TABLE `topics`
   MODIFY `topic_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- Constraints for dumped tables
+-- Các ràng buộc cho các bảng đã đổ
 --
 
 --
--- Constraints for table `advisors`
+-- Các ràng buộc cho bảng `advisors`
 --
 ALTER TABLE `advisors`
   ADD CONSTRAINT `FK_Advisor_major` FOREIGN KEY (`major_id`) REFERENCES `major` (`major_id`),
   ADD CONSTRAINT `FK_Advisor_topic` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`topic_id`);
 
 --
--- Constraints for table `defense`
+-- Các ràng buộc cho bảng `defense`
 --
 ALTER TABLE `defense`
   ADD CONSTRAINT `FK_defense_res` FOREIGN KEY (`registration_id`) REFERENCES `registrations` (`registration_id`);
 
 --
--- Constraints for table `defenserequest`
+-- Các ràng buộc cho bảng `defenserequest`
 --
 ALTER TABLE `defenserequest`
   ADD CONSTRAINT `FK_res_defen` FOREIGN KEY (`registration_id`) REFERENCES `registrations` (`registration_id`);
 
 --
--- Constraints for table `invoiceitems`
+-- Các ràng buộc cho bảng `invoiceitems`
 --
 ALTER TABLE `invoiceitems`
   ADD CONSTRAINT `invoiceitems_ibfk_1` FOREIGN KEY (`invoiceId`) REFERENCES `invoices` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `invoiceitems_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Constraints for table `invoices`
+-- Các ràng buộc cho bảng `invoices`
 --
 ALTER TABLE `invoices`
   ADD CONSTRAINT `invoices_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Constraints for table `meetingschedule`
+-- Các ràng buộc cho bảng `meetingschedule`
 --
 ALTER TABLE `meetingschedule`
   ADD CONSTRAINT `fk_defense_sche` FOREIGN KEY (`defense_id`) REFERENCES `defense` (`defense_id`);
 
 --
--- Constraints for table `productsaveds`
+-- Các ràng buộc cho bảng `productsaveds`
 --
 ALTER TABLE `productsaveds`
   ADD CONSTRAINT `productsaveds_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `productsaveds_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Constraints for table `rattings`
+-- Các ràng buộc cho bảng `rattings`
 --
 ALTER TABLE `rattings`
   ADD CONSTRAINT `rattings_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `products` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `rattings_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 --
--- Constraints for table `registrations`
+-- Các ràng buộc cho bảng `registrations`
 --
 ALTER TABLE `registrations`
   ADD CONSTRAINT `FK_topic_res` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`topic_id`);
 
 --
--- Constraints for table `students`
+-- Các ràng buộc cho bảng `students`
 --
 ALTER TABLE `students`
   ADD CONSTRAINT `FK_student_major` FOREIGN KEY (`major_id`) REFERENCES `major` (`major_id`),
@@ -597,19 +603,19 @@ ALTER TABLE `students`
   ADD CONSTRAINT `FK_student_user_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
--- Constraints for table `thesis`
+-- Các ràng buộc cho bảng `thesis`
 --
 ALTER TABLE `thesis`
   ADD CONSTRAINT `FK_thesis_res` FOREIGN KEY (`registration_id`) REFERENCES `registrations` (`registration_id`);
 
 --
--- Constraints for table `thesisreports`
+-- Các ràng buộc cho bảng `thesisreports`
 --
 ALTER TABLE `thesisreports`
   ADD CONSTRAINT `FK_thesisrp_res` FOREIGN KEY (`registration_id`) REFERENCES `registrations` (`registration_id`);
 
 --
--- Constraints for table `users`
+-- Các ràng buộc cho bảng `users`
 --
 ALTER TABLE `users`
   ADD CONSTRAINT `users_ibfk_1` FOREIGN KEY (`roleId`) REFERENCES `roles` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;

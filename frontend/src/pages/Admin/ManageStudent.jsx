@@ -10,7 +10,7 @@ import { callGetStudents, searchStudent } from "../../../services/api";
 const ManageStudent = () => {
 
     const [current, setCurrent] = useState(1)
-    const [total, setTotal] = useState(10)
+    const [total, setTotal] = useState(20)
     const [pageSize, setPageSize] = useState(5)
     const [openDetail, setOpenDetail] = useState(false)
     const [detailStudent, setDetailStudent] = useState()
@@ -114,7 +114,6 @@ const ManageStudent = () => {
     const getStudents = async () => {
         let keyword = ''
         const res = await searchStudent(`${keyword}`)
-        console.log(res.data)
         if (res && res.data) {
             setDataStudent(res.data.payload.items)
         }

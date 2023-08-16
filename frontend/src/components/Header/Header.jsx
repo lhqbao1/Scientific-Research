@@ -9,7 +9,7 @@ const Header = () => {
     const navigate = useNavigate()
     const userInfo = useSelector(state => state.account.user)
     const checkHasLecturer = useSelector(state => state.account.user.status)
-    console.log(userInfo)
+    console.log('cehcek sind', userInfo)
     const text = <span>Title</span>;
     const content = (
         <div>

@@ -44,7 +44,7 @@ const ManageTopic = () => {
             // },
         },
         {
-            title: 'Topic instructor',
+            title: 'Topic advisor',
             dataIndex: 'topicInstructor',
             // sorter: {
             //     compare: (a, b) => a.math - b.math,

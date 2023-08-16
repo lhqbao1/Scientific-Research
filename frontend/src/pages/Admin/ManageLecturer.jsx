@@ -21,8 +21,8 @@ const ManageLecturer = () => {
 
     const columns = [
         {
-            title: 'Student ID',
-            dataIndex: 'student_code',
+            title: 'Mã cán bộ',
+            dataIndex: 'lecturer_code',
             render: (text, record) => <button
                 onClick={() => showDetailStudent(text, record)}
                 style={{
@@ -36,79 +36,54 @@ const ManageLecturer = () => {
             </button>,
         },
         {
-            title: 'Name',
-            dataIndex: 'student_name',
+            title: 'Họ và tên',
+            dataIndex: 'lecturer_name',
             sorter: true,
         },
         {
-            title: 'Email',
-            dataIndex: 'email',
-            sorter: true
-        },
-        {
-            title: 'Grade',
-            dataIndex: 'grade',
+            title: 'Chức danh',
+            dataIndex: 'lecturer_title',
             // sorter: {
             //     compare: (a, b) => a.english - b.english,
             //     multiple: 1,
             // },
         },
         {
-            title: 'Major',
-            dataIndex: 'major_name',
+            title: 'Chức vụ',
+            dataIndex: 'lecturer_position',
+            // sorter: {
+            //     compare: (a, b) => a.english - b.english,
+            //     multiple: 1,
+            // },
+        },
+        {
+            title: 'Email',
+            dataIndex: 'lecturer_email',
+            sorter: true
+        },
+
+        {
+            title: 'Nơi công tác',
+            dataIndex: 'lecturer_employment',
             // sorter: {
             //     compare: (a, b) => a.math - b.math,
             //     multiple: 2,
             // },
         },
-        {
-            title: 'Topic',
-            dataIndex: 'topic_name',
-            // sorter: {
-            //     compare: (a, b) => a.english - b.english,
-            //     multiple: 1,
-            // },
-        },
+
 
     ];
     const data = [
         {
             key: '1',
-            name: 'Luong Hoang Quoc Bao',
-            studentID: 'B1910616',
-            grade: 'K45',
-            major: 'Information and Technology High Quality',
-            topic: 'Scientific Research',
-            email: 'baob1910616@student.ctu.edu.vn'
+            lecturer_code: '123',
+            lecturer_name: 'Luong Hoang Quoc Bao',
+            lecturer_position: 'Trưởng khoa',
+            lecturer_employment: 'Khoa công nghệ thông tin và truyền thông',
+            lecturer_title: 'Tiến sĩ',
+            lecturer_email: 'baob1910616@student.ctu.edu.vn'
         },
-        {
-            key: '2',
-            name: 'Nguyễn Trâm Anh',
-            studentID: 'B1910699',
-            grade: 'K45',
-            major: 'International Bussiness High Quality',
-            topic: 'Scientific Research',
-            email: 'anhb1910699@student.ctu.edu.vn'
 
-        },
-        {
-            key: '3',
-            name: 'Luong Hoang Quoc Bao',
-            studentID: 'B1910616',
-            grade: 'K45',
-            major: 'Information and Technology High Quality',
-            topic: 'Scientific Research',
-
-        },
-        {
-            key: '4',
-            name: 'Luong Hoang Quoc Bao',
-            studentID: 'B1910616',
-            grade: 'K45',
-            major: 'Information and Technology High Quality',
-            topic: 'Scientific Research',
-
-        },
     ];
 
     const getStudents = async () => {
@@ -198,7 +173,7 @@ const ManageLecturer = () => {
             />
             <Table
                 title={tableUserHeader}
-                dataSource={dataStudent}
+                dataSource={data}
                 columns={columns}
                 onChange={onChange}
                 bordered={true}
