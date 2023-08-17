@@ -1,11 +1,13 @@
 import './Header.scss'
-import { Button, Col, Popover, Row } from 'antd'
-import { HomeOutlined, UserOutlined, LaptopOutlined } from "@ant-design/icons";
+import { Badge, Button, Col, Popover, Row, message } from 'antd'
+import { HomeOutlined, UserOutlined, LaptopOutlined, NotificationOutlined } from "@ant-design/icons";
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 
 const Header = () => {
+    const [countNoti, setCountNoti] = useState(1)
     const navigate = useNavigate()
     const userInfo = useSelector(state => state.account.user)
     const checkHasLecturer = useSelector(state => state.account.user.status)
@@ -34,6 +36,16 @@ const Header = () => {
 
         </div>
     )
+
+    const contentNoti = (
+        <div>
+            <p>Giảng viên abc đã chấp nhận yêu cầu hướng dẫn nghiên cứu khoa học của bạn.</p>
+        </div>
+    );
+
+    const checkNoti = () => {
+        setCountNoti(0)
+    }
 
     return (
         <div style={{ backgroundColor: '#efefef', margin: '-8px' }}>
@@ -88,6 +100,18 @@ const Header = () => {
                                         <LaptopOutlined style={{ marginRight: 6, marginLeft: 2 }} />
                                         <span>Lecturer</span>
                                     </Popover>
+                                </div>
+                            </div>
+                            <div className='header-button' >
+                                <div style={{ marginTop: 0 }} onClick={checkNoti}>
+                                    <Badge count={countNoti} size='small' offset={[8, 2]}>
+                                        <Popover placement="bottomLeft" content={contentNoti} trigger="click">
+                                            <NotificationOutlined style={{ marginRight: 6, marginLeft: 2 }} />
+                                            <span>Notification</span>
+                                        </Popover>
+                                    </Badge>
+
+
                                 </div>
                             </div>
 

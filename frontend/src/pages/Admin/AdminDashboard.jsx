@@ -57,14 +57,14 @@ const AdminDashboard = () => {
                         <Col span={12}>
                             <Card bordered={true}>
                                 <Statistic
-                                    title="Instructor"
+                                    title="Advisors"
                                     value={100}
                                     precision={0}
                                     valueStyle={{
                                         color: '#3f8600',
                                     }}
                                     prefix={<UserOutlined />}
-                                    suffix="Instructors"
+                                    suffix="Advisors"
                                 />
                             </Card>
                         </Col>

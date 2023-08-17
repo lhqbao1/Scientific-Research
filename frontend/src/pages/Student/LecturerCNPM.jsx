@@ -1,12 +1,18 @@
 import { Col, Drawer, message, Row, Table } from "antd"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Header from "../../components/Header/Header"
 
 const LecturerCNPM = () => {
 
     const [openDrawer, setOpenDrawer] = useState()
+    const [hasLecturer, setHasLecturer] = useState(false)
     const checkHasLecturer = useSelector(state => state.account.user.status)
+    useEffect(() => {
+        if (checkHasLecturer === 'active') {
+            setHasLecturer(true)
+        }
+    }, [checkHasLecturer])
 
     const columns = [
         {
@@ -36,6 +42,7 @@ const LecturerCNPM = () => {
             title: 'Action',
             dataIndex: 'action',
             render: (text, record) => <button
+                disabled={hasLecturer}
                 onClick={() => doInviteLecturer(text, record)}
                 style={{
                     backgroundColor: "#87d068",
@@ -48,7 +55,7 @@ const LecturerCNPM = () => {
                 }}
             >
                 {text}
-            </button>,
+            </button >,
         },
 
 

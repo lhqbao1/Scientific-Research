@@ -37,7 +37,7 @@ const AdminPage = () => {
   const [openManageSetudent, setOpenManageStudent] = useState(false);
   const [openAD, setOpenAD] = useState(true);
   const [openManageLecturer, setOpenManageLecturer] = useState(false);
-  const [openManageInstructor, setOpenManageInstructor] = useState(false);
+  const [openManageAdvisor, setOpenManageAdvisor] = useState(false);
   const [openManageTopic, setOpenManageTopic] = useState(false);
   const [openManageSchedule, setOpenManageSchedule] = useState(false);
   const [userInfo, setUserInfo] = useState()
@@ -68,7 +68,7 @@ const AdminPage = () => {
     getItem("Manage user", "sub1", <UserAddOutlined />, [
       getItem("Student", "2", <RightCircleOutlined />),
       getItem("Lecturer", "3", <RightCircleOutlined />),
-      getItem("Instructors", "4", <RightCircleOutlined />),
+      getItem("Advisors", "4", <RightCircleOutlined />),
     ]),
     getItem("Manage topic", "5", <ContainerOutlined />),
     getItem("Manage council", "sub2", <UsergroupAddOutlined />, [
@@ -89,21 +89,21 @@ const AdminPage = () => {
       setOpenAD(!openAD);
       setOpenManageStudent(false);
       setOpenManageLecturer(false);
-      setOpenManageInstructor(false);
+      setOpenManageAdvisor(false);
       setOpenManageTopic(false);
     }
     if (key.key === "2") {
       setOpenManageStudent(!openManageSetudent);
       setOpenAD(false);
       setOpenManageLecturer(false);
-      setOpenManageInstructor(false);
+      setOpenManageAdvisor(false);
       setOpenManageTopic(false);
       setOpenManageSchedule(false);
     }
     if (key.key === "3") {
       setOpenManageStudent(false);
       setOpenAD(false);
-      setOpenManageInstructor(false);
+      setOpenManageAdvisor(false);
       setOpenManageTopic(false);
       setOpenManageSchedule(false);
       setOpenManageLecturer(!openManageLecturer);
@@ -114,13 +114,13 @@ const AdminPage = () => {
       setOpenManageLecturer(false);
       setOpenManageTopic(false);
       setOpenManageSchedule(false);
-      setOpenManageInstructor(!openManageInstructor);
+      setOpenManageAdvisor(!openManageAdvisor);
     }
     if (key.key === "5") {
       setOpenManageStudent(false);
       setOpenAD(false);
       setOpenManageLecturer(false);
-      setOpenManageInstructor(false);
+      setOpenManageAdvisor(false);
       setOpenManageSchedule(false);
       setOpenManageTopic(!openManageTopic);
     }
@@ -128,7 +128,7 @@ const AdminPage = () => {
       setOpenManageStudent(false);
       setOpenAD(false);
       setOpenManageLecturer(false);
-      setOpenManageInstructor(false);
+      setOpenManageAdvisor(false);
       setOpenManageTopic(false);
       setOpenManageSchedule(!openManageSchedule);
     }
@@ -187,7 +187,7 @@ const AdminPage = () => {
                 {openAD === true ? <AdminDashboard /> : ""}
                 {openManageSetudent === true ? <ManageStudent /> : ""}
                 {openManageLecturer === true ? <ManageLecturer /> : ""}
-                {openManageInstructor === true ? <ManageInstructor /> : ""}
+                {openManageAdvisor === true ? <ManageInstructor /> : ""}
                 {openManageTopic === true ? <ManageTopic /> : ""}
                 {openManageSchedule === true ? <ManageSchedule /> : ""}
               </div>
