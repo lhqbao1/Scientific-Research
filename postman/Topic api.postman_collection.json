@@ -1,0 +1,98 @@
+{
+	"info": {
+		"_postman_id": "88248434-e42c-4092-943a-801dad0445b5",
+		"name": "Topic api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26156193"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/api/topics",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "topic_name",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/api/topics",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"topics"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/api/topics",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "topic_name",
+						"value": "Scientific 11 Research",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "research_area",
+						"value": "q1",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "basic_description",
+						"value": "q2",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "topic_name",
+							"value": "\"q1\"",
+							"type": "text"
+						},
+						{
+							"key": "research_area",
+							"value": "\"q1 q1\"",
+							"type": "text"
+						},
+						{
+							"key": "basic_description",
+							"value": "\"q1 q1 q1\"",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/topics",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"topics"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

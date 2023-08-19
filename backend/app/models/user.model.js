@@ -14,32 +14,6 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
       password: {
         type: DataTypes.STRING,
       },
-      firstName: {
-        type: DataTypes.STRING,
-      },
-      lastName: {
-        type: DataTypes.STRING,
-      },
-      address: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      city: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      country: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      phonenumber: {
-        type: DataTypes.STRING,
-        allowNull: true,
-      },
-      status: {
-        type: DataTypes.STRING,
-        defaultValue: "active",
-      },
     },
     {
       // Options

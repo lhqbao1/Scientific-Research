@@ -38,10 +38,8 @@ app.get("/", (req, res) => {
 require("./app/routes/auth.routes")(app);
 require("./app/routes/user.routes")(app);
 require("./app/routes/student.routes")(app);
-require("./app/routes/product.routes")(app);
-require("./app/routes/invoice.routes")(app);
-require("./app/routes/ratting.routes")(app);
-require("./app/routes/bookmark.route")(app);
+require("./app/routes/lecturer.routes")(app);
+require("./app/routes/topic.routes")(app);
 
 // set port, listen for requests
 const PORT = config.PORT;

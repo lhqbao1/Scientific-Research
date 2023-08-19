@@ -12,6 +12,10 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
+      topic_code: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
       research_area: {
         type: DataTypes.TEXT,
         allowNull: false,
@@ -19,14 +23,6 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
       basic_description: {
         type: DataTypes.TEXT,
         allowNull: false,
-      },
-      advisor_id: {
-        type: DataTypes.INTEGER,
-        defaultValue: null,
-      },
-      topic_manager_id: {
-        type: DataTypes.INTEGER,
-        defaultValue: null,
       },
     },
     {
