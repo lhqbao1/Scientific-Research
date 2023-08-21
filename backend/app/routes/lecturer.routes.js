@@ -17,6 +17,12 @@ module.exports = function (app) {
     controller.findAll
   );
 
+  app.get(
+    "/api/lecturers/work_place/:work_place_id",
+    // [authJwt.verifyToken, authJwt.isAdmin],
+    controller.findByWorkPlace 
+  );
+
   // app.get("/api/students/:id", controller.findById);
 
   app.post("/api/lecturers", controller.create);

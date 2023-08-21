@@ -28,6 +28,11 @@ db.sequelize = sequelize;
 db.user = require("./user.model.js")(sequelize, Sequelize, DataTypes);
 db.student = require("./student.models.js")(sequelize, Sequelize, DataTypes);
 db.lecturer = require("./lecturer.models.js")(sequelize, Sequelize, DataTypes);
+db.workplace = require("./workplace.models.js")(
+  sequelize,
+  Sequelize,
+  DataTypes
+);
 db.topic = require("./topic.model.js")(sequelize, Sequelize, DataTypes);
 db.major = require("./major.model.js")(sequelize, Sequelize, DataTypes);
 db.role = require("./role.model.js")(sequelize, Sequelize, DataTypes);
@@ -35,7 +40,6 @@ db.role = require("./role.model.js")(sequelize, Sequelize, DataTypes);
 db.role.hasMany(db.user);
 db.user.belongsTo(db.role);
 
-
-db.ROLES = ["user", "admin"];
+db.ROLES = ["student", "admin"];
 
 module.exports = db;

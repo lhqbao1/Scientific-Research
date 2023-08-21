@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
       },
       roleCode: {
         type: DataTypes.STRING,
-        default: "user",
+        default: "student",
       },
     },
     {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 19, 2023 at 08:28 AM
+-- Generation Time: Aug 21, 2023 at 10:06 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -110,7 +110,7 @@ CREATE TABLE `lecturers` (
   `position` text NOT NULL,
   `degree` text NOT NULL,
   `email` text NOT NULL,
-  `work_place` text NOT NULL,
+  `work_place_id` varchar(11) NOT NULL,
   `topic_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -118,11 +118,9 @@ CREATE TABLE `lecturers` (
 -- Dumping data for table `lecturers`
 --
 
-INSERT INTO `lecturers` (`lecturer_id`, `lecturer_name`, `position`, `degree`, `email`, `work_place`, `topic_id`) VALUES
-(4, 'Nguyen Van A', 'Professor', 'Ph.D.', 'nguyenvana@example.com', 'University of XYZ', 1),
-(5, 'Nguyen Van B', 'Professor', 'Ph.D.', 'nguyenvanb@example.com', 'University of XYZ', NULL),
-(6, 'Nguyen Van B', 'Professor', 'Ph.D.', 'nguyenvanbsd@example.com', 'University of XYZ', NULL),
-(7, 'Nguyen Van B', 'Professor', 'Ph.D.', 'nguyenvanbsd@example.com', 'University of XYZ', NULL);
+INSERT INTO `lecturers` (`lecturer_id`, `lecturer_name`, `position`, `degree`, `email`, `work_place_id`, `topic_id`) VALUES
+(8, 'Tran xuan Anh', 'pos1', 'de 1', 'tranxuananh@gmail.com', 'CNTT', 1),
+(9, 'Nguyen Van B', 'Professor', 'Ph.D.', 'nguyenvanbsd@example.com', 'CNTT', NULL);
 
 -- --------------------------------------------------------
 
@@ -244,8 +242,9 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `name`, `roleCode`, `createdAt`, `updatedAt`) VALUES
-('37dcfe4d-c74a-469b-9a25-61961e568ce1', 'User', 'user', '2023-06-24 01:06:31', '2023-06-24 01:06:31'),
-('516385d8-3c2d-11ee-bbca-2cf05dd63cb7', 'Student', 'student', '2023-08-16 14:06:17', '2023-08-16 14:06:17'),
+('37dcfe4d-c74a-469b-9a25-61961e568ce1', 'student', 'student', '2023-06-24 01:06:31', '2023-06-24 01:06:31'),
+('401fee95-3ff9-11ee-a609-7c10c9849ff6', 'lecturer', 'lecturer', '2023-08-21 10:03:34', '2023-08-21 10:03:34'),
+('516385d8-3c2d-11ee-bbca-2cf05dd63cb7', 'student', 'student', '2023-08-16 14:06:17', '2023-08-16 14:06:17'),
 ('82705bfa-cede-46e4-afca-5541b6068671', 'Admin', 'admin', '2023-06-24 01:06:31', '2023-06-24 01:06:31');
 
 -- --------------------------------------------------------
@@ -357,8 +356,28 @@ INSERT INTO `users` (`id`, `email`, `password`, `createdAt`, `updatedAt`, `roleI
 ('079c6270-3c2d-11ee-bbca-2cf05dd63cb7', 'bao@gmail.com', '123456', '2023-08-16 14:03:44', '2023-08-16 14:03:44', '37dcfe4d-c74a-469b-9a25-61961e568ce1'),
 ('6cc0e1ff-3c2d-11ee-bbca-2cf05dd63cb7', 'tan@gmail.com', '123456', '2023-08-16 14:06:38', '2023-08-16 14:06:38', '516385d8-3c2d-11ee-bbca-2cf05dd63cb7'),
 ('b0204010-746e-4ccf-93b6-2dc81028ff87', 'quocdai072@gmail.com', '$2a$08$SqMUiWE6nZeLsf97agjReuEjf.IgpjiC6xQ70Y6uX4zk7ZCc0LBQe', '2023-07-05 03:12:29', '2023-07-05 03:13:07', '37dcfe4d-c74a-469b-9a25-61961e568ce1'),
+('b1d949fb-1365-42fb-a5be-d3f7024a30d7', 'devcuongbui2@gmail.com', '$2a$08$miF/mV9d3w7oN/sixl5EIOwZV01W/pH9Jp9B6r.DHRUsDm.8/E9f6', '2023-08-21 08:03:48', '2023-08-21 08:03:48', '401fee95-3ff9-11ee-a609-7c10c9849ff6'),
 ('b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'devcuongbui1@gmail.com', '$2a$08$ketnf96siz8UJPyFh8rZLOXA15sJyJvYcEIz60fUe0DKmBT6cykQu', '2023-07-06 08:53:28', '2023-07-06 08:53:28', '37dcfe4d-c74a-469b-9a25-61961e568ce1'),
 ('c9692900-e657-450f-9c3c-761efabc532d', 'admin@gmail.com', '$2a$08$Jr/n6gIKQhtGjnf82jy1au6f21zuPyX9UBbTkOCBKHhRLK0y0yR7C', '2023-06-24 01:06:31', '2023-06-24 01:06:31', '82705bfa-cede-46e4-afca-5541b6068671');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `workplace`
+--
+
+CREATE TABLE `workplace` (
+  `id` varchar(11) NOT NULL,
+  `workplace_name` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `workplace`
+--
+
+INSERT INTO `workplace` (`id`, `workplace_name`) VALUES
+('CNTT', 'Công nghệ thông tin'),
+('KTVT', 'Kinh tế vận tải');
 
 --
 -- Indexes for dumped tables
@@ -406,7 +425,8 @@ ALTER TABLE `invoices`
 --
 ALTER TABLE `lecturers`
   ADD PRIMARY KEY (`lecturer_id`),
-  ADD KEY `FK_topic_lecturer` (`topic_id`);
+  ADD KEY `FK_topic_lecturer` (`topic_id`),
+  ADD KEY `FK_lec_wp` (`work_place_id`);
 
 --
 -- Indexes for table `major`
@@ -495,6 +515,12 @@ ALTER TABLE `users`
   ADD KEY `roleId` (`roleId`);
 
 --
+-- Indexes for table `workplace`
+--
+ALTER TABLE `workplace`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -520,7 +546,7 @@ ALTER TABLE `defenserequest`
 -- AUTO_INCREMENT for table `lecturers`
 --
 ALTER TABLE `lecturers`
-  MODIFY `lecturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `lecturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `major`
@@ -604,6 +630,7 @@ ALTER TABLE `invoices`
 -- Constraints for table `lecturers`
 --
 ALTER TABLE `lecturers`
+  ADD CONSTRAINT `FK_lec_wp` FOREIGN KEY (`work_place_id`) REFERENCES `workplace` (`id`),
   ADD CONSTRAINT `FK_topic_lecturer` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`topic_id`);
 
 --

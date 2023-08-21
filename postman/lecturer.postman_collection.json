@@ -28,6 +28,28 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/lecturers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/lecturers/work_place/CNTT",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"lecturers",
+								"work_place",
+								"CNTT"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -44,7 +66,7 @@
 							"urlencoded": [
 								{
 									"key": "lecturer_name",
-									"value": "Nguyen Van A",
+									"value": "Nguyen Van B",
 									"type": "text"
 								},
 								{
@@ -59,12 +81,12 @@
 								},
 								{
 									"key": "email",
-									"value": "nguyenvana@example.com",
+									"value": "nguyenvanbsd@example.com",
 									"type": "text"
 								},
 								{
-									"key": "work_place",
-									"value": "University of XYZ",
+									"key": "work_place_id",
+									"value": "CNTT",
 									"type": "text"
 								},
 								{

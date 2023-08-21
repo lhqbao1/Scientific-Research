@@ -1,5 +1,6 @@
 const db = require("../models");
 const LecturerModel = db.lecturer;
+const WorkplaceModel = db.workplace;
 const TopicModel = db.topic;
 const { Op } = require("sequelize");
 
@@ -49,6 +50,45 @@ exports.findAll = async (req, res) => {
   }
 };
 
+exports.findByWorkPlace = async (req, res) => {
+  try {
+    const { work_place_id } = req.params;
+
+    if (!work_place_id)
+      return res
+        .status(400)
+        .json(responsePayload(false, "Đường dẫn thiếu work_place_id!", null));
+
+    const lecturers = await LecturerModel.findAll({
+      where: {
+        work_place_id: work_place_id,
+      },
+      include: [
+        {
+          model: WorkplaceModel,
+          as: "workplace", // Specify the alias
+          attributes: ["workplace_name"],
+        },
+      ],
+    });
+
+    if (!lecturers || lecturers.length === 0)
+      return res.json(
+        responsePayload(
+          false,
+          "Không có giảng viên thuộc work_place này!",
+          null
+        )
+      );
+
+    res.json(
+      responsePayload(true, "Tải danh sách giảng viên thành công!", lecturers)
+    );
+  } catch (err) {
+    res.status(500).json(responsePayload(false, err.message, null));
+  }
+};
+
 // exports.findById = async (req, res) => {
 //   try {
 //     if (!req.params.id)
@@ -91,7 +131,7 @@ exports.findAll = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const { lecturer_name, position, degree, email, work_place, topic_id } =
+    const { lecturer_name, position, degree, email, work_place_id, topic_id } =
       req.body;
 
     // Create the new lecturer record
@@ -100,7 +140,7 @@ exports.create = async (req, res) => {
       position,
       degree,
       email,
-      work_place,
+      work_place_id, // Use work_place_id instead of work_place
       topic_id,
     });
 

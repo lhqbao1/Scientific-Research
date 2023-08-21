@@ -1,6 +1,10 @@
-// models/lecturer.model.js
-
-module.exports = (sequelize, DataTypes) => {
+module.exports = (sequelize, Sequelize, DataTypes) => {
+  const WorkplaceModel = require("./workplace.models")(
+    sequelize,
+    Sequelize,
+    DataTypes
+  );
+  const TopicModel = require("./topic.model")(sequelize, Sequelize, DataTypes);
   const LecturerModel = sequelize.define(
     "lecturer", // Model name
     {
@@ -25,10 +29,9 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.TEXT,
         allowNull: false,
-        unique: true,
       },
-      work_place: {
-        type: DataTypes.TEXT,
+      work_place_id: {
+        type: DataTypes.STRING(11), // Change the data type to match SQL schema
         allowNull: false,
       },
       topic_id: {
@@ -44,6 +47,17 @@ module.exports = (sequelize, DataTypes) => {
       tableName: "lecturers",
     }
   );
+
+  // Define the association between LecturerModel and WorkplaceModel
+  LecturerModel.belongsTo(WorkplaceModel, {
+    foreignKey: "work_place_id", // Use the correct foreign key
+    as: "workplace",
+  });
+
+  LecturerModel.belongsTo(TopicModel, {
+    foreignKey: "topic_id",
+    as: "topic",
+  });
 
   return LecturerModel;
 };
