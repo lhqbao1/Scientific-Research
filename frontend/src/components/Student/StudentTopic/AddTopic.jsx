@@ -1,12 +1,28 @@
-import { Button, Col, Form, Input, Row } from "antd"
+import { Button, Col, Form, Input, message, notification, Row } from "antd"
+import { useSelector } from "react-redux";
+import { callAddTopic } from "../../../../services/api";
 
 const AddTopic = () => {
-    const onFinish = (values) => {
+
+    const userInfo = useSelector(state => state.account.user)
+    const userID = userInfo.id
+
+    const onFinish = async (values) => {
         console.log('Success:', values);
+        console.log('sd', userID)
+
+        const res = await callAddTopic(values.topic_name, values.research_area, values.basic_description)
+        if (res) {
+            notification.success({
+                message: 'Success',
+                description: `Added topic ${values.topic_name}`
+            })
+        }
+
     };
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
+
+
+
     return (
         <>
             <div style={{ backgroundColor: '#efefef', marginLeft: -8, marginRight: -8, marginTop: 8 }}>
@@ -31,7 +47,6 @@ const AddTopic = () => {
                                         remember: true,
                                     }}
                                     onFinish={onFinish}
-                                    onFinishFailed={onFinishFailed}
                                     autoComplete="off"
                                 >
                                     <Form.Item
@@ -48,7 +63,7 @@ const AddTopic = () => {
 
                                     <Form.Item
                                         label="Lĩnh vực của đề tài"
-                                        name="topic_area"
+                                        name="research_area"
                                         rules={[
                                             {
                                                 message: 'Please input your password!',
@@ -58,7 +73,7 @@ const AddTopic = () => {
                                         <Input />
                                     </Form.Item>
 
-                                    <Form.Item
+                                    {/* <Form.Item
                                         label="Chủ nhiệm đề tài (MSSV)"
                                         name="topic_manager"
                                         rules={[
@@ -68,11 +83,11 @@ const AddTopic = () => {
                                         ]}
                                     >
                                         <Input />
-                                    </Form.Item>
+                                    </Form.Item> */}
 
                                     <Form.Item
                                         label="Miêu tả cơ bản về đề tài"
-                                        name="topic_description"
+                                        name="basic_description"
                                         rules={[
                                             {
                                                 message: 'Please input your password!',

@@ -15,3 +15,7 @@ export const callGetStudents = () => {
 export const searchStudent = (keyword) => {
     return axios.get(`http://localhost:8080/api/students?keyword=${keyword}`)
 }
+
+export const callAddTopic = (topic_name, research_area, basic_description) => {
+    return axios.post(`http://localhost:8080/api/topics`, { topic_name, research_area, basic_description })
+}

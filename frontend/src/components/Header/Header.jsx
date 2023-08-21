@@ -11,12 +11,12 @@ const Header = () => {
     const navigate = useNavigate()
     const userInfo = useSelector(state => state.account.user)
     const checkHasLecturer = useSelector(state => state.account.user.status)
-    console.log('cehcek sind', userInfo)
-    const text = <span>Title</span>;
+    const text = <span style={{ fontSize: 16 }}>Quản lí tài khoản</span>;
     const content = (
-        <div>
-            <p>Content</p>
-            <p>Content</p>
+        <div style={{ height: 40, marginBottom: 20, marginTop: -15 }}>
+            <p>Thông tin tài khoản
+            </p>
+            <p>Đăng xuất</p>
         </div>
     );
 
@@ -47,6 +47,8 @@ const Header = () => {
         setCountNoti(0)
     }
 
+
+
     return (
         <div style={{ backgroundColor: '#efefef', margin: '-8px' }}>
             <div className="header-page">
@@ -66,12 +68,12 @@ const Header = () => {
                             <div className='header-button' >
                                 <div style={{ marginTop: 0 }}>
                                     <HomeOutlined style={{ marginRight: 6, marginLeft: 7 }} />
-                                    <span>Home</span>
+                                    <span onClick={() => navigate('/')}>Home</span>
                                 </div>
                             </div>
                             <div className='header-button' >
                                 <div style={{ marginTop: 0 }}>
-                                    <Popover placement="bottomLeft" title={text} content={content}  >
+                                    <Popover placement="bottomLeft" content={content}  >
                                         <UserOutlined style={{ marginRight: 6, marginLeft: 2 }} />
                                         <span>Quoc Bao</span>
                                     </Popover>
@@ -79,7 +81,7 @@ const Header = () => {
                             </div>
                             <div className='header-button' >
                                 <div style={{ marginTop: 0 }}>
-                                    <Popover placement="bottomLeft" title={text} content={content}  >
+                                    <Popover placement="bottomLeft" content={content}  >
                                         <LaptopOutlined style={{ marginRight: 6, marginLeft: 2 }} />
                                         <span onClick={() => navigate('/topic')}>Your topic</span>
                                     </Popover>
