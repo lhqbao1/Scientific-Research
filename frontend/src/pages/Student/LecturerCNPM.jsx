@@ -2,22 +2,57 @@ import { Col, Drawer, message, Row, Table } from "antd"
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Header from "../../components/Header/Header"
+import { callGetLecturerByWorkPlace } from "../../../services/api";
 
 const LecturerCNPM = () => {
 
     const [openDrawer, setOpenDrawer] = useState()
     const [hasLecturer, setHasLecturer] = useState(false)
+    const [dataLecturer, setDataLecturer] = useState([])
     const checkHasLecturer = useSelector(state => state.account.user.status)
+    const workPlace = useSelector(state => state.workplace.place)
+    let place = ''
+    switch (workPlace) {
+        case 'CNTT':
+            place = 'CÔNG NGHỆ THÔNG TIN'
+            break;
+        case 'CNPM':
+            place = 'CÔNG NGHỆ PHẦN MỀM'
+            break;
+        case 'HTTT':
+            place = 'HỆ THỐNG THÔNG TIN'
+            break;
+        case 'KHMT':
+            place = 'KHOA HỌC MÁY TÍNH'
+            break;
+        case 'MMTVTT':
+            place = 'MẠNG MÁY TÍNH VÀ TRUYỀN THÔNG'
+            break;
+        case 'TTDPT':
+            place = 'TRUYỀN THÔNG ĐA PHƯƠNG TIỆN'
+            break;
+
+    }
+
     useEffect(() => {
         if (checkHasLecturer === 'active') {
             setHasLecturer(true)
         }
+        getLecturer()
     }, [checkHasLecturer])
+
+
+    const getLecturer = async () => {
+        const res = await callGetLecturerByWorkPlace(workPlace)
+        if (res) {
+            setDataLecturer(res.data.payload)
+        }
+    }
 
     const columns = [
         {
-            title: 'Name',
-            dataIndex: 'name',
+            title: 'Họ tên',
+            dataIndex: 'lecturer_name',
             render: (text, record) => <button
                 onClick={() => showLecturerDetail(text, record)}
                 style={{
@@ -31,7 +66,7 @@ const LecturerCNPM = () => {
             </button>,
         },
         {
-            title: 'Position',
+            title: 'Chức vụ',
             dataIndex: 'position',
         },
         {
@@ -39,7 +74,7 @@ const LecturerCNPM = () => {
             dataIndex: 'email',
         },
         {
-            title: 'Action',
+            title: 'Thao tác',
             dataIndex: 'action',
             render: (text, record) => <button
                 disabled={hasLecturer}
@@ -54,40 +89,12 @@ const LecturerCNPM = () => {
                     fontSize: 14,
                 }}
             >
-                {text}
+                Mời giảng viên
             </button >,
         },
-
-
     ];
 
-    const data = [
-        {
-            key: '1',
-            name: 'TS. Trương Minh Thái',
-            position: 'Trưởng khoa',
-            email: 'tmthai@cit.ctu.edu.vn',
-            action: 'Invite'
-        },
-        {
-            key: '2',
-            name: 'Jim Green',
-            position: 98,
-            email: 66,
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            position: 98,
-            email: 90,
-        },
-        {
-            key: '4',
-            name: 'Jim Red',
-            position: 88,
-            email: 99,
-        },
-    ];
+
 
     const showLecturerDetail = (text, record) => {
         setOpenDrawer(true);
@@ -118,12 +125,12 @@ const LecturerCNPM = () => {
                         <Col span={5}></Col>
                         <Col span={14} style={{ height: '50%', backgroundColor: 'white', borderRadius: 10, padding: 15, fontSize: 14 }}>
                             <div>
-                                <h3>DANH SÁCH CÁC GIẢNG VIÊN THUỘC KHOA CÔNG NGHỆ PHẦN MỀM</h3>
+                                <h3>DANH SÁCH CÁC GIẢNG VIÊN THUỘC KHOA {place}</h3>
                                 <Table
                                     bordered={true}
                                     pagination={false}
                                     columns={columns}
-                                    dataSource={data}
+                                    dataSource={dataLecturer}
                                     onChange={onChange} />
                             </div>
                         </Col>

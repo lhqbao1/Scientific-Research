@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { doLogoutAction } from '../../redux/account/accountSlice';
+import { doGetWorkplace } from '../../redux/workplace/workplaceSlice';
 
 
 const Header = () => {
@@ -36,23 +37,22 @@ const Header = () => {
     }
 
     const handleNavigate = (abc) => {
-        console.log('classasd', abc)
-
+        dispatch(doGetWorkplace(abc))
     }
 
 
     const contentLecturer = (
         <div >
-            <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-cong-nghe-phan-mem' style={{ color: 'black', textTransform: 'uppercase' }} onClick={() => handleNavigate('CNPM', this)}>Khoa công nghệ phần mềm</a>
+            <div style={{ marginBottom: 5 }}><a href='/lecturer' style={{ color: 'black', textTransform: 'uppercase' }} onClick={() => handleNavigate('CNPM')} >Khoa công nghệ phần mềm</a>
             </div>
-            <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-cong-nghe-thong-tin' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa công nghệ thông tin</a></div>
-            <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-he-thong-thong-tin' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa hệ thống thông tin</a>
+            <div style={{ marginBottom: 5 }}><a href='/lecturer' style={{ color: 'black', textTransform: 'uppercase' }} onClick={() => handleNavigate('CNTT')}>Khoa công nghệ thông tin</a></div>
+            <div style={{ marginBottom: 5 }}><a href='/lecturer' style={{ color: 'black', textTransform: 'uppercase' }} onClick={() => handleNavigate('HTTT')}>Khoa hệ thống thông tin</a>
             </div>
-            <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-khoa-hoc-may-tinh' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa khoa học máy tính</a>
+            <div style={{ marginBottom: 5 }}><a href='/lecturer' style={{ color: 'black', textTransform: 'uppercase' }} onClick={() => handleNavigate('KHMT')}>Khoa khoa học máy tính</a>
             </div>
-            <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-mang-may-tinh-va-truyen-thong' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa mạng máy tính và truyền thông</a>
+            <div style={{ marginBottom: 5 }}><a href='/lecturer' style={{ color: 'black', textTransform: 'uppercase' }} onClick={() => handleNavigate('MMTVTT')}>Khoa mạng máy tính và truyền thông</a>
             </div>
-            <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-truyen-thong-da-phuong-tien' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa truyền thông đa phương tiện</a>
+            <div style={{ marginBottom: 5 }}><a href='/lecturer' style={{ color: 'black', textTransform: 'uppercase' }} onClick={() => handleNavigate('TTDPT')}>Khoa truyền thông đa phương tiện</a>
             </div>
 
         </div>

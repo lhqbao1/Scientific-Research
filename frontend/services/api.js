@@ -19,3 +19,7 @@ export const searchStudent = (keyword) => {
 export const callAddTopic = (topic_name, research_area, basic_description) => {
     return axios.post(`http://localhost:8080/api/topics`, { topic_name, research_area, basic_description })
 }
+
+export const callGetLecturerByWorkPlace = (workplace) => {
+    return axios.get(`http://localhost:8080/api/lecturers/work_place/${workplace}`)
+}
