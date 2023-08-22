@@ -47,7 +47,7 @@ const LayoutAdmin = () => {
   //get user info from redux
   const user = useSelector(state => state.account.user)
   //get role user
-  const userRole = user.role.name
+  const userRole = user.role
   return (
     <div>
       {window.location.pathname === '/admin' && userRole === 'Admin' && ''

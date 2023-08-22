@@ -6,16 +6,18 @@ const AddTopic = () => {
 
     const userInfo = useSelector(state => state.account.user)
     const userID = userInfo.id
+    const [form] = Form.useForm();
 
     const onFinish = async (values) => {
-        console.log('Success:', values);
-        console.log('sd', userID)
+
 
         const res = await callAddTopic(values.topic_name, values.research_area, values.basic_description)
         if (res) {
+            form.resetFields()
             notification.success({
                 message: 'Success',
-                description: `Added topic ${values.topic_name}`
+                description: `Added topic ${values.topic_name}`,
+                duration: 1
             })
         }
 
@@ -33,6 +35,7 @@ const AddTopic = () => {
                             <div>
                                 <h3>ĐĂNG KÝ ĐỀ TÀI NGHIÊN CỨU KHOA HỌC</h3>
                                 <Form
+                                    form={form}
                                     name="basic"
                                     labelCol={{
                                         span: 7,

@@ -4,25 +4,46 @@ import { HomeOutlined, UserOutlined, LaptopOutlined, NotificationOutlined } from
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { doLogoutAction } from '../../redux/account/accountSlice';
 
 
 const Header = () => {
     const [countNoti, setCountNoti] = useState(1)
+    const [workPlace, setWorkPlace] = useState('')
     const navigate = useNavigate()
     const userInfo = useSelector(state => state.account.user)
     const checkHasLecturer = useSelector(state => state.account.user.status)
+    const dispatch = useDispatch()
+
+
     const text = <span style={{ fontSize: 16 }}>Quản lí tài khoản</span>;
-    const content = (
-        <div style={{ height: 40, marginBottom: 20, marginTop: -15 }}>
-            <p>Thông tin tài khoản
-            </p>
-            <p>Đăng xuất</p>
-        </div>
-    );
+    let content = ''
+    if (userInfo.role !== '') {
+        content = (
+            <div>
+                {/* {userInfo.role === '' ? '' : */}
+                <div style={{ height: 40, marginBottom: 20, marginTop: -15 }}>
+                    <p>Thông tin tài khoản
+                    </p>
+                    <p style={{ cursor: 'pointer' }} onClick={() => handleLogout()}>Đăng xuất</p>
+                </div>
+                {/* } */}
+            </div>
+
+        );
+    } else {
+        content = ''
+    }
+
+    const handleNavigate = (abc) => {
+        console.log('classasd', abc)
+
+    }
+
 
     const contentLecturer = (
         <div >
-            <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-cong-nghe-phan-mem' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa công nghệ phần mềm</a>
+            <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-cong-nghe-phan-mem' style={{ color: 'black', textTransform: 'uppercase' }} onClick={() => handleNavigate('CNPM', this)}>Khoa công nghệ phần mềm</a>
             </div>
             <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-cong-nghe-thong-tin' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa công nghệ thông tin</a></div>
             <div style={{ marginBottom: 5 }}><a href='/lecturer/khoa-he-thong-thong-tin' style={{ color: 'black', textTransform: 'uppercase' }}>Khoa hệ thống thông tin</a>
@@ -46,6 +67,21 @@ const Header = () => {
     const checkNoti = () => {
         setCountNoti(0)
     }
+
+    const handleLogout = () => {
+        console.log('hehe')
+        dispatch(doLogoutAction())
+        message.success('Log out success')
+        navigate('/')
+    }
+
+    const handleLogin = () => {
+        if (userInfo.role === '') {
+            navigate('/login')
+        }
+    }
+
+
 
 
 
@@ -75,13 +111,13 @@ const Header = () => {
                                 <div style={{ marginTop: 0 }}>
                                     <Popover placement="bottomLeft" content={content}  >
                                         <UserOutlined style={{ marginRight: 6, marginLeft: 2 }} />
-                                        <span>Quoc Bao</span>
+                                        <span onClick={() => handleLogin()}>{userInfo.role ? userInfo.role : 'Đăng nhập'}</span>
                                     </Popover>
                                 </div>
                             </div>
                             <div className='header-button' >
                                 <div style={{ marginTop: 0 }}>
-                                    <Popover placement="bottomLeft" content={content}  >
+                                    <Popover placement="bottomLeft">
                                         <LaptopOutlined style={{ marginRight: 6, marginLeft: 2 }} />
                                         <span onClick={() => navigate('/topic')}>Your topic</span>
                                     </Popover>

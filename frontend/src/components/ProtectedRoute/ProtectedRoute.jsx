@@ -9,7 +9,7 @@ const RoleBaseRoute = (props) => {
     //get user info from redux
     const user = useSelector(state => state.account.user)
     //check role user
-    const userRole = user.role.name
+    const userRole = user.role
     if (isAdminRoute === true && userRole === 'Admin') {
         return (<>{props.children}</>)
     } else {

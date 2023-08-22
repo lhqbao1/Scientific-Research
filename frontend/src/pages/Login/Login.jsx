@@ -36,8 +36,14 @@ const Login = () => {
         dispatch(doLoginAction(res.data.payload.user))
         dispatch(doGetAccountAction(res.data.payload.user))
         localStorage.setItem('access_token', res.data.payload.accessToken)
-        navigate("/admin")
-      }, 3000)
+        console.log(res.data.payload.user)
+        if (res.data.payload.user.role === 'Admin') {
+          navigate("/admin")
+        }
+        if (res.data.payload.user.role === 'student') {
+          navigate("/")
+        }
+      }, 1000)
 
     }
   };
