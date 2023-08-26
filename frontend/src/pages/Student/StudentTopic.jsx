@@ -8,9 +8,9 @@ import Topic from "../../components/Student/StudentTopic/Topic"
 
 const StudentTopic = () => {
     const [hasTopic, setHasTopic] = useState(false)
-    const topic = useSelector(state => state.account.user.status)
+    const topic = useSelector(state => state.student.user.topic_id)
     useEffect(() => {
-        if (topic === '') {
+        if (topic !== '') {
             setHasTopic(true)
         }
     }, [])

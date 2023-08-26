@@ -6,9 +6,10 @@ import { useState } from "react";
 import { setToken, setUserData } from "../../lib/utils";
 import axios from "axios";
 import "./Login.scss";
-import { callLogin } from "../../../services/api";
+import { callGetStudentById, callLogin } from "../../../services/api";
 import { doGetAccountAction, doLoginAction } from "../../redux/account/accountSlice";
 import { useDispatch } from "react-redux";
+import { doGetStudentInfoAction } from "../../redux/account/studentSlice";
 
 
 
@@ -28,8 +29,14 @@ const Login = () => {
   };
 
   const onFinish = async (data) => {
+
     const res = await callLogin(data.email, data.password)
     if (res && res.data) {
+      const resStudent = await callGetStudentById('15')
+      if (resStudent) {
+        dispatch(doGetStudentInfoAction(resStudent.data.payload))
+      }
+      console.log('check student0', resStudent)
       setIsLogin(true)
       setTimeout(() => {
         setIsLogin(false)
