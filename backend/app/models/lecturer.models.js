@@ -34,10 +34,10 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
         type: DataTypes.STRING(11), // Change the data type to match SQL schema
         allowNull: false,
       },
-      topic_id: {
-        type: DataTypes.INTEGER,
-        defaultValue: null,
-      },
+      // topic_id: {
+      //   type: DataTypes.INTEGER,
+      //   defaultValue: null,
+      // },
     },
     {
       // Options
@@ -54,10 +54,10 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     as: "workplace",
   });
 
-  LecturerModel.belongsTo(TopicModel, {
-    foreignKey: "topic_id",
-    as: "topic",
-  });
+  // LecturerModel.belongsTo(TopicModel, {
+  //   foreignKey: "topic_id",
+  //   as: "topic",
+  // });
 
   return LecturerModel;
 };

@@ -31,13 +31,37 @@ import LecturerKHMT from './pages/Student/LecturerKHMT';
 import LecturerMMTVTT from './pages/Student/LecturerMMTVTT';
 import LecturerTTDPT from './pages/Student/LecturerTTDPT';
 import StudentTopic from './pages/Student/StudentTopic';
+import ProtectedRouteStudent from './components/ProtectedRoute/ProtectedRouteStudent';
+import LecturerHomePage from './pages/Lecturer/LecturerHomePage';
+import ProtectedRouteLecturer from './components/ProtectedRoute/ProtectedRoteLecturer';
+import HeaderLecturer from './components/Header/HeaderLecturer';
 
 const Layout = () => {
+  const student = useSelector(state => state.account.user.role)
   return (
     <div>
-      <Header />
+      {window.location.pathname === '/student' && student === 'student' && <Header />
+      }
+
       <Outlet />
-      <Footer />
+      {window.location.pathname === '/student' && student === 'student' && <Footer />
+      }
+
+    </div>
+  )
+}
+
+const LayoutLecturer = () => {
+  const lecturer = useSelector(state => state.account.user.role)
+  return (
+    <div>
+      {window.location.pathname === '/lecturer' && lecturer === 'lecturer' && <HeaderLecturer />
+      }
+
+      <Outlet />
+      {window.location.pathname === '/lecturer' && lecturer === 'lecturer' && <Footer />
+      }
+
     </div>
   )
 }
@@ -63,40 +87,46 @@ const LayoutAdmin = () => {
 
 
 export default function App() {
-  const [userID, setUserId] = useState()
   const dispatch = useDispatch();
   const isLoading = useSelector(state => state.account.isLoading)
-  const user = useSelector(state => state.account.user)
-  // const getAccountInfo = async () => {
-  //   if (window.location.pathname === '/login'
-  //     || window.location.pathname === '/register'
-  //   ) return;
 
-
-  //   // const res = await callGetUser(userID)
-  //   // if (res && res.data) {
-  //   //   dispatch(doGetAccountAction(res.data.payload.user))
-  //   // }
-
-  // }
-
-  // useEffect(() => {
-  //   getAccountInfo()
-  // }, [])
 
   const router = createBrowserRouter([
     {
-      path: "/",
+      path: "/student",
       element: <Layout />,
       errorElement: <Loading />,
       children: [
-        { index: true, element: <HomePage /> },
         {
-          path: "book",
-          element: <BookPage />,
+          index: true, element:
+            <ProtectedRouteStudent>
+              <HomePage />
+            </ProtectedRouteStudent>
+        },
+        {
+          path: "lecturer",
+          element: <LecturerCNPM />,
+
+        },
+
+      ],
+    },
+
+    {
+      path: "/lecturer",
+      element: <LayoutLecturer />,
+      errorElement: <Loading />,
+      children: [
+        {
+          index: true, element:
+            <ProtectedRouteLecturer>
+              <LecturerHomePage />
+            </ProtectedRouteLecturer>
         },
       ],
     },
+
+
 
     {
       path: "/admin",
@@ -120,15 +150,12 @@ export default function App() {
       path: "/topic",
       element: <StudentTopic />,
     },
-    {
-      path: "/lecturer",
-      element: <LecturerCNPM />,
 
-    },
     // {
     //   path: "/register",
     //   element: <RegisterPage />,
     // },
+
 
 
 

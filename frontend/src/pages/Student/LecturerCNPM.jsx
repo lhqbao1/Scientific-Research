@@ -39,7 +39,7 @@ const LecturerCNPM = () => {
             setHasLecturer(true)
         }
         getLecturer()
-    }, [checkHasLecturer])
+    }, [workPlace])
 
 
     const getLecturer = async () => {
@@ -118,7 +118,6 @@ const LecturerCNPM = () => {
     };
     return (
         <>
-            <Header />
             <div style={{ backgroundColor: '#efefef', marginLeft: -8, marginRight: -8, marginTop: 8 }}>
                 <div style={{ minHeight: 570 }}>
                     <Row>

@@ -12,6 +12,7 @@ export const callGetStudents = () => {
     return axios.get(`http://localhost:8080/api/students`)
 }
 
+
 export const searchStudent = (keyword) => {
     return axios.get(`http://localhost:8080/api/students?keyword=${keyword}`)
 }

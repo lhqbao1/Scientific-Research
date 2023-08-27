@@ -13,9 +13,11 @@ export const studentSlice = createSlice({
     reducers: {
 
         doGetStudentInfoAction: (state, action) => {
-            state.isAuthenticated = true;
-            state.isLoading = false;
             state.user = action.payload;
+        },
+
+        doClearStudentInfo: (state, action) => {
+            state.user = ''
         },
 
 
@@ -27,7 +29,7 @@ export const studentSlice = createSlice({
     },
 });
 
-export const { doGetStudentInfoAction } = studentSlice.actions;
+export const { doGetStudentInfoAction, doClearStudentInfo } = studentSlice.actions;
 
 
 

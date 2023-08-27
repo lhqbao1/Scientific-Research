@@ -32,7 +32,7 @@ const Login = () => {
 
     const res = await callLogin(data.email, data.password)
     if (res && res.data) {
-      const resStudent = await callGetStudentById('15')
+      const resStudent = await callGetStudentById(res.data.payload.user.id)
       if (resStudent) {
         dispatch(doGetStudentInfoAction(resStudent.data.payload))
       }
@@ -48,7 +48,10 @@ const Login = () => {
           navigate("/admin")
         }
         if (res.data.payload.user.role === 'student') {
-          navigate("/")
+          navigate("/student")
+        }
+        if (res.data.payload.user.role === 'lecturer') {
+          navigate("/lecturer")
         }
       }, 1000)
 

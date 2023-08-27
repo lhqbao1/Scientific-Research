@@ -1,4 +1,4 @@
-import './Header.scss'
+import './HeaderLecturer.scss'
 import { Badge, Button, Col, Popover, Row, message } from 'antd'
 import { HomeOutlined, UserOutlined, LaptopOutlined, NotificationOutlined, BookOutlined } from "@ant-design/icons";
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,7 +9,7 @@ import { doGetWorkplace } from '../../redux/workplace/workplaceSlice';
 import { doClearStudentInfo } from '../../redux/account/studentSlice';
 
 
-const Header = () => {
+const HeaderLecturer = () => {
     const [countNoti, setCountNoti] = useState(1)
     const [workPlace, setWorkPlace] = useState('')
     const navigate = useNavigate()
@@ -44,22 +44,7 @@ const Header = () => {
     }
 
 
-    const contentLecturer = (
-        <div >
-            <div style={{ marginBottom: 5 }}><a style={{ color: 'black', textTransform: 'uppercase' }} onClick={() => handleNavigate('CNPM')} >Khoa công nghệ phần mềm</a>
-            </div>
-            <div style={{ marginBottom: 5 }}><a style={{ color: 'black', textTransform: 'uppercase' }} onClick={() => handleNavigate('CNTT')}>Khoa công nghệ thông tin</a></div>
-            <div style={{ marginBottom: 5 }}><a style={{ color: 'black', textTransform: 'uppercase' }} onClick={() => handleNavigate('HTTT')}>Khoa hệ thống thông tin</a>
-            </div>
-            <div style={{ marginBottom: 5 }}><a style={{ color: 'black', textTransform: 'uppercase' }} onClick={() => handleNavigate('KHMT')}>Khoa khoa học máy tính</a>
-            </div>
-            <div style={{ marginBottom: 5 }}><a style={{ color: 'black', textTransform: 'uppercase' }} onClick={() => handleNavigate('MMTVTT')}>Khoa mạng máy tính và truyền thông</a>
-            </div>
-            <div style={{ marginBottom: 5 }}><a style={{ color: 'black', textTransform: 'uppercase' }} onClick={() => handleNavigate('TTDPT')}>Khoa truyền thông đa phương tiện</a>
-            </div>
 
-        </div >
-    )
 
     const contentNoti = (
         <div>
@@ -98,7 +83,7 @@ const Header = () => {
 
     return (
         <div style={{ backgroundColor: '#efefef', margin: '-8px' }}>
-            <div className="header-page">
+            <div className="HeaderLecturer-page">
                 <Row>
                     <Col span={5} ></Col>
 
@@ -112,13 +97,13 @@ const Header = () => {
                             {/* </div> */}
                         </Row>
                         <Row style={{ backgroundColor: 'white', height: 50, marginBottom: 10, marginTop: 10, borderRadius: 10 }}>
-                            <div className='header-button' >
+                            <div className='HeaderLecturer-button' >
                                 <div style={{ marginTop: 0 }}>
                                     <HomeOutlined style={{ marginRight: 6, marginLeft: 7 }} />
-                                    <span onClick={() => backtoHome()}>Home</span>
+                                    <span onClick={() => backtoHome()}>Đề tài hướng dẫn </span>
                                 </div>
                             </div>
-                            <div className='header-button' >
+                            <div className='HeaderLecturer-button' >
                                 <div style={{ marginTop: 0 }}>
                                     <Popover placement="bottomLeft" content={content}  >
                                         <UserOutlined style={{ marginRight: 6, marginLeft: 2 }} />
@@ -126,7 +111,7 @@ const Header = () => {
                                     </Popover>
                                 </div>
                             </div>
-                            <div className='header-button' >
+                            <div className='HeaderLecturer-button' >
                                 <div style={{ marginTop: 0 }}>
                                     <Popover placement="bottomLeft">
                                         <LaptopOutlined style={{ marginRight: 6, marginLeft: 2 }} />
@@ -134,33 +119,10 @@ const Header = () => {
                                     </Popover>
                                 </div>
                             </div>
-                            {/* {checkHasLecturer !== 'active' ?
-                                <div className='header-button' >
-                                    <div style={{ marginTop: 0 }} >
-                                        <Popover placement="bottomLeft" content={contentLecturer}  >
-                                            <LaptopOutlined style={{ marginRight: 6, marginLeft: 2 }} />
-                                            <span>Lecturer</span>
-                                        </Popover>
-                                    </div>
-                                </div> : ''} */}
 
-                            <div className='header-button' >
-                                <div style={{ marginTop: 0 }} >
-                                    {userRole === 'student' ?
-                                        <Popover placement="bottomLeft" content={contentLecturer}  >
-                                            <LaptopOutlined style={{ marginRight: 6, marginLeft: 2 }} />
-                                            <span>Lecturer</span>
-                                        </Popover>
-                                        :
-                                        <div>
-                                            <BookOutlined style={{ marginRight: 6, marginLeft: 2 }} />
-                                            <span>Topics</span>
-                                        </div>
-                                    }
 
-                                </div>
-                            </div>
-                            <div className='header-button' >
+
+                            <div className='HeaderLecturer-button' >
                                 <div style={{ marginTop: 0 }} onClick={checkNoti}>
                                     <Badge count={countNoti} size='small' offset={[8, 2]}>
                                         <Popover placement="bottomLeft" content={contentNoti} trigger="click">
@@ -183,4 +145,4 @@ const Header = () => {
     )
 }
 
-export default Header
+export default HeaderLecturer

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th8 22, 2023 lúc 09:47 AM
+-- Thời gian đã tạo: Th8 27, 2023 lúc 08:24 PM
 -- Phiên bản máy phục vụ: 10.4.24-MariaDB
 -- Phiên bản PHP: 8.1.6
 
@@ -110,17 +110,18 @@ CREATE TABLE `lecturers` (
   `position` text NOT NULL,
   `degree` text NOT NULL,
   `email` text NOT NULL,
-  `work_place_id` varchar(11) NOT NULL,
-  `topic_id` int(11) DEFAULT NULL
+  `work_place_id` varchar(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Đang đổ dữ liệu cho bảng `lecturers`
 --
 
-INSERT INTO `lecturers` (`lecturer_id`, `lecturer_name`, `position`, `degree`, `email`, `work_place_id`, `topic_id`) VALUES
-(8, 'Tran xuan Anh', 'pos1', 'de 1', 'tranxuananh@gmail.com', 'CNTT', 1),
-(9, 'Nguyen Van B', 'Professor', 'Ph.D.', 'nguyenvanbsd@example.com', 'CNTT', NULL);
+INSERT INTO `lecturers` (`lecturer_id`, `lecturer_name`, `position`, `degree`, `email`, `work_place_id`) VALUES
+(8, 'Tran xuan Anh', 'pos1', 'de 1', 'tranxuananh@gmail.com', 'CNTT'),
+(9, 'Nguyen Van B', 'Professor', 'Ph.D.', 'nguyenvanbsd@example.com', 'CNTT'),
+(10, 'a', 'b', 'c', 'd', 'CNPM'),
+(11, 'Trần Minh Tân', 'Giảng viên', 'Thạc sỹ', 'tmtan@cit.ctu.edu.vn', 'CNTT');
 
 -- --------------------------------------------------------
 
@@ -278,7 +279,8 @@ INSERT INTO `students` (`student_id`, `user_id`, `class`, `student_name`, `grade
 (7, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test5', 'K45', 1, 1, 12322, 'a6@gmail.com'),
 (8, 'b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'Class A', 'Tran Van Test6', 'K45', 1, 1, 12312312, 'a5@gmail.com'),
 (11, 'b0204010-746e-4ccf-93b6-2dc81028ff87', '', 'Tran Van Thang', 'K45', 1, 1, 34212, 'tranvanthang@gmail.com'),
-(12, 'b0204010-746e-4ccf-93b6-2dc81028ff87', '', 'Tran Van Tuong', 'K45', 1, 1, 342121, 'tranvantuong@gmail.com');
+(12, 'b0204010-746e-4ccf-93b6-2dc81028ff87', '', 'Tran Van Tuong', 'K45', 1, 1, 342121, 'tranvantuong@gmail.com'),
+(15, '75d1415b-8748-4325-a4ec-caecb1348c24', 'F1', 'Lương Hoàng Quốc Bảo', 'K45', 1, 7, 1910616, 'bao@gmail.com');
 
 -- --------------------------------------------------------
 
@@ -318,20 +320,22 @@ CREATE TABLE `topics` (
   `topic_name` text NOT NULL,
   `research_area` text NOT NULL,
   `basic_description` text NOT NULL,
-  `topic_code` text DEFAULT NULL
+  `topic_code` text DEFAULT NULL,
+  `lecturer_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Đang đổ dữ liệu cho bảng `topics`
 --
 
-INSERT INTO `topics` (`topic_id`, `topic_name`, `research_area`, `basic_description`, `topic_code`) VALUES
-(1, 'Scientific Research', 'research', 'researchresearchresearchresearch', NULL),
-(2, 'Scientific Research', 'Scientific ResearchScientific ResearchScientific Research', 'Scientific ResearchScientific ResearchScientific ResearchScientific Research', NULL),
-(3, 'Scientific Research 2', 'Scientific Research 2Scientific Research 2', 'Scientific Research 2Scientific Research 2Scientific Research 2', NULL),
-(4, '\"q1\"', '\"q1 q1\"', '\"q1 q1 q1\"', NULL),
-(5, '\"q1\"', '\"q1 q1\"', '\"q1 q1 q1\"', NULL),
-(6, 'a', 'b', 'c', NULL);
+INSERT INTO `topics` (`topic_id`, `topic_name`, `research_area`, `basic_description`, `topic_code`, `lecturer_id`) VALUES
+(1, 'Scientific Research', 'research', 'researchresearchresearchresearch', NULL, NULL),
+(2, 'Scientific Research', 'Scientific ResearchScientific ResearchScientific Research', 'Scientific ResearchScientific ResearchScientific ResearchScientific Research', NULL, NULL),
+(3, 'Scientific Research 2', 'Scientific Research 2Scientific Research 2', 'Scientific Research 2Scientific Research 2Scientific Research 2', NULL, NULL),
+(4, '\"q1\"', '\"q1 q1\"', '\"q1 q1 q1\"', NULL, NULL),
+(5, '\"q1\"', '\"q1 q1\"', '\"q1 q1 q1\"', NULL, NULL),
+(6, 'a', 'b', 'c', NULL, NULL),
+(7, 'Hệ thống quản lý thực hiện nghiên cứu khoa học trường công nghệ thông tin và truyền thông', 'Khoa công nghệ thông tin và truyền thông', 'abc', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -357,6 +361,7 @@ INSERT INTO `users` (`id`, `email`, `password`, `createdAt`, `updatedAt`, `roleI
 ('b0204010-746e-4ccf-93b6-2dc81028ff87', 'quocdai072@gmail.com', '$2a$08$SqMUiWE6nZeLsf97agjReuEjf.IgpjiC6xQ70Y6uX4zk7ZCc0LBQe', '2023-07-05 03:12:29', '2023-07-05 03:13:07', '37dcfe4d-c74a-469b-9a25-61961e568ce1'),
 ('b1d949fb-1365-42fb-a5be-d3f7024a30d7', 'devcuongbui2@gmail.com', '$2a$08$miF/mV9d3w7oN/sixl5EIOwZV01W/pH9Jp9B6r.DHRUsDm.8/E9f6', '2023-08-21 08:03:48', '2023-08-21 08:03:48', '401fee95-3ff9-11ee-a609-7c10c9849ff6'),
 ('b8d3ffa6-93a5-4de2-8987-0ce569b77ec7', 'devcuongbui1@gmail.com', '$2a$08$ketnf96siz8UJPyFh8rZLOXA15sJyJvYcEIz60fUe0DKmBT6cykQu', '2023-07-06 08:53:28', '2023-07-06 08:53:28', '37dcfe4d-c74a-469b-9a25-61961e568ce1'),
+('fc136f70-13b9-40e1-8fb9-9fd17ecb8e26', 'tmtan@cit.ctu.edu.vn', '$2a$08$Ak0KMzi4LRYIrSER6shz/.6tQ4oQgbJuhXRgx/mx66QCC9UV9zSYq', '2023-08-27 13:16:44', '2023-08-27 13:16:44', '401fee95-3ff9-11ee-a609-7c10c9849ff6'),
 ('fd454667-9ff6-4834-83dc-28a2f5b8fd85', 'admin@gmail.com', '$2a$08$Hlr.fi/nQWGKFxdS5PtG8.AaiXaSqRMgfJwcSoebkdxowAb.0cHBK', '2023-08-22 06:18:33', '2023-08-22 06:18:33', '82705bfa-cede-46e4-afca-5541b6068671');
 
 -- --------------------------------------------------------
@@ -425,7 +430,6 @@ ALTER TABLE `invoices`
 --
 ALTER TABLE `lecturers`
   ADD PRIMARY KEY (`lecturer_id`),
-  ADD KEY `FK_topic_lecturer` (`topic_id`),
   ADD KEY `FK_lec_wp` (`work_place_id`);
 
 --
@@ -505,7 +509,8 @@ ALTER TABLE `thesisreports`
 -- Chỉ mục cho bảng `topics`
 --
 ALTER TABLE `topics`
-  ADD PRIMARY KEY (`topic_id`);
+  ADD PRIMARY KEY (`topic_id`),
+  ADD KEY `lecturer` (`lecturer_id`);
 
 --
 -- Chỉ mục cho bảng `users`
@@ -546,7 +551,7 @@ ALTER TABLE `defenserequest`
 -- AUTO_INCREMENT cho bảng `lecturers`
 --
 ALTER TABLE `lecturers`
-  MODIFY `lecturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `lecturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT cho bảng `major`
@@ -570,7 +575,7 @@ ALTER TABLE `registrations`
 -- AUTO_INCREMENT cho bảng `students`
 --
 ALTER TABLE `students`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT cho bảng `thesis`
@@ -588,7 +593,7 @@ ALTER TABLE `thesisreports`
 -- AUTO_INCREMENT cho bảng `topics`
 --
 ALTER TABLE `topics`
-  MODIFY `topic_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `topic_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
@@ -630,8 +635,7 @@ ALTER TABLE `invoices`
 -- Các ràng buộc cho bảng `lecturers`
 --
 ALTER TABLE `lecturers`
-  ADD CONSTRAINT `FK_lec_wp` FOREIGN KEY (`work_place_id`) REFERENCES `workplace` (`id`),
-  ADD CONSTRAINT `FK_topic_lecturer` FOREIGN KEY (`topic_id`) REFERENCES `topics` (`topic_id`);
+  ADD CONSTRAINT `FK_lec_wp` FOREIGN KEY (`work_place_id`) REFERENCES `workplace` (`id`);
 
 --
 -- Các ràng buộc cho bảng `meetingschedule`
@@ -678,6 +682,12 @@ ALTER TABLE `thesis`
 --
 ALTER TABLE `thesisreports`
   ADD CONSTRAINT `FK_thesisrp_res` FOREIGN KEY (`registration_id`) REFERENCES `registrations` (`registration_id`);
+
+--
+-- Các ràng buộc cho bảng `topics`
+--
+ALTER TABLE `topics`
+  ADD CONSTRAINT `lecturer` FOREIGN KEY (`lecturer_id`) REFERENCES `lecturers` (`lecturer_id`);
 
 --
 -- Các ràng buộc cho bảng `users`

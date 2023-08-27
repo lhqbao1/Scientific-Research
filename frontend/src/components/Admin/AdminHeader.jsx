@@ -39,7 +39,7 @@ const AdminHeader = (props) => {
         console.log('logout')
         dispatch(doLogoutAction())
         message.success('Log out success')
-        navigate('/')
+        navigate('/student')
 
     }
 
@@ -67,7 +67,7 @@ const AdminHeader = (props) => {
                                 <a onClick={(e) => e.preventDefault()}>
                                     <Space>
                                         {/* <Avatar size="large" src={userAvatar} /> */}
-                                        <span style={{ fontSize: 16 }}>Hi, {userInfo?.firstName}!</span>
+                                        <span style={{ fontSize: 16 }}>Hi, Admin!</span>
                                         {/* <DownOutlined /> */}
                                     </Space>
                                 </a>
