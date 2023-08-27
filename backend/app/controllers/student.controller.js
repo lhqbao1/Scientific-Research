@@ -85,13 +85,15 @@ exports.findAll = async (req, res) => {
 
 exports.findById = async (req, res) => {
   try {
-    if (!req.params.id)
+    if (!req.params.id) {
       return res
         .status(400)
-        .json(responsePayload(false, "Đường dẫn thiêu id sinh viên!", null));
+        .json(responsePayload(false, "Thiếu id người dùng!", null));
+    }
+
     const student = await StudentModel.findOne({
       where: {
-        student_id: req.params.id,
+        user_id: req.params.id,
       },
       include: [
         {
@@ -111,12 +113,15 @@ exports.findById = async (req, res) => {
         },
       ],
     });
-    if (!student)
+
+    if (!student) {
       return res.json(
-        responsePayload(false, "Sinh viên không tồn tại!", student)
+        responsePayload(false, "Người dùng không tồn tại!", null)
       );
+    }
+
     res.json(
-      responsePayload(true, "Tải thông tin sinh viên thành công!", student)
+      responsePayload(true, "Tải thông tin người dùng thành công!", student)
     );
   } catch (err) {
     res.status(500).json(responsePayload(false, err.message, null));

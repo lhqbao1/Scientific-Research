@@ -757,7 +757,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/students/2",
+					"raw": "http://localhost:8080/api/students/b0204010-746e-4ccf-93b6-2dc81028ff87",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -766,7 +766,7 @@
 					"path": [
 						"api",
 						"students",
-						"2"
+						"b0204010-746e-4ccf-93b6-2dc81028ff87"
 					]
 				}
 			},
