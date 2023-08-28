@@ -1,8 +1,10 @@
 module.exports = (sequelize, Sequelize, DataTypes) => {
+  // const StudentModal = require("./student.models")(sequelize, Sequelize, DataTypes);
+
   const TopicModel = sequelize.define(
     "topic", // Model name
     {
-      // Attributes
+      // Attributes 
       topic_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -33,6 +35,12 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
       tableName: "topics",
     }
   );
+
+  // // Define the association between StudentModel and MajorModel
+  // TopicModel.belongsTo(StudentModal, {
+  //   foreignKey: "topic_id",
+  //   as: "student",
+  // });
 
   return TopicModel;
 };

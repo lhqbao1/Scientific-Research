@@ -40,7 +40,7 @@ const Header = () => {
 
     const handleNavigate = (abc) => {
         dispatch(doGetWorkplace(abc))
-        navigate('lecturer')
+        navigate('/student/lecturer')
     }
 
 

@@ -17,6 +17,9 @@ module.exports = function (app) {
     controller.findAll
   );
 
+  app.get("/api/topic/:id", controller.findById);
+
+
   // app.get("/api/students/:id", controller.findById);
 
   app.post("/api/topics", controller.create);

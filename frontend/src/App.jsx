@@ -40,11 +40,11 @@ const Layout = () => {
   const student = useSelector(state => state.account.user.role)
   return (
     <div>
-      {window.location.pathname === '/student' && student === 'student' && <Header />
+      {student === 'student' && <Header />
       }
 
       <Outlet />
-      {window.location.pathname === '/student' && student === 'student' && <Footer />
+      {student === 'student' && <Footer />
       }
 
     </div>

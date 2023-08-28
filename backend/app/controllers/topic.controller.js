@@ -1,6 +1,7 @@
 const db = require("../models");
 const TopicModel = db.topic;
 const { Op } = require("sequelize");
+const studentModels = require("../models/student.models");
 
 responsePayload = (status, message, payload) => ({
   status,
@@ -116,6 +117,51 @@ exports.updateTopic = async (req, res) => {
 
     res.json(
       responsePayload(true, "Cập nhật thông tin chủ đề thành công!", topic)
+    );
+  } catch (err) {
+    res.status(500).json(responsePayload(false, err.message, null));
+  }
+};
+
+exports.findById = async (req, res) => {
+  try {
+    if (!req.params.id) {
+      return res
+        .status(400)
+        .json(responsePayload(false, "Thiếu id topic!", null));
+    }
+
+    const topic = await TopicModel.findOne({
+      where: {
+        topic_id: req.params.id,
+      },
+      // include: [
+      //   {
+      //     model: studentModels,
+      //     as: "student", // Specify the alias for MajorModel
+      //     attributes: ["major_id", "major_name"],
+      //   },
+      //   {
+      //     model: TopicModel,
+      //     as: "topic", // Specify the alias for TopicModel
+      //     attributes: [
+      //       "topic_id",
+      //       "topic_name",
+      //       "research_area",
+      //       "basic_description",
+      //     ],
+      //   },
+      // ],
+    });
+
+    if (!topic) {
+      return res.json(
+        responsePayload(false, "Đề tài không tồn tại!", null)
+      );
+    }
+
+    res.json(
+      responsePayload(true, "Tải thông tin đề tài thành công!", topic)
     );
   } catch (err) {
     res.status(500).json(responsePayload(false, err.message, null));
