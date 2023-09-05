@@ -18,9 +18,11 @@ module.exports = function (app) {
     // );
 
 
-    // app.get("/api/invitation/:id", controller.findById);
+    // app.get("/api/file/:id", controller.findById);
 
     app.post("/api/file", controller.create);
+    app.get("/api/file/:topic_id", controller.findFiles);
+
 
     // app.put("/api/invitation/:id", controller.updateInvitation);
 

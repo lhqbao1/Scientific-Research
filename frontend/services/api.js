@@ -49,6 +49,10 @@ export const callUpdateTopic = (id, lecturer_id, status) => {
     return axios.put(`http://localhost:8080/api/topics/${id}`, { lecturer_id, status })
 }
 
+export const callUpdateTopicStatus = (id, topic_status) => {
+    return axios.put(`http://localhost:8080/api/topics/${id}`, { topic_status })
+}
+
 export const callGetLecturerTopic = (id) => {
     return axios.get(`http://localhost:8080/api/lecturerTopic/${id}`)
 }
@@ -63,4 +67,8 @@ export const callGetAcceptedInvitation = (id) => {
 
 export const callUploadPresentFile = (file_name, file_url, file_type, topic_id) => {
     return axios.post(`http://localhost:8080/api/file`, { file_name, file_url, file_type, topic_id })
+}
+
+export const callGetFileWithTopic = (topic_id) => {
+    return axios.get(`http://localhost:8080/api/file/${topic_id}`)
 }

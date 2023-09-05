@@ -8,37 +8,35 @@ responsePayload = (status, message, payload) => ({
     payload,
 });
 
-// exports.findAll = async (req, res) => {
-//     try {
-//         let query = {};
-//         if (req.query.status) query.status = req.query.status;
-//         if (req.query.keyword) {
-//             query[Op.or] = [
-//                 { student: { [Op.like]: `%${req.query.keyword}%` } },
-//                 { lecturer: { [Op.like]: `%${req.query.keyword}%` } },
-//                 { topic: { [Op.like]: `%${req.query.keyword}%` } },
-//             ];
-//         }
+exports.findFiles = async (req, res) => {
+    try {
+        if (!req.params.topic_id) {
+            return res
+                .status(400)
+                .json(responsePayload(false, "Thiếu id topic!", null));
+        }
 
-
-
-//         const invitaion = await InvitationModel.findAll({
-//             where: query,
-
-//         });
-
-
-
-//         res.json(
-//             responsePayload(true, "Tải danh sách chủ đề thành công!", {
-//                 items: invitaion,
-
-//             })
-//         );
-//     } catch (err) {
-//         res.status(500).json(responsePayload(false, err.message, null));
-//     }
-// };
+        const file = await FileModel.findAll({
+            where: {
+                topic_id: req.params.topic_id
+            }
+        });
+        if (file && file.length > 0) {
+            file.map(item => {
+                item.file_url = new Buffer(item.file_url, 'base64').toString('binary')
+                return item
+            })
+        }
+        res.json(
+            responsePayload(true, "Tải danh sách chủ đề thành công!", {
+                items: file,
+                // subItem: fileUrl
+            })
+        );
+    } catch (err) {
+        res.status(500).json(responsePayload(false, err.message, null));
+    }
+};
 
 // exports.findById = async (req, res) => {
 //     try {

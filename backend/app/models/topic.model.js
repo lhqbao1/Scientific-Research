@@ -29,6 +29,11 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: true,
       },
+      topic_status: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        default: 3
+      },
     },
     {
       // Options
