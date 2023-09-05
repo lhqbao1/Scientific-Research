@@ -23,9 +23,13 @@ module.exports = function (app) {
     //     controller.findByWorkPlace 
     //   );
 
-    // app.get("/api/students/:id", controller.findById);
+    app.get("/api/invitation/:id", controller.findById);
 
     app.post("/api/invitation", controller.create);
+
+    app.put("/api/invitation/:id", controller.updateInvitation);
+
+    app.get("/api/accepted-invitation/:id", controller.getAcceptedInvitation);
 
     //   app.delete("/api/lecturers/delete/:id", controller.remove);
 

@@ -123,6 +123,7 @@ export default function App() {
               <LecturerHomePage />
             </ProtectedRouteLecturer>
         },
+
       ],
     },
 

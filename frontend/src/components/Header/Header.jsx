@@ -7,11 +7,18 @@ import { useState } from 'react';
 import { doLogoutAction } from '../../redux/account/accountSlice';
 import { doGetWorkplace } from '../../redux/workplace/workplaceSlice';
 import { doClearStudentInfo } from '../../redux/account/studentSlice';
+import { useEffect } from 'react';
+import { callGetAcceptedInvitation, callGetLecturerById } from '../../../services/api';
 
 
 const Header = () => {
     const [countNoti, setCountNoti] = useState(1)
     const [workPlace, setWorkPlace] = useState('')
+    const [invitationInfo, setInvitationInfo] = useState([])
+    const [lecturerInfo, setLecturerInfo] = useState([])
+
+
+
     const navigate = useNavigate()
     const userInfo = useSelector(state => state.student.user)
     const userRole = useSelector(state => state.account.user.role)
@@ -61,9 +68,25 @@ const Header = () => {
         </div >
     )
 
+    useEffect(() => {
+        const getAcceptedInvitation = async () => {
+            const res = await callGetAcceptedInvitation(userInfo.student_id)
+            setInvitationInfo(res?.data?.payload?.status)
+            const resLecturer = await callGetLecturerById(res?.data?.payload?.lecturer)
+            setLecturerInfo(resLecturer?.data?.payload)
+        }
+        getAcceptedInvitation()
+    }, [userInfo])
+
     const contentNoti = (
         <div>
-            <p>Giảng viên abc đã chấp nhận yêu cầu hướng dẫn nghiên cứu khoa học của bạn.</p>
+            {invitationInfo === 2 ?
+                <div>
+                    <p>1. Giảng viên <b>{lecturerInfo.lecturer_name} </b> đã chấp nhận yêu cầu hướng dẫn nghiên cứu khoa học của bạn.</p>
+                </div>
+                :
+                <p>hehe</p>
+            }
         </div>
     );
 

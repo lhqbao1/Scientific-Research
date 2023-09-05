@@ -1,31 +1,31 @@
 module.exports = (sequelize, Sequelize, DataTypes) => {
-    const StudentModal = require("./student.models")(sequelize, Sequelize, DataTypes);
+    // const StudentModal = require("./student.models")(sequelize, Sequelize, DataTypes);
 
-    const InvitationModel = sequelize.define(
-        "invitation", // Model name
+    const FileModel = sequelize.define(
+        "file", // Model name
         {
             // Attributes 
-            id: {
+            file_id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
             },
-            student: {
-                type: DataTypes.INTEGER,
+            file_name: {
+                type: DataTypes.TEXT,
                 allowNull: false,
             },
-            lecturer: {
-                type: DataTypes.INTEGER,
+            file_url: {
+                type: DataTypes.BLOB,
                 allowNull: false,
             },
-            status: {
-                type: DataTypes.INTEGER,
+            file_type: {
+                type: DataTypes.TEXT,
                 allowNull: false,
                 defaultValue: "1",
             },
-            topic: {
+            topic_id: {
                 type: DataTypes.INTEGER,
-                allowNull: false,
+                allowNull: true,
             },
         },
         {
@@ -33,21 +33,21 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
             timestamps: false,
             underscored: true,
             freezeTableName: true,
-            tableName: "invitation",
+            tableName: "file",
         }
     );
 
     // Define the association between StudentModel and MajorModel
-    InvitationModel.belongsTo(StudentModal, {
-        foreignKey: "student",
-        as: "studentInfo",
-    });
+    // FileModel.belongsTo(StudentModal, {
+    //     foreignKey: "student",
+    //     as: "studentInfo",
+    // });
 
 
-    // InvitationModel.belongsTo(LecturerModel, {
+    // FileModel.belongsTo(LecturerModel, {
     //     foreignKey: "lecturer",
     //     as: "lecturerInfo",
     // });
 
-    return InvitationModel;
+    return FileModel;
 };

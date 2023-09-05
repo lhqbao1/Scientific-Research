@@ -2,14 +2,14 @@ import { Col, Drawer, message, Row, Table } from "antd"
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Header from "../../components/Header/Header"
-import { callGetLecturerByWorkPlace } from "../../../services/api";
+import { callCreateInvitation, callGetInvitationById, callGetLecturerByWorkPlace, callGetTopicById } from "../../../services/api";
 
 const LecturerCNPM = () => {
 
     const [openDrawer, setOpenDrawer] = useState()
     const [hasLecturer, setHasLecturer] = useState(false)
     const [dataLecturer, setDataLecturer] = useState([])
-    const checkHasLecturer = useSelector(state => state.account.user.status)
+    const student = useSelector(state => state.student.user)
     const workPlace = useSelector(state => state.workplace.place)
     let place = ''
     switch (workPlace) {
@@ -35,9 +35,6 @@ const LecturerCNPM = () => {
     }
 
     useEffect(() => {
-        if (checkHasLecturer === 'active') {
-            setHasLecturer(true)
-        }
         getLecturer()
     }, [workPlace])
 
@@ -96,18 +93,36 @@ const LecturerCNPM = () => {
 
 
 
+    // const getInvitation = async () => {
+
+    // }
+
+
     const showLecturerDetail = (text, record) => {
         setOpenDrawer(true);
         console.log(record)
     }
 
-    const doInviteLecturer = () => {
-        console.log('hehe', checkHasLecturer)
-        if (checkHasLecturer === 'active') {
-            message.error('Bạn đã có giáo viên hướng dẫn cho đề tài !!')
+    const doInviteLecturer = async (text, record) => {
+
+        const topic = await callGetTopicById(student.topic_id)
+        if (topic && topic.data.payload.lecturer_id !== null) {
+            message.error('Bạn đã có giáo viên hướng dẫn cho đề tài!')
         } else {
-            message.success('jeje')
+            // console.log('check recored', record)
+            // console.log('check student', student)
+            const checkInvitation = await callGetInvitationById(student.student_id)
+            if (checkInvitation.data?.payload?.lecturer !== record.lecturer_id) {
+                const invitation = await callCreateInvitation(student.student_id, record.lecturer_id, student.topic_id)
+                message.success(`Gửi lời mời thành công đến giảng viên ${record.lecturer_name}`)
+            } else {
+                message.error(`Bạn đã gửi lời mời cho giảng viên ${record.lecturer_name}! `)
+            }
+
+
         }
+        // console.log('check topic', topic)
+        // console.log(student)
     }
     const onClose = () => {
         setOpenDrawer(false);

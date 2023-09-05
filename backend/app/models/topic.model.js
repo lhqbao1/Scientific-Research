@@ -1,5 +1,4 @@
 module.exports = (sequelize, Sequelize, DataTypes) => {
-  // const StudentModal = require("./student.models")(sequelize, Sequelize, DataTypes);
 
   const TopicModel = sequelize.define(
     "topic", // Model name
@@ -25,6 +24,10 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
       basic_description: {
         type: DataTypes.TEXT,
         allowNull: false,
+      },
+      lecturer_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
     },
     {

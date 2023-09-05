@@ -17,10 +17,14 @@ module.exports = function (app) {
     controller.findAll
   );
 
+  app.get("/api/lecturer/:id", controller.findById);
+  app.get("/api/lecturerTopic/:id", controller.getLecturerTopic);
+
+
   app.get(
     "/api/lecturers/work_place/:work_place_id",
     // [authJwt.verifyToken, authJwt.isAdmin],
-    controller.findByWorkPlace 
+    controller.findByWorkPlace
   );
 
   // app.get("/api/students/:id", controller.findById);

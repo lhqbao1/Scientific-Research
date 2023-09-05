@@ -93,7 +93,13 @@ exports.findById = async (req, res) => {
 
     const student = await StudentModel.findOne({
       where: {
-        user_id: req.params.id,
+        [Op.or]: [
+          {
+            user_id: req.params.id,
+          },
+          { student_id: req.params.id }
+
+        ]
       },
       include: [
         {
@@ -104,12 +110,13 @@ exports.findById = async (req, res) => {
         {
           model: TopicModel,
           as: "topic", // Specify the alias for TopicModel
-          attributes: [
-            "topic_id",
-            "topic_name",
-            "research_area",
-            "basic_description",
-          ],
+          // attributes: [
+          //   "topic_id",
+          //   "topic_name",
+          //   "research_area",
+          //   "basic_description",
+          //   "lecturer_id"
+          // ],
         },
       ],
     });

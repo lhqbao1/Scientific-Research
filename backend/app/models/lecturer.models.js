@@ -1,10 +1,10 @@
 module.exports = (sequelize, Sequelize, DataTypes) => {
-  const WorkplaceModel = require("./workplace.models")(
-    sequelize,
-    Sequelize,
-    DataTypes
-  );
-  const TopicModel = require("./topic.model")(sequelize, Sequelize, DataTypes);
+
+  const WorkplaceModel = require("./workplace.models")(sequelize, Sequelize, DataTypes);
+
+  const InvitationModel = require("./invitation.models")(sequelize, Sequelize, DataTypes);
+
+
   const LecturerModel = sequelize.define(
     "lecturer", // Model name
     {
@@ -34,10 +34,6 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
         type: DataTypes.STRING(11), // Change the data type to match SQL schema
         allowNull: false,
       },
-      // topic_id: {
-      //   type: DataTypes.INTEGER,
-      //   defaultValue: null,
-      // },
     },
     {
       // Options
@@ -54,10 +50,14 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     as: "workplace",
   });
 
-  // LecturerModel.belongsTo(TopicModel, {
-  //   foreignKey: "topic_id",
-  //   as: "topic",
-  // });
+  LecturerModel.hasMany(InvitationModel, {
+    foreignKey: "lecturer",
+    as: "invitation",
+  });
+
+
+
+
 
   return LecturerModel;
 };

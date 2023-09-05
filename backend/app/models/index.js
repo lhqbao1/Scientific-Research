@@ -36,6 +36,8 @@ db.workplace = require("./workplace.models.js")(
 db.topic = require("./topic.model.js")(sequelize, Sequelize, DataTypes);
 db.major = require("./major.model.js")(sequelize, Sequelize, DataTypes);
 db.role = require("./role.model.js")(sequelize, Sequelize, DataTypes);
+db.invitation = require("./invitation.models.js")(sequelize, Sequelize, DataTypes)
+db.file = require("./file.model.js")(sequelize, Sequelize, DataTypes)
 
 db.role.hasMany(db.user);
 db.user.belongsTo(db.role);

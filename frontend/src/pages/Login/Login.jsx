@@ -6,10 +6,11 @@ import { useState } from "react";
 import { setToken, setUserData } from "../../lib/utils";
 import axios from "axios";
 import "./Login.scss";
-import { callGetStudentById, callLogin } from "../../../services/api";
+import { callGetLecturerById, callGetStudentById, callLogin } from "../../../services/api";
 import { doGetAccountAction, doLoginAction } from "../../redux/account/accountSlice";
 import { useDispatch } from "react-redux";
 import { doGetStudentInfoAction } from "../../redux/account/studentSlice";
+import { doGetLecturerInfoAction } from "../../redux/account/lecturerSlice";
 
 
 
@@ -32,11 +33,21 @@ const Login = () => {
 
     const res = await callLogin(data.email, data.password)
     if (res && res.data) {
-      const resStudent = await callGetStudentById(res.data.payload.user.id)
-      if (resStudent) {
-        dispatch(doGetStudentInfoAction(resStudent.data.payload))
+      if (res.data.payload.user.role === 'student') {
+        const resStudent = await callGetStudentById(res.data.payload.user.id)
+        if (resStudent) {
+          dispatch(doGetStudentInfoAction(resStudent.data.payload))
+        }
       }
-      console.log('check student0', resStudent)
+      if (res.data.payload.user.role === 'lecturer') {
+        const resLecturer = await callGetLecturerById(res.data.payload.user.id)
+        if (resLecturer) {
+          dispatch(doGetLecturerInfoAction(resLecturer.data.payload))
+        }
+      }
+
+
+
       setIsLogin(true)
       setTimeout(() => {
         setIsLogin(false)

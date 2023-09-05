@@ -1,7 +1,12 @@
 const db = require("../models");
 const LecturerModel = db.lecturer;
 const WorkplaceModel = db.workplace;
-const TopicModel = db.topic;
+const Invitation = db.invitation;
+const StudentModel = db.student
+const MajorModel = db.major
+const TopicModel = db.topic
+// const MajorModel = db.major;
+
 const { Op } = require("sequelize");
 
 responsePayload = (status, message, payload) => ({
@@ -83,6 +88,128 @@ exports.findByWorkPlace = async (req, res) => {
 
     res.json(
       responsePayload(true, "Tải danh sách giảng viên thành công!", lecturers)
+    );
+  } catch (err) {
+    res.status(500).json(responsePayload(false, err.message, null));
+  }
+};
+
+
+exports.findById = async (req, res) => {
+  try {
+    if (!req.params.id) {
+      return res
+        .status(400)
+        .json(responsePayload(false, "Thiếu id người dùng!", null));
+    }
+
+    const lecturer = await LecturerModel.findOne({
+      where: {
+        [Op.or]: [
+          { user_id: req.params.id },
+          { lecturer_id: req.params.id }
+        ],
+      },
+      // include: [
+      //   // {
+      //   //   model: MajorModel,
+      //   //   as: "major", // Specify the alias for MajorModel
+      //   //   attributes: ["major_id", "major_name"],
+      //   // },
+      //   {
+      //     model: Invitation,
+      //     as: "invitation", // Specify the alias for TopicModel
+      //     include: [
+      //       {
+      //         model: StudentModel,
+      //         as: "studentInfo", // Specify the alias for MajorModel
+      //         include: [
+      //           {
+      //             model: MajorModel,
+      //             as: "major", // Specify the alias for MajorModel
+      //             // attributes: ["major_id", "major_name"],
+      //           },
+      //           {
+      //             model: TopicModel,
+      //             as: "topic", // Specify the alias for TopicModel
+      //           },
+
+      //         ]
+      //       }
+      //     ]
+      //   },
+      // ],
+    });
+
+    if (!lecturer) {
+      return res.json(
+        responsePayload(false, "Người dùng không tồn tại!", null)
+      );
+    }
+
+    res.json(
+      responsePayload(true, "Tải thông tin người dùng thành công!", lecturer)
+    );
+  } catch (err) {
+    res.status(500).json(responsePayload(false, err.message, null));
+  }
+};
+exports.getLecturerTopic = async (req, res) => {
+  try {
+    if (!req.params.id) {
+      return res
+        .status(400)
+        .json(responsePayload(false, "Thiếu id người dùng!", null));
+    }
+
+    const lecturer = await LecturerModel.findOne({
+      where: {
+        [Op.or]: [
+          { user_id: req.params.id },
+          { lecturer_id: req.params.id }
+        ],
+      },
+      include: [
+        // {
+        //   model: MajorModel,
+        //   as: "major", // Specify the alias for MajorModel
+        //   attributes: ["major_id", "major_name"],
+        // },
+        {
+          model: Invitation,
+          as: "invitation", // Specify the alias for TopicModel
+          where: {
+            status: 2
+          },
+          include: [
+            {
+              model: StudentModel,
+              as: "studentInfo", // Specify the alias for MajorModel
+              include: [
+                {
+                  model: MajorModel,
+                  as: "major", // Specify the alias for MajorModel
+                },
+                {
+                  model: TopicModel,
+                  as: "topic", // Specify the alias for TopicModel
+                },
+
+              ]
+            }
+          ]
+        },
+      ],
+    });
+
+    if (!lecturer) {
+      return res.json(
+        responsePayload(false, "Người dùng không tồn tại!", null)
+      );
+    }
+
+    res.json(
+      responsePayload(true, "Tải thông tin người dùng thành công!", lecturer)
     );
   } catch (err) {
     res.status(500).json(responsePayload(false, err.message, null));
