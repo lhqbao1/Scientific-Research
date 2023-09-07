@@ -59,7 +59,7 @@ const LecturerCNPM = () => {
                     cursor: "pointer",
                 }}
             >
-                {text}
+                {record.degree} {text}
             </button>,
         },
         {

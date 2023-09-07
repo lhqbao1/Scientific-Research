@@ -2,10 +2,11 @@ const db = require("../models");
 const LecturerModel = db.lecturer;
 const WorkplaceModel = db.workplace;
 const Invitation = db.invitation;
-const StudentModel = db.student
 const MajorModel = db.major
+const StatusModel = db.status
+const ExplanationModel = db.explanation
 const TopicModel = db.topic
-// const MajorModel = db.major;
+const StudentModel = db.student
 
 const { Op } = require("sequelize");
 
@@ -33,6 +34,16 @@ exports.findAll = async (req, res) => {
       where: query,
       limit,
       offset,
+      include: [
+        {
+          model: WorkplaceModel,
+          as: 'workplace'
+        },
+        // {
+        //   model: TopicModel,
+        //   as: 'topic'
+        // }
+      ]
       // Include options for related models if needed
     });
 
@@ -93,6 +104,51 @@ exports.findByWorkPlace = async (req, res) => {
     res.status(500).json(responsePayload(false, err.message, null));
   }
 };
+
+exports.findByCoucil = async (req, res) => {
+  try {
+    // const { explanationboard } = req.params;
+
+    // if (!explanationboard)
+    //   return res
+    //     .status(400)
+    //     .json(responsePayload(false, "Đường dẫn thiếu explanationboard!", null));
+
+    const lecturers = await LecturerModel.findAll({
+      // where: {
+      //   explanationboard,
+      // },
+      include: [
+        {
+          model: WorkplaceModel,
+          as: "workplace", // Specify the alias
+          attributes: ["workplace_name"],
+        },
+        // {
+        //   model: ExplanationModel,
+        //   as: 'coucil'
+        // }
+      ],
+    });
+
+    if (!lecturers || lecturers.length === 0)
+      return res.json(
+        responsePayload(
+          false,
+          "Không có giảng viên thuộc hội đồng này!",
+          null
+        )
+      );
+
+    res.json(
+      responsePayload(true, "Tải danh sách giảng viên thành công!", lecturers)
+    );
+  } catch (err) {
+    res.status(500).json(responsePayload(false, err.message, null));
+  }
+};
+
+
 
 
 exports.findById = async (req, res) => {
@@ -170,36 +226,18 @@ exports.getLecturerTopic = async (req, res) => {
         ],
       },
       include: [
-        // {
-        //   model: MajorModel,
-        //   as: "major", // Specify the alias for MajorModel
-        //   attributes: ["major_id", "major_name"],
-        // },
         {
-          model: Invitation,
-          as: "invitation", // Specify the alias for TopicModel
-          where: {
-            status: 2
-          },
+          model: TopicModel,
+          as: 'topic',
           include: [
             {
               model: StudentModel,
-              as: "studentInfo", // Specify the alias for MajorModel
-              include: [
-                {
-                  model: MajorModel,
-                  as: "major", // Specify the alias for MajorModel
-                },
-                {
-                  model: TopicModel,
-                  as: "topic", // Specify the alias for TopicModel
-                },
-
-              ]
+              as: 'student'
             }
           ]
-        },
-      ],
+        }
+      ]
+
     });
 
     if (!lecturer) {
@@ -216,53 +254,15 @@ exports.getLecturerTopic = async (req, res) => {
   }
 };
 
-// exports.findById = async (req, res) => {
-//   try {
-//     if (!req.params.id)
-//       return res
-//         .status(400)
-//         .json(responsePayload(false, "Đường dẫn thiêu id sinh viên!", null));
-//     const student = await StudentModel.findOne({
-//       where: {
-//         student_id: req.params.id,
-//       },
-//       include: [
-//         {
-//           model: MajorModel,
-//           as: "major", // Specify the alias for MajorModel
-//           attributes: ["major_id", "major_name"],
-//         },
-//         {
-//           model: TopicModel,
-//           as: "topic", // Specify the alias for TopicModel
-//           attributes: [
-//             "topic_id",
-//             "topic_name",
-//             "research_area",
-//             "basic_description",
-//           ],
-//         },
-//       ],
-//     });
-//     if (!student)
-//       return res.json(
-//         responsePayload(false, "Sinh viên không tồn tại!", student)
-//       );
-//     res.json(
-//       responsePayload(true, "Tải thông tin sinh viên thành công!", student)
-//     );
-//   } catch (err) {
-//     res.status(500).json(responsePayload(false, err.message, null));
-//   }
-// };
 
 exports.create = async (req, res) => {
   try {
-    const { lecturer_name, position, degree, email, work_place_id, topic_id } =
+    const { user_id, lecturer_name, position, degree, email, work_place_id, topic_id } =
       req.body;
 
     // Create the new lecturer record
     const newLecturer = await LecturerModel.create({
+      user_id,
       lecturer_name,
       position,
       degree,

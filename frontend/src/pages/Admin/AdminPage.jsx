@@ -31,6 +31,7 @@ import {
 } from "../../lib/utils";
 import { doGetAccountAction } from "../../redux/account/accountSlice";
 import { useDispatch, useSelector } from "react-redux";
+import ManageExplanation from "./ManageExplanation";
 
 const AdminPage = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -40,14 +41,14 @@ const AdminPage = () => {
   const [openManageAdvisor, setOpenManageAdvisor] = useState(false);
   const [openManageTopic, setOpenManageTopic] = useState(false);
   const [openManageSchedule, setOpenManageSchedule] = useState(false);
+  const [openManageExplanation, setOpenManageExplanation] = useState(false);
+
   const [userInfo, setUserInfo] = useState()
 
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const user = useSelector(state => state.account.user)
-  console.log('check user', user)
-  console.log('token', getToken());
 
   useEffect(() => {
     setUserInfo(user)
@@ -72,7 +73,7 @@ const AdminPage = () => {
     ]),
     getItem("Manage topic", "5", <ContainerOutlined />),
     getItem("Manage council", "sub2", <UsergroupAddOutlined />, [
-      getItem("Censorship council", "6", <RightCircleOutlined />),
+      getItem("Explanation council", "6", <RightCircleOutlined />),
       getItem("Acceptance council", "7", <RightCircleOutlined />),
     ]),
     getItem("Manage schedule", "8", <CalendarOutlined />),
@@ -85,12 +86,14 @@ const AdminPage = () => {
   };
 
   const openItems = (key) => {
+    // console.log('ascsac', key)
     if (key.key === "1") {
       setOpenAD(!openAD);
       setOpenManageStudent(false);
       setOpenManageLecturer(false);
       setOpenManageAdvisor(false);
       setOpenManageTopic(false);
+      setOpenManageExplanation(false)
     }
     if (key.key === "2") {
       setOpenManageStudent(!openManageSetudent);
@@ -98,6 +101,8 @@ const AdminPage = () => {
       setOpenManageLecturer(false);
       setOpenManageAdvisor(false);
       setOpenManageTopic(false);
+      setOpenManageExplanation(false)
+
       setOpenManageSchedule(false);
     }
     if (key.key === "3") {
@@ -105,6 +110,8 @@ const AdminPage = () => {
       setOpenAD(false);
       setOpenManageAdvisor(false);
       setOpenManageTopic(false);
+      setOpenManageExplanation(false)
+
       setOpenManageSchedule(false);
       setOpenManageLecturer(!openManageLecturer);
     }
@@ -112,6 +119,8 @@ const AdminPage = () => {
       setOpenManageStudent(false);
       setOpenAD(false);
       setOpenManageLecturer(false);
+      setOpenManageExplanation(false)
+
       setOpenManageTopic(false);
       setOpenManageSchedule(false);
       setOpenManageAdvisor(!openManageAdvisor);
@@ -121,13 +130,26 @@ const AdminPage = () => {
       setOpenAD(false);
       setOpenManageLecturer(false);
       setOpenManageAdvisor(false);
+      setOpenManageExplanation(false)
+
       setOpenManageSchedule(false);
       setOpenManageTopic(!openManageTopic);
+    }
+    if (key.key === "6") {
+      setOpenManageStudent(false);
+      setOpenAD(false);
+      setOpenManageLecturer(false);
+      setOpenManageAdvisor(false);
+      setOpenManageSchedule(false);
+      setOpenManageTopic(false);
+      setOpenManageExplanation(!openManageExplanation)
     }
     if (key.key === "8") {
       setOpenManageStudent(false);
       setOpenAD(false);
       setOpenManageLecturer(false);
+      setOpenManageExplanation(false)
+
       setOpenManageAdvisor(false);
       setOpenManageTopic(false);
       setOpenManageSchedule(!openManageSchedule);
@@ -135,7 +157,7 @@ const AdminPage = () => {
   };
   return (
     <div>
-      <Layout>
+      <Layout >
         <AdminHeader
           collapsed={collapsed}
           setCollapsed={setCollapsed}
@@ -190,6 +212,12 @@ const AdminPage = () => {
                 {openManageAdvisor === true ? <ManageInstructor /> : ""}
                 {openManageTopic === true ? <ManageTopic /> : ""}
                 {openManageSchedule === true ? <ManageSchedule /> : ""}
+                {openManageExplanation === true ? <ManageExplanation
+                  openManageExplanation={openManageExplanation}
+                  setOpenManageExplanation={setOpenManageExplanation}
+                  openManageLecturer={openManageLecturer}
+                  setOpenManageLecturer={setOpenManageLecturer}
+                /> : ""}
               </div>
             </Content>
           </Layout>

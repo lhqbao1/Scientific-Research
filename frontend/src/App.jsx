@@ -52,14 +52,14 @@ const Layout = () => {
 }
 
 const LayoutLecturer = () => {
-  const lecturer = useSelector(state => state.account.user.role)
+  const lecturer = useSelector(state => state.accountLecturer.user.role)
   return (
     <div>
-      {window.location.pathname === '/lecturer' && lecturer === 'lecturer' && <HeaderLecturer />
+      {lecturer === 'lecturer' && <HeaderLecturer />
       }
 
       <Outlet />
-      {window.location.pathname === '/lecturer' && lecturer === 'lecturer' && <Footer />
+      {lecturer === 'lecturer' && <Footer />
       }
 
     </div>

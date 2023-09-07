@@ -3,7 +3,7 @@ import { Button, Col, Descriptions, Form, Input, message, Row, Upload } from "an
 import { useState } from "react"
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { callGetFileWithTopic, callGetLecturerById, callGetTopicById, callUpdateTopic, callUpdateTopicStatus, callUploadPresentFile } from "../../../../services/api"
+import { callGetFileWithTopic, callGetLecturerById, callGetTopicById, callGetTopicStatus, callUpdateTopic, callUpdateTopicStatus, callUploadPresentFile } from "../../../../services/api"
 import { Document, Page, pdfjs } from 'react-pdf';
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
@@ -32,6 +32,7 @@ const Topic = () => {
     const [fileTypeUpload, setFileTypeUpload] = useState('thesis')
     const [hasFile, setHasFile] = useState(false)
     const [thesisFile, setThesisFile] = useState([])
+    const [status, setStatus] = useState('')
 
     function onDocumentLoadSuccess({ numPages }) {
         setNumPages(numPages);
@@ -49,6 +50,8 @@ const Topic = () => {
         const resLecturer = await callGetLecturerById(resTopicInfo?.data?.payload?.lecturer_id)
         setLecturerInfo(resLecturer?.data?.payload)
     }
+
+
 
     const getFile = async () => {
         const res = await callGetFileWithTopic(topicId)
@@ -274,18 +277,12 @@ const Topic = () => {
         {
             key: '6',
             label: 'Trạng thái',
-            children: 'hehe',
+            children: topicInfo?.status?.status,
             span: '16'
         }
 
 
     ]
-
-
-
-
-
-
 
     return (
         <>

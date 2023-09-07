@@ -21,8 +21,8 @@ const Header = () => {
 
     const navigate = useNavigate()
     const userInfo = useSelector(state => state.student.user)
-    const userRole = useSelector(state => state.account.user.role)
-    const checkHasLecturer = useSelector(state => state.account.user.status)
+    // const userRole = useSelector(state => state.account.user.role)
+    // const checkHasLecturer = useSelector(state => state.account.user.status)
     const dispatch = useDispatch()
 
 
@@ -169,18 +169,10 @@ const Header = () => {
 
                             <div className='header-button' >
                                 <div style={{ marginTop: 0 }} >
-                                    {userRole === 'student' ?
-                                        <Popover placement="bottomLeft" content={contentLecturer}  >
-                                            <LaptopOutlined style={{ marginRight: 6, marginLeft: 2 }} />
-                                            <span>Lecturer</span>
-                                        </Popover>
-                                        :
-                                        <div>
-                                            <BookOutlined style={{ marginRight: 6, marginLeft: 2 }} />
-                                            <span>Topics</span>
-                                        </div>
-                                    }
-
+                                    <Popover placement="bottomLeft" content={contentLecturer}  >
+                                        <LaptopOutlined style={{ marginRight: 6, marginLeft: 2 }} />
+                                        <span>Lecturer</span>
+                                    </Popover>
                                 </div>
                             </div>
                             <div className='header-button' >

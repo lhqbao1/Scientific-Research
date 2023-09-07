@@ -38,6 +38,10 @@ db.major = require("./major.model.js")(sequelize, Sequelize, DataTypes);
 db.role = require("./role.model.js")(sequelize, Sequelize, DataTypes);
 db.invitation = require("./invitation.models.js")(sequelize, Sequelize, DataTypes)
 db.file = require("./file.model.js")(sequelize, Sequelize, DataTypes)
+db.status = require("./status.model.js")(sequelize, Sequelize, DataTypes)
+db.explanation = require("./explanation.model.js")(sequelize, Sequelize, DataTypes)
+
+
 
 db.role.hasMany(db.user);
 db.user.belongsTo(db.role);

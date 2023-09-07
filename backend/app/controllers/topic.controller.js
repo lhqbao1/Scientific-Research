@@ -1,7 +1,8 @@
 const db = require("../models");
 const TopicModel = db.topic;
 const { Op } = require("sequelize");
-const studentModels = require("../models/student.models");
+const StatusModel = db.status
+const StudentModel = db.student
 
 responsePayload = (status, message, payload) => ({
   status,
@@ -135,23 +136,54 @@ exports.findById = async (req, res) => {
       where: {
         topic_id: req.params.id,
       },
-      // include: [
-      //   {
-      //     model: studentModels,
-      //     as: "student", // Specify the alias for MajorModel
-      //     attributes: ["major_id", "major_name"],
-      //   },
-      //   {
-      //     model: TopicModel,
-      //     as: "topic", // Specify the alias for TopicModel
-      //     attributes: [
-      //       "topic_id",
-      //       "topic_name",
-      //       "research_area",
-      //       "basic_description",
-      //     ],
-      //   },
-      // ],
+      include: [
+        {
+          model: StatusModel,
+          as: "status", // Specify the alias for MajorModel
+          // attributes: ["status"],
+        },
+
+      ],
+    });
+
+    if (!topic) {
+      return res.json(
+        responsePayload(false, "Đề tài không tồn tại!", null)
+      );
+    }
+
+    res.json(
+      responsePayload(true, "Tải thông tin đề tài thành công!", topic)
+    );
+  } catch (err) {
+    res.status(500).json(responsePayload(false, err.message, null));
+  }
+};
+
+exports.findWithStudent = async (req, res) => {
+  try {
+    if (!req.params.id) {
+      return res
+        .status(400)
+        .json(responsePayload(false, "Thiếu id topic!", null));
+    }
+
+    const topic = await TopicModel.findAll({
+      where: {
+        lecturer_id: req.params.id,
+      },
+      include: [
+        {
+          model: StatusModel,
+          as: "status", // Specify the alias for MajorModel
+          // attributes: ["status"],
+        },
+        {
+          model: StudentModel,
+          as: 'student'
+        }
+
+      ],
     });
 
     if (!topic) {

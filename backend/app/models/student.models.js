@@ -1,8 +1,7 @@
-// models/student.models.js
 
 module.exports = (sequelize, Sequelize, DataTypes) => {
   const MajorModel = require("./major.model")(sequelize, Sequelize, DataTypes);
-  const TopicModel = require("./topic.model")(sequelize, Sequelize, DataTypes);
+  // const TopicModel = require("./topic.model")(sequelize, Sequelize, DataTypes);
   const StudentModel = sequelize.define(
     "student", // Model name
     {
@@ -43,15 +42,19 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+
     },
+
     {
       // Options
       timestamps: false,
       underscored: true,
       freezeTableName: true,
       tableName: "students",
-    }
+    },
+
   );
+
 
   // Define the association between StudentModel and MajorModel
   StudentModel.belongsTo(MajorModel, {
@@ -59,10 +62,12 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     as: "major",
   });
 
-  StudentModel.belongsTo(TopicModel, {
-    foreignKey: "topic_id",
-    as: "topic",
-  });
+  // StudentModel.belongsTo(TopicModel, {
+  //   foreignKey: "topic_id",
+  //   as: "topic",
+  // });
+
+
 
   return StudentModel;
 };

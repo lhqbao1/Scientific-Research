@@ -11,6 +11,7 @@ import { doGetAccountAction, doLoginAction } from "../../redux/account/accountSl
 import { useDispatch } from "react-redux";
 import { doGetStudentInfoAction } from "../../redux/account/studentSlice";
 import { doGetLecturerInfoAction } from "../../redux/account/lecturerSlice";
+import { doGetAccountLecturerAction } from "../../redux/account/accountLecturerSlice";
 
 
 
@@ -32,27 +33,34 @@ const Login = () => {
   const onFinish = async (data) => {
 
     const res = await callLogin(data.email, data.password)
+    console.log(res.data.payload)
     if (res && res.data) {
       if (res.data.payload.user.role === 'student') {
         const resStudent = await callGetStudentById(res.data.payload.user.id)
         if (resStudent) {
           dispatch(doGetStudentInfoAction(resStudent.data.payload))
         }
+        dispatch(doGetAccountAction(res.data.payload.user))
+
+      }
+      if (res.data.payload.user.role === 'Admin') {
+        dispatch(doLoginAction(res.data.payload.user))
+
+        // dispatch(doGetAccountAction(res.data.payload.user))
+
       }
       if (res.data.payload.user.role === 'lecturer') {
         const resLecturer = await callGetLecturerById(res.data.payload.user.id)
         if (resLecturer) {
           dispatch(doGetLecturerInfoAction(resLecturer.data.payload))
         }
+        dispatch(doGetAccountLecturerAction(res.data.payload.user))
       }
-
-
 
       setIsLogin(true)
       setTimeout(() => {
         setIsLogin(false)
-        dispatch(doLoginAction(res.data.payload.user))
-        dispatch(doGetAccountAction(res.data.payload.user))
+        // dispatch(doLoginAction(res.data.payload.user))
         localStorage.setItem('access_token', res.data.payload.accessToken)
         console.log(res.data.payload.user)
         if (res.data.payload.user.role === 'Admin') {

@@ -6,7 +6,7 @@ const RoleBaseRoute = (props) => {
     //get URL
     const isLecturerRoute = window.location.pathname.startsWith('/lecturer');
     //get user info from redux
-    const user = useSelector(state => state.account.user)
+    const user = useSelector(state => state.accountLecturer.user)
     //check role user
     const userRole = user.role
     if (isLecturerRoute === true && userRole === 'lecturer') {
@@ -17,7 +17,7 @@ const RoleBaseRoute = (props) => {
 }
 
 const ProtectedRouteLecturer = (props) => {
-    const isAuthenticated = useSelector(state => state.account.isAuthenticated)
+    const isAuthenticated = useSelector(state => state.accountLecturer.isAuthenticated)
 
     return (
         <>

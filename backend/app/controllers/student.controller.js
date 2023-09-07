@@ -1,7 +1,7 @@
 const db = require("../models");
 const StudentModel = db.student;
 const MajorModel = db.major;
-const TopicModel = db.topic;
+// const TopicModel = db.topic;
 const { Op } = require("sequelize");
 
 responsePayload = (status, message, payload) => ({
@@ -36,16 +36,16 @@ exports.findAll = async (req, res) => {
           as: "major",
           attributes: ["major_id", "major_name"],
         },
-        {
-          model: TopicModel,
-          as: "topic",
-          attributes: [
-            "topic_id",
-            "topic_name",
-            "research_area",
-            "basic_description",
-          ],
-        },
+        // {
+        //   model: TopicModel,
+        //   as: "topic",
+        //   attributes: [
+        //     "topic_id",
+        //     "topic_name",
+        //     "research_area",
+        //     "basic_description",
+        //   ],
+        // },
       ],
     });
 
@@ -107,17 +107,17 @@ exports.findById = async (req, res) => {
           as: "major", // Specify the alias for MajorModel
           attributes: ["major_id", "major_name"],
         },
-        {
-          model: TopicModel,
-          as: "topic", // Specify the alias for TopicModel
-          // attributes: [
-          //   "topic_id",
-          //   "topic_name",
-          //   "research_area",
-          //   "basic_description",
-          //   "lecturer_id"
-          // ],
-        },
+        // {
+        //   model: TopicModel,
+        //   as: "topic", // Specify the alias for TopicModel
+        //   // attributes: [
+        //   //   "topic_id",
+        //   //   "topic_name",
+        //   //   "research_area",
+        //   //   "basic_description",
+        //   //   "lecturer_id"
+        //   // ],
+        // },
       ],
     });
 
@@ -225,16 +225,16 @@ exports.updateStudent = async (req, res) => {
           as: "major",
           attributes: ["major_id", "major_name"],
         },
-        {
-          model: TopicModel,
-          as: "topic",
-          attributes: [
-            "topic_id",
-            "topic_name",
-            "research_area",
-            "basic_description",
-          ],
-        },
+        // {
+        //   model: TopicModel,
+        //   as: "topic",
+        //   attributes: [
+        //     "topic_id",
+        //     "topic_name",
+        //     "research_area",
+        //     "basic_description",
+        //   ],
+        // },
       ],
     });
 
@@ -244,6 +244,68 @@ exports.updateStudent = async (req, res) => {
         "Cập nhật thông tin người dùng thành công!",
         updatedStudent
       )
+    );
+  } catch (err) {
+    res.status(500).json(responsePayload(false, err.message, null));
+  }
+};
+
+exports.findTopic = async (req, res) => {
+  try {
+    if (!req.params.id) {
+      return res
+        .status(400)
+        .json(responsePayload(false, "Thiếu id giảng viên!", null));
+    }
+
+    const topic = await TopicModel.findAll({
+      // where: {
+      //   lecturer_id: req.params.id
+      // }
+    })
+
+    // if (topic) {
+
+    // }
+
+    // const student = await StudentModel.findOne({
+    //   where: {
+    //     [Op.or]: [
+    //       {
+    //         user_id: req.params.id,
+    //       },
+    //       { student_id: req.params.id }
+
+    //     ]
+    //   },
+    //   include: [
+    //     {
+    //       model: MajorModel,
+    //       as: "major", // Specify the alias for MajorModel
+    //       attributes: ["major_id", "major_name"],
+    //     },
+    //     {
+    //       model: TopicModel,
+    //       as: "topic", // Specify the alias for TopicModel
+    //       // attributes: [
+    //       //   "topic_id",
+    //       //   "topic_name",
+    //       //   "research_area",
+    //       //   "basic_description",
+    //       //   "lecturer_id"
+    //       // ],
+    //     },
+    //   ],
+    // });
+
+    // if (!student) {
+    //   return res.json(
+    //     responsePayload(false, "Người dùng không tồn tại!", null)
+    //   );
+    // }
+
+    res.json(
+      responsePayload(true, "Tải thông tin người dùng thành công!", topic)
     );
   } catch (err) {
     res.status(500).json(responsePayload(false, err.message, null));

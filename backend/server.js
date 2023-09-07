@@ -42,6 +42,10 @@ require("./app/routes/lecturer.routes")(app);
 require("./app/routes/topic.routes")(app);
 require("./app/routes/invitation.routes")(app);
 require("./app/routes/file.routes")(app);
+require("./app/routes/status.routes")(app);
+require("./app/routes/workplace.routes")(app);
+require("./app/routes/explanation.routes")(app);
+
 
 // set port, listen for requests
 const PORT = config.PORT;

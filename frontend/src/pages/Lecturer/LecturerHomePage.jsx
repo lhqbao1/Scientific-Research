@@ -2,7 +2,7 @@ import { Col, Modal, Row } from 'antd'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { callGetLecturerTopic } from '../../../services/api'
+import { callGetTopicStudent } from '../../../services/api'
 import './LecturerHomePage.scss'
 
 const LecturerHomePage = () => {
@@ -10,13 +10,14 @@ const LecturerHomePage = () => {
     const lecturerId = useSelector(state => state?.lecturer?.user?.lecturer_id)
     useEffect(() => {
         const callGetTopic = async () => {
-            const res = await callGetLecturerTopic(lecturerId)
+            const res = await callGetTopicStudent(lecturerId)
+            console.log('check dataasd', res.data.payload)
             if (res.data.payload) {
-                setLecturerTopic(res?.data?.payload?.invitation)
+                setLecturerTopic(res?.data?.payload)
             }
         }
         callGetTopic()
-    }, [lecturerTopic])
+    }, [lecturerId])
 
     return (
         <div style={{ backgroundColor: '#efefef', marginLeft: -8, marginRight: -8, marginTop: 8 }}>
@@ -39,9 +40,11 @@ const LecturerHomePage = () => {
                                         </div>
                                         <div style={{ width: '60%' }}>
                                             <b>Thông tin đề tài: </b>
-                                            <p>Tên đề tài: {item?.studentInfo?.topic?.topic_name}</p>
-                                            <p>Lĩnh vực nghiên cứu: {item?.studentInfo?.topic?.research_area}</p>
-                                            <p>Mô tả đề tài: {item?.studentInfo?.topic?.basic_description}</p>
+                                            <p>Tên đề tài: {item?.topic_name}</p>
+                                            <p>Lĩnh vực nghiên cứu: {item?.research_area}</p>
+                                            <p>Mô tả đề tài: {item?.basic_description}</p>
+                                            <p>Trạng thái: {item?.status?.status}</p>
+
                                         </div>
                                     </div>
                                 )

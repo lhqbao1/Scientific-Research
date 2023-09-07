@@ -1,28 +1,55 @@
-import { Button, Form, Input, Modal } from "antd"
+import { Button, Form, Input, message, Modal, Select, Space } from "antd"
+import { useEffect, useState } from "react";
+import { callCreateLecturer, callCreateUser, callGetWorkPlace } from "../../../services/api";
 
 const AddLecturer = (props) => {
     const { openModalAdd, setOpenModalAdd } = props
     const [form] = Form.useForm();
+    const [workplace, setWorkplace] = useState([])
+    const [workplaceSelected, setWorkplaceSelected] = useState('')
 
 
+
+    useEffect(() => {
+        getWorkPlace()
+    }, [])
 
     const handleCancel = () => {
         setOpenModalAdd(false);
         form.resetFields()
     };
 
-    const onFinish = (values) => {
-        console.log('Success:', values);
-        form.resetFields()
+    const getWorkPlace = async () => {
+        const res = await callGetWorkPlace()
+        console.log(res.data.payload.items)
+        if (res) {
+            setWorkplace(res.data.payload.items)
+        }
+    }
 
+    const onFinish = async (values) => {
+        // form.resetFields()
+        const resUser = await callCreateUser(values.lecturer_email, '123456', 'lecturer')
+        if (resUser) {
+            let userID = resUser?.data?.payload?.id
+            const resLecturer = await callCreateLecturer(userID, values.lecturer_name, values.lecturer_position, values.lecturer_title, values.lecturer_email, workplaceSelected)
+            console.log(resLecturer)
+        }
+        form.resetFields()
+        message.success('Tạo tài khoản giảng viên thành công')
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
+
+    const handleChange = (value) => {
+        setWorkplaceSelected(value)
+        // console.log(`selected ${value}`);
+    };
     return (
         <div>
             <Modal
-                title="Add lecturer"
+                title="Thêm giảng viên"
                 open={openModalAdd}
                 onCancel={handleCancel}
                 maskClosable={false}
@@ -40,17 +67,19 @@ const AddLecturer = (props) => {
                     }}
                     style={{
                         maxWidth: 800,
+                        marginTop: 30
                     }}
                     initialValues={{
                         remember: true,
                     }}
+
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
                 >
                     <Form.Item
-                        label="Student ID"
-                        name="studentID"
+                        label="Tên giảng viên"
+                        name="lecturer_name"
                         rules={[
                             {
                                 required: true,
@@ -61,8 +90,8 @@ const AddLecturer = (props) => {
                         <Input />
                     </Form.Item>
                     <Form.Item
-                        label="Student name"
-                        name="studentName"
+                        label="Chức danh"
+                        name="lecturer_title"
                         rules={[
                             {
                                 required: true,
@@ -73,8 +102,8 @@ const AddLecturer = (props) => {
                         <Input />
                     </Form.Item>
                     <Form.Item
-                        label="Student major"
-                        name="studentMajor"
+                        label="Chức vụ"
+                        name="lecturer_position"
                         rules={[
                             {
                                 required: true,
@@ -85,8 +114,8 @@ const AddLecturer = (props) => {
                         <Input />
                     </Form.Item>
                     <Form.Item
-                        label="Student grade"
-                        name="studentGrade"
+                        label="Email"
+                        name="lecturer_email"
                         rules={[
                             {
                                 required: true,
@@ -97,8 +126,8 @@ const AddLecturer = (props) => {
                         <Input />
                     </Form.Item>
                     <Form.Item
-                        label="Student email"
-                        name="studentEmail"
+                        label="Nơi công tác"
+                        name="lecturer_workplace"
                         rules={[
                             {
                                 required: true,
@@ -106,16 +135,33 @@ const AddLecturer = (props) => {
                             },
                         ]}
                     >
-                        <Input />
+                        <Select
+                            // defaultValue="lucy"
+                            style={{
+                                width: 235,
+                            }}
+                            onChange={handleChange}
+                        >
+                            {workplace.map((item, index) => {
+                                return (
+                                    <Option value={item.id} label={item.id}>
+                                        <Space>
+
+                                            {item.workplace_name}
+                                        </Space>
+                                    </Option>
+                                )
+                            })}
+                        </Select>
                     </Form.Item>
                     <Form.Item
                         wrapperCol={{
-                            offset: 20,
+                            offset: 17,
                             span: 16,
                         }}
                     >
                         <Button type="primary" htmlType="submit">
-                            Submit
+                            Thêm giảng viên
                         </Button>
                     </Form.Item>
                 </Form>

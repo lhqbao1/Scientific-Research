@@ -9,7 +9,7 @@ import { doGetWorkplace } from '../../redux/workplace/workplaceSlice';
 import { doClearStudentInfo } from '../../redux/account/studentSlice';
 import { doClearLecturerInfo } from '../../redux/account/lecturerSlice';
 import { useEffect } from 'react';
-import { callGetInvitationById, callGetStudentById, callGetTopicById, callUpdateInvitation, callUpdateTopic } from '../../../services/api';
+import { callGetInvitationById, callGetTopicById, callUpdateInvitation, callUpdateTopic } from '../../../services/api';
 
 
 const HeaderLecturer = () => {
@@ -21,7 +21,7 @@ const HeaderLecturer = () => {
     const [invitationInfo, setInvitationInfo] = useState([])
     const navigate = useNavigate()
     const lecturerInfo = useSelector(state => state.lecturer.user)
-    const userID = useSelector(state => state.account.user.id)
+    // const userID = useSelector(state => state.account.user.id)
     const dispatch = useDispatch()
 
 

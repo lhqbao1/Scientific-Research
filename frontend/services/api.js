@@ -3,6 +3,9 @@ import axios from 'axios';
 export const callLogin = (email, password) => {
     return axios.post('http://localhost:8080/api/auth/signin', { email, password })
 }
+export const callCreateUser = (email, password, role) => {
+    return axios.post(`http://localhost:8080/api/auth/signup`, { email, password, role })
+}
 
 export const callGetUser = (id) => {
     return axios.get(`http://localhost:8080/api/users/${id}`)
@@ -15,6 +18,10 @@ export const callGetStudents = () => {
 
 export const searchStudent = (keyword) => {
     return axios.get(`http://localhost:8080/api/students?keyword=${keyword}`)
+}
+
+export const callSearchLecturer = (keyword) => {
+    return axios.get(`http://localhost:8080/api/lecturers?keyword=${keyword}`)
 }
 
 export const callAddTopic = (topic_name, research_area, basic_description) => {
@@ -71,4 +78,40 @@ export const callUploadPresentFile = (file_name, file_url, file_type, topic_id) 
 
 export const callGetFileWithTopic = (topic_id) => {
     return axios.get(`http://localhost:8080/api/file/${topic_id}`)
+}
+
+export const callGetTopicStatus = (status_id) => {
+    return axios.get(`http://localhost:8080/api/status/${status_id}`)
+}
+
+export const callGetLecturer = () => {
+    return axios.get(`http://localhost:8080/api/lecturers`)
+}
+
+export const callGetWorkPlace = () => {
+    return axios.get(`http://localhost:8080/api/workplaces/`)
+}
+
+export const callCreateLecturer = (user_id, lecturer_name, position, degree, email, work_place_id) => {
+    return axios.post(`http://localhost:8080/api/lecturers`, { user_id, lecturer_name, position, degree, email, work_place_id })
+}
+
+export const callGetCoucil = () => {
+    return axios.get(`http://localhost:8080/api/explanations/`)
+}
+
+export const callSetLecturerCoucil = (id, explanationboard, explanationrole) => {
+    return axios.put(`http://localhost:8080/api/lecturers/${id}`, { explanationboard, explanationrole })
+}
+
+export const callGetLecturerByCoucil = (explanationboard) => {
+    return axios.get(`http://localhost:8080/api/lecturers/coucil/${explanationboard}`)
+}
+
+export const callCreateCoucil = (name, phase) => {
+    return axios.post(`http://localhost:8080/api/explanation/`, { name, phase })
+}
+
+export const callGetTopicStudent = (id) => {
+    return axios.get(`http://localhost:8080/api/topic/students/${id}`)
 }

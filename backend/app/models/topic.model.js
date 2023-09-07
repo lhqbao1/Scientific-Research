@@ -1,4 +1,7 @@
 module.exports = (sequelize, Sequelize, DataTypes) => {
+  const StatusModel = require("./status.model")(sequelize, Sequelize, DataTypes);
+  const StudentModel = require("./student.models")(sequelize, Sequelize, DataTypes);
+  // const StudentModel = require("./student.models");
 
   const TopicModel = sequelize.define(
     "topic", // Model name
@@ -45,10 +48,19 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
   );
 
   // // Define the association between StudentModel and MajorModel
-  // TopicModel.belongsTo(StudentModal, {
-  //   foreignKey: "topic_id",
-  //   as: "student",
-  // });
+  TopicModel.belongsTo(StatusModel, {
+    foreignKey: "topic_status",
+    as: "status",
+  });
+
+  TopicModel.hasMany(StudentModel, {
+    foreignKey: "topic_id",
+    as: "student",
+  });
+
+
+
+
 
   return TopicModel;
 };

@@ -2,7 +2,7 @@ import { Descriptions, Drawer } from "antd";
 
 const StudentDetail = (props) => {
     const { openDetail, setOpenDetail, detailStudent } = props
-    console.log('check detail student', detailStudent)
+    // console.log('check detail student', detailStudent)
     const onClose = () => {
         setOpenDetail(false);
     };

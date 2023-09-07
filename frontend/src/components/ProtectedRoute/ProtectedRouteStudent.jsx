@@ -5,7 +5,6 @@ import Loading from "../Loading/Loading";
 const RoleBaseRoute = (props) => {
     //get URL
     const isStudentRoute = window.location.pathname.startsWith('/student');
-    console.log(window.location.pathname)
     //get user info from redux
     const user = useSelector(state => state.account.user)
     //check role user

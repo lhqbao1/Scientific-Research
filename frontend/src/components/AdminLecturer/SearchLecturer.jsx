@@ -1,7 +1,8 @@
 import { Button, Col, Form, Input, Row } from "antd"
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom"
-import { SearchLecturer } from "../../../services/api";
+import { callSearchLecturer } from "../../../services/api";
+// import { SearchLecturer } from "../../../services/api";
 
 const SearchLecturer = (props) => {
 
@@ -10,13 +11,17 @@ const SearchLecturer = (props) => {
 
     const onFinish = async (dataSearch) => {
         let keyword = '';
-        keyword = dataSearch?.student_name
-        const res = await SearchLecturer(`${keyword}`)
-        setUserSearch(res.data.payload.items)
-        if (res && res.data) {
-            props.handleSearch(res.data.payload)
+        keyword = dataSearch?.lecturer_name
+        console.log(keyword)
+        if (keyword) {
+            const res = await callSearchLecturer(`${keyword}`)
+            setUserSearch(res.data.payload.items)
+            if (res && res.data) {
+                props.handleSearch(res.data.payload)
 
+            }
         }
+
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -38,47 +43,18 @@ const SearchLecturer = (props) => {
                 <Row>
                     <Col span={7} >
                         <Form.Item
-                            label="Find student (student name or grade or student ID)"
-                            name="student_name"
-                            rules={[
-                                {
-                                    message: 'Please input your username!',
-                                },
-                            ]}
+                            label="Find lecturer (lecturer name)"
+                            name="lecturer_name"
+
                         >
                             <Input />
                         </Form.Item>
                     </Col>
                     <Col span={3}></Col>
-                    {/* <Col span={6}>
-                        <Form.Item
-                            label="Student grade"
-                            name="studentGrade"
-                            rules={[
-                                {
-                                    message: 'Please input your username!',
-                                },
-                            ]}
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col> */}
+
                     <Col span={3}></Col>
 
-                    {/* <Col span={6}>
-                        <Form.Item
-                            label="Student ID"
-                            name="studentID"
-                            rules={[
-                                {
-                                    message: 'Please input your password!',
-                                },
-                            ]}
-                        >
-                            <Input />
-                        </Form.Item>
 
-                    </Col> */}
                 </Row>
 
 

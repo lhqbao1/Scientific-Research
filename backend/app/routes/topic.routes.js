@@ -19,6 +19,8 @@ module.exports = function (app) {
 
   app.get("/api/topic/:id", controller.findById);
 
+  app.get("/api/topic/students/:id", controller.findWithStudent);
+
 
   // app.get("/api/students/:id", controller.findById);
 

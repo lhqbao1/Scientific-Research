@@ -5,7 +5,7 @@ import StudentDetail from "../../components/Admin/StudentDetail";
 import AddStudent from "../../components/Admin/AddStudent";
 import ImportStudent from "../../components/Admin/ImportStudent";
 import * as XLSX from 'xlsx'
-import { callGetStudents, searchStudent } from "../../../services/api";
+import { searchStudent } from "../../../services/api";
 
 const ManageStudent = () => {
 

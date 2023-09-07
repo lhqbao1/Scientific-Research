@@ -1,11 +1,13 @@
-import { Button, Col, Drawer, Row, Table } from "antd";
-import SearchStudent from "../../components/Admin/SearchStudent"
+import { Button, Col, Drawer, Form, Input, message, Modal, Row, Select, Space, Table } from "antd";
 import { useEffect, useState } from "react";
 import StudentDetail from "../../components/Admin/StudentDetail";
 import AddStudent from "../../components/Admin/AddStudent";
 import ImportStudent from "../../components/Admin/ImportStudent";
 import * as XLSX from 'xlsx'
-import { callGetStudents, searchStudent } from "../../../services/api";
+import { callGetCoucil, callGetLecturer, callSetLecturerCoucil } from "../../../services/api";
+import SearchLecturer from "../../components/AdminLecturer/SearchLecturer";
+import AddLecturer from "../../components/AdminLecturer/AddLecturer";
+// import SearchLecturer from "../../components/AdminLecturer/SearchLecturer";
 
 const ManageLecturer = () => {
 
@@ -16,25 +18,13 @@ const ManageLecturer = () => {
     const [detailStudent, setDetailStudent] = useState()
     const [openModalAdd, setOpenModalAdd] = useState(false)
     const [openModalImport, setOpenModalImport] = useState(false)
-    const [dataStudent, setDataStudent] = useState()
-
+    const [dataLecturer, setDataLecturer] = useState([])
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [listCoucil, setListCoucil] = useState([])
+    const [choosedLecturer, setChoosedLecturer] = useState()
+    const [form] = Form.useForm();
 
     const columns = [
-        {
-            title: 'Mã cán bộ',
-            dataIndex: 'lecturer_code',
-            render: (text, record) => <button
-                onClick={() => showDetailStudent(text, record)}
-                style={{
-                    backgroundColor: "white",
-                    border: 'none',
-                    color: '#1677ff',
-                    cursor: "pointer"
-                }}
-            >
-                {text}
-            </button>,
-        },
         {
             title: 'Họ và tên',
             dataIndex: 'lecturer_name',
@@ -42,33 +32,51 @@ const ManageLecturer = () => {
         },
         {
             title: 'Chức danh',
-            dataIndex: 'lecturer_title',
-            // sorter: {
-            //     compare: (a, b) => a.english - b.english,
-            //     multiple: 1,
-            // },
+            dataIndex: 'degree',
+
         },
         {
             title: 'Chức vụ',
-            dataIndex: 'lecturer_position',
-            // sorter: {
-            //     compare: (a, b) => a.english - b.english,
-            //     multiple: 1,
-            // },
+            dataIndex: 'position',
+
         },
         {
             title: 'Email',
-            dataIndex: 'lecturer_email',
+            dataIndex: 'email',
             sorter: true
         },
 
         {
             title: 'Nơi công tác',
-            dataIndex: 'lecturer_employment',
-            // sorter: {
-            //     compare: (a, b) => a.math - b.math,
-            //     multiple: 2,
-            // },
+            dataIndex: 'work_place_id',
+            render: (text, record) => <button
+                onClick={() => console.log(record)}
+                style={{
+                    backgroundColor: "white",
+                    border: 'none',
+                    color: '#1677ff',
+                    cursor: "pointer"
+                }}
+            >
+                {record?.workplace?.workplace_name}
+            </button>,
+        },
+        {
+            title: 'Hành động',
+            dataIndex: 'action',
+            render: (text, record) => <button
+                onClick={() => handleGetAction(record)}
+                style={{
+                    backgroundColor: "#1677ff",
+                    border: 'none',
+                    color: 'white',
+                    cursor: "pointer",
+                    padding: 10,
+                    borderRadius: 7
+                }}
+            >
+                Phân công
+            </button>,
         },
 
 
@@ -86,24 +94,37 @@ const ManageLecturer = () => {
 
     ];
 
-    const getStudents = async () => {
-        let keyword = ''
-        const res = await searchStudent(`${keyword}`)
+    const getLecturer = async () => {
+        const res = await callGetLecturer()
         console.log(res.data)
         if (res && res.data) {
-            setDataStudent(res.data.payload.items)
+            setDataLecturer(res?.data?.payload?.items)
         }
-        // console.log('hehehe', res.data.payload)
+    }
+
+    const handleGetAction = (record) => {
+
+        setIsModalOpen(true)
+        setChoosedLecturer(record)
     }
 
     const handleSearch = (dataProps) => {
-        setDataStudent(dataProps.items)
+        setDataLecturer(dataProps.items)
         setTotal(dataProps.meta.totalItems)
     }
 
     useEffect(() => {
-        getStudents()
+        getLecturer()
+        getListCoucil()
     }, [])
+
+
+    const getListCoucil = async () => {
+        const res = await callGetCoucil()
+        if (res) {
+            setListCoucil(res.data.payload.items)
+        }
+    }
 
     const onChange = (pagination, filters, sorter, extra) => {
         console.log('params', pagination, filters, sorter, extra);
@@ -115,18 +136,38 @@ const ManageLecturer = () => {
         }
     };
 
-    const showDetailStudent = (text, record) => {
-        // console.log(record, text)
-        setOpenDetail(true);
-        setDetailStudent(record)
-    }
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+        form.resetFields()
+    };
+
+    const onFinish = async (values) => {
+        if (choosedLecturer.explanationboard === values.coucil) {
+            message.error('Giảng viên đã nằm trong hội đồng này!')
+        } else {
+            const res = await callSetLecturerCoucil(choosedLecturer.lecturer_id, values.coucil, values.role)
+            if (res) {
+                console.log(res)
+                form.resetFields()
+                message.success('Phân công thành công')
+            }
+        }
+
+    };
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
 
 
     const onClose = () => {
         setOpenDetail(false);
     };
 
-    const openAddStudent = () => {
+    const openAddLecturer = () => {
         setOpenModalAdd(true)
     }
 
@@ -141,14 +182,23 @@ const ManageLecturer = () => {
         //XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
         XLSX.writeFile(workbook, "DataStudent.csv");
     }
+
+    const handleChooseCoucil = (value) => {
+        // setWorkplaceSelected(value)
+        console.log(`selected ${value}`);
+    };
+    const handleChooseRole = (value) => {
+        console.log(`selected ${value}`);
+    }
+
     const tableUserHeader = () => {
         return (
             <div style={{ marginLeft: 23 }}>
                 <Row>
                     <Col span={18}></Col>
                     <Col span={6} style={{ display: "flex", gap: 15 }}>
-                        <Button type="primary" style={{ minWidth: 80 }} onClick={openAddStudent}>Add</Button>
-                        <AddStudent
+                        <Button type="primary" style={{ minWidth: 80 }} onClick={openAddLecturer}>Add</Button>
+                        <AddLecturer
                             openModalAdd={openModalAdd}
                             setOpenModalAdd={setOpenModalAdd}
                         />
@@ -168,12 +218,12 @@ const ManageLecturer = () => {
 
     return (
         <div>
-            <SearchStudent
+            <SearchLecturer
                 handleSearch={handleSearch}
             />
             <Table
                 title={tableUserHeader}
-                dataSource={data}
+                dataSource={dataLecturer}
                 columns={columns}
                 onChange={onChange}
                 bordered={true}
@@ -186,6 +236,110 @@ const ManageLecturer = () => {
                     showTotal: (total, range) => { return (<div>{range[0]} - {range[1]} on {total} results</div>) }
                 }}
             />
+            <Modal
+                title="Phân công công việc"
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                cancelButtonProps={{ style: { display: 'none' } }}
+                okButtonProps={{ style: { display: 'none' } }}
+            >
+                <Form
+                    form={form}
+                    name="basic"
+                    labelCol={{
+                        span: 4,
+                    }}
+                    wrapperCol={{
+                        span: 24,
+                    }}
+                    style={{
+                        maxWidth: 600,
+                        marginTop: 20
+                    }}
+                    initialValues={{
+                        remember: true,
+                    }}
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    autoComplete="off"
+                >
+                    <Form.Item
+                        label="Hội đồng"
+                        name="coucil"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Please choose coucil!',
+                            },
+                        ]}
+                    >
+                        <Select
+                            // defaultValue="lucy"
+                            style={{
+                                width: 373,
+                            }}
+                            onChange={handleChooseCoucil}
+                        >
+                            {listCoucil.map((item, index) => {
+                                return (
+                                    <Option value={item.id} label={item.id}>
+                                        <Space>
+                                            {item.name}({item.phase})
+                                        </Space>
+                                    </Option>
+                                )
+                            })}
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Vai trò"
+                        name="role"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng chọn vai trò của giảng viên trong hội đồng',
+                            },
+                        ]}
+                    >
+                        <Select
+                            // defaultValue="lucy"
+                            style={{
+                                width: 200,
+                            }}
+                            onChange={handleChooseRole}
+                            options={[
+                                {
+                                    value: 'Chủ tịch hội đồng',
+                                    label: 'Chủ tịch hội đồng',
+                                },
+                                {
+                                    value: 'Thư ký',
+                                    label: 'Thư ký',
+                                },
+                                {
+                                    value: 'Ủy viên',
+                                    label: 'Ủy viên',
+                                },
+
+                            ]}
+                        />
+                    </Form.Item>
+
+
+                    <Form.Item
+                        wrapperCol={{
+                            offset: 19,
+                            span: 16,
+                        }}
+                    >
+                        <Button type="primary" htmlType="submit">
+                            Phân công
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </Modal>
             <StudentDetail
                 openDetail={openDetail}
                 setOpenDetail={setOpenDetail}
