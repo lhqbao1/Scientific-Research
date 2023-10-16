@@ -4,6 +4,7 @@ const StudentModal = db.student
 const MajorModel = db.major;
 const TopicModel = db.topic;
 const LecturerModel = db.lecturer
+const FileModel = db.file
 const { Op } = require("sequelize");
 
 responsePayload = (status, message, payload) => ({
@@ -73,13 +74,23 @@ exports.findById = async (req, res) => {
                             as: "major", // Specify the alias for MajorModel
                             // attributes: ["major_id", "major_name"],
                         },
-                        {
-                            model: TopicModel,
-                            as: "topic", // Specify the alias for TopicModel
-                        },
 
                     ]
                 },
+                {
+                    model: TopicModel,
+                    as: 'topicInfo',
+                    include: [
+                        {
+                            model: FileModel,
+                            as: 'file'
+                        }
+                    ]
+                },
+                {
+                    model: LecturerModel,
+                    as: 'lecturerInfo'
+                }
             ],
         });
 
@@ -96,6 +107,70 @@ exports.findById = async (req, res) => {
         res.status(500).json(responsePayload(false, err.message, null));
     }
 };
+
+exports.getRefusedInvitation
+    = async (req, res) => {
+        try {
+            if (!req.params.id) {
+                return res
+                    .status(400)
+                    .json(responsePayload(false, "Thiếu id invitation!", null));
+            }
+
+
+            const invitation = await InvitationModel.findAll({
+                where: {
+                    status: 14,
+                    [Op.or]: [
+                        { student: req.params.id },
+                        { lecturer: req.params.id }
+                    ],
+
+
+                },
+                include: [
+                    {
+                        model: StudentModal,
+                        as: "studentInfo", // Specify the alias for MajorModel
+                        include: [
+                            {
+                                model: MajorModel,
+                                as: "major", // Specify the alias for MajorModel
+                                // attributes: ["major_id", "major_name"],
+                            },
+
+                        ]
+                    },
+                    {
+                        model: TopicModel,
+                        as: 'topicInfo',
+                        // include: [
+                        //     {
+                        //         model: FileModel,
+                        //         as: 'file'
+                        //     }
+                        // ]
+                    },
+                    {
+                        model: LecturerModel,
+                        as: 'lecturerInfo'
+                    }
+                ],
+            });
+
+            if (!invitation) {
+                return res.json(
+                    responsePayload(false, "Đề tài không tồn tại!", null)
+                );
+            }
+
+            res.json(
+                responsePayload(true, "Tải thông tin đề tài thành công!", invitation)
+            );
+        } catch (err) {
+            res.status(500).json(responsePayload(false, err.message, null));
+        }
+    };
 
 
 
@@ -118,28 +193,28 @@ exports.getAcceptedInvitation = async (req, res) => {
 
 
             },
-            include: [
-                {
-                    model: StudentModal,
-                    as: "studentInfo", // Specify the alias for MajorModel
-                    include: [
-                        {
-                            model: MajorModel,
-                            as: "major", // Specify the alias for MajorModel
-                            // attributes: ["major_id", "major_name"],
-                        },
-                        {
-                            model: TopicModel,
-                            as: "topic", // Specify the alias for TopicModel
-                        },
+            // include: [
+            //     {
+            //         model: StudentModal,
+            //         as: "studentInfo", // Specify the alias for MajorModel
+            //         include: [
+            //             {
+            //                 model: MajorModel,
+            //                 as: "major", // Specify the alias for MajorModel
+            //                 // attributes: ["major_id", "major_name"],
+            //             },
+            //             {
+            //                 model: TopicModel,
+            //                 as: "topic", // Specify the alias for TopicModel
+            //             },
 
-                    ]
-                },
-                // {
-                //     model: LecturerModel,
-                //     as: 'lecturerInfo'
-                // }
-            ],
+            //         ]
+            //     },
+            //     // {
+            //     //     model: LecturerModel,
+            //     //     as: 'lecturerInfo'
+            //     // }
+            // ],
         });
 
         if (!invitation) {

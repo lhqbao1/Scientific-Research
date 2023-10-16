@@ -25,6 +25,8 @@ module.exports = function (app) {
 
     app.get("/api/invitation/:id", controller.findById);
 
+    app.get("/api/refused-invitation/:id", controller.getRefusedInvitation);
+
     app.post("/api/invitation", controller.create);
 
     app.put("/api/invitation/:id", controller.updateInvitation);

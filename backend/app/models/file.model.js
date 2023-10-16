@@ -21,7 +21,7 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
             file_type: {
                 type: DataTypes.TEXT,
                 allowNull: false,
-                defaultValue: "1",
+                // defaultValue: "1",
             },
             topic_id: {
                 type: DataTypes.INTEGER,

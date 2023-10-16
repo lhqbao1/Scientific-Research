@@ -1,11 +1,11 @@
 
 module.exports = (sequelize, Sequelize, DataTypes) => {
-    const StudentModal = require("./student.models")(sequelize, Sequelize, DataTypes);
+    // const StudentModal = require("./student.models")(sequelize, Sequelize, DataTypes);
     const TopicModel = require("./topic.model")(sequelize, Sequelize, DataTypes);
-    // const LecturerModel = require("./lecturer.models")(sequelize, Sequelize, DataTypes);
+    const StatusModel = require("./status.model")(sequelize, Sequelize, DataTypes);
 
-    const InvitationModel = sequelize.define(
-        "invitation", // Model name
+    const InvitationAcceptanceModel = sequelize.define(
+        "invitationacceptance", // Model name
         {
             // Attributes 
             id: {
@@ -13,7 +13,7 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
                 primaryKey: true,
                 autoIncrement: true,
             },
-            student: {
+            advisor: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
@@ -30,27 +30,36 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
+            type: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
         },
         {
             // Options
             timestamps: false,
             underscored: true,
             freezeTableName: true,
-            tableName: "invitation",
+            tableName: "invitationacceptance",
         }
     );
 
     // Define the association between StudentModel and MajorModel
-    InvitationModel.belongsTo(StudentModal, {
-        foreignKey: "student",
-        as: "studentInfo",
-    });
+    // InvitationModel.belongsTo(StudentModal, {
+    //     foreignKey: "student",
+    //     as: "studentInfo",
+    // });
 
 
-    InvitationModel.belongsTo(TopicModel, {
+    InvitationAcceptanceModel.belongsTo(TopicModel, {
         foreignKey: "topic",
         as: "topicInfo",
     });
 
-    return InvitationModel;
+    InvitationAcceptanceModel.belongsTo(StatusModel, {
+        foreignKey: "status",
+        as: "statusInfo",
+    });
+
+    return InvitationAcceptanceModel;
 };

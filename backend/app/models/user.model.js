@@ -10,11 +10,23 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
       },
       email: {
         type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
       },
       password: {
         type: DataTypes.STRING,
-        default: '123456'
+        default: '123456',
+        allowNull: false
       },
+      role: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      sub_role: {
+        type: DataTypes.TEXT,
+        allowNull: true
+      },
+
     },
     {
       // Options
@@ -22,8 +34,12 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
       underscrored: true,
       createdAt: "createdAt",
       updatedAt: "updatedAt",
+      freezeTableName: true,
+      tableName: "users",
     }
   );
+
+
 
   return User;
 };

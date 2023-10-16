@@ -1,5 +1,8 @@
 module.exports = (sequelize, Sequelize, DataTypes) => {
     const LecturerModel = require("./lecturer.models")(sequelize, Sequelize, DataTypes);
+    const TopicModel = require("./topic.model")(sequelize, Sequelize, DataTypes);
+    const CommissionerModel = require("./commissioner.model")(sequelize, Sequelize, DataTypes);
+    const CounterModel = require("./counter.model")(sequelize, Sequelize, DataTypes);
 
     const ExplanationModel = sequelize.define(
         "explanation", // Model name
@@ -18,6 +21,34 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
                 type: DataTypes.TEXT,
                 allowNull: false,
             },
+            type: {
+                type: DataTypes.TEXT,
+                allowNull: false,
+            },
+            president: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+            },
+            secretary: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+            },
+            couter: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+            },
+            commissioner1: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+            },
+            commissioner2: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+            },
+            commissioner3: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+            },
 
         },
         {
@@ -30,16 +61,36 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     );
 
     // Define the association between StudentModel and MajorModel
-    ExplanationModel.hasMany(LecturerModel, {
+    ExplanationModel.hasMany(TopicModel, {
         foreignKey: "explanationboard",
-        as: "lecturer",
+        as: "topicInfo",
+    });
+    ExplanationModel.hasMany(TopicModel, {
+        foreignKey: "acceptanceboard",
+        as: "topicAccInfo",
+    });
+    ExplanationModel.belongsTo(LecturerModel, {
+        foreignKey: "president",
+        as: "presidentInfo",
+    });
+    ExplanationModel.belongsTo(LecturerModel, {
+        foreignKey: "secretary",
+        as: "secretaryInfo",
+    });
+    ExplanationModel.belongsTo(LecturerModel, {
+        foreignKey: "couter",
+        as: "couterInfo",
     });
 
 
-    // ExplanationModel.belongsTo(LecturerModel, {
-    //     foreignKey: "lecturer",
-    //     as: "lecturerInfo",
-    // });
+    ExplanationModel.hasMany(CommissionerModel, {
+        foreignKey: "board",
+        as: "commissioners",
+    });
+    ExplanationModel.hasMany(CounterModel, {
+        foreignKey: "board",
+        as: "counter",
+    });
 
     return ExplanationModel;
 };

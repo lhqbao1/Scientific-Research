@@ -1,6 +1,7 @@
 const db = require("../models");
 const StudentModel = db.student;
 const MajorModel = db.major;
+const TopicModel = db.topic
 // const TopicModel = db.topic;
 const { Op } = require("sequelize");
 
@@ -23,7 +24,7 @@ exports.findAll = async (req, res) => {
       ];
     }
     const page = req.query.page ? parseInt(req.query.page) - 1 : 0;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 1000;
     const offset = page * limit;
 
     const students = await StudentModel.findAll({
@@ -36,16 +37,10 @@ exports.findAll = async (req, res) => {
           as: "major",
           attributes: ["major_id", "major_name"],
         },
-        // {
-        //   model: TopicModel,
-        //   as: "topic",
-        //   attributes: [
-        //     "topic_id",
-        //     "topic_name",
-        //     "research_area",
-        //     "basic_description",
-        //   ],
-        // },
+        {
+          model: TopicModel,
+          as: "topicInfo",
+        },
       ],
     });
 
@@ -53,23 +48,24 @@ exports.findAll = async (req, res) => {
     const totalPage = Math.ceil(total / limit);
 
     // Transform the students array to remove the parent "major" and "topic" properties
-    const transformedStudents = students.map((student) => ({
-      student_id: student.student_id,
-      user_id: student.user_id,
-      student_code: student.student_code,
-      email: student.email,
-      student_name: student.student_name,
-      grade: student.grade,
-      major_id: student.major_id,
-      topic_id: student.topic_id,
-      topic_name: student.topic ? student.topic.topic_name : null,
-      major_name: student.major ? student.major.major_name : null,
-      // Add other properties as needed...
-    }));
+    // const transformedStudents = students.map((student) => ({
+    //   student_id: student.student_id,
+    //   user_id: student.user_id,
+    //   student_code: student.student_code,
+    //   email: student.email,
+    //   student_class: student.student_class,
+    //   student_name: student.student_name,
+    //   grade: student.grade,
+    //   major_id: student.major_id,
+    //   topic_id: student.topic_id,
+    //   topic_name: student.topic ? student.topic.topic_name : null,
+    //   major_name: student.major ? student.major.major_name : null,
+    //   // Add other properties as needed...
+    // }));
 
     res.json(
       responsePayload(true, "Tải danh sách sinh viên thành công!", {
-        items: transformedStudents,
+        items: students,
         meta: {
           currentPage: page + 1,
           limit,
@@ -135,31 +131,87 @@ exports.findById = async (req, res) => {
   }
 };
 
+exports.findByCode = async (req, res) => {
+  try {
+    if (!req.params.code) {
+      return res
+        .status(400)
+        .json(responsePayload(false, "Thiếu id người dùng!", null));
+    }
+
+    const student = await StudentModel.findOne({
+      where: {
+        student_code: req.params.code
+        // [Op.or]: [
+        //   {
+        //     user_id: req.params.id,
+        //   },
+        //   { student_id: req.params.id }
+
+        // ]
+      },
+      include: [
+        {
+          model: MajorModel,
+          as: "major", // Specify the alias for MajorModel
+          attributes: ["major_id", "major_name"],
+        },
+      ],
+    });
+
+    if (!student) {
+      return res.json(
+        responsePayload(false, "Người dùng không tồn tại!", null)
+      );
+    }
+
+    res.json(
+      responsePayload(true, "Tải thông tin người dùng thành công!", student)
+    );
+  } catch (err) {
+    res.status(500).json(responsePayload(false, err.message, null));
+  }
+};
+
 exports.create = async (req, res) => {
   try {
-    const {
-      user_id,
-      student_code,
-      email,
-      student_name,
-      grade,
-      major_id,
-      topic_id,
-    } = req.body;
+    // const {
+    //   user_id,
+    //   student_name,
+    //   student_class,
+    //   student_code,
+    //   email,
+    //   grade,
+    //   major_id,
+    //   topic_id,
+    //   role
+    // } = req.body;
     // Create the new student record
-    const newStudent = await StudentModel.create({
-      user_id,
-      student_code,
-      email,
-      student_name,
-      grade,
-      major_id,
-      topic_id,
-    });
+    const newStudent = await StudentModel.create(req.body);
 
     res.json(responsePayload(true, "Tạo sinh viên thành công!", newStudent));
   } catch (err) {
     res.status(500).json(responsePayload(false, err.message, null));
+  }
+};
+
+exports.bulkCreate = async (req, res) => {
+  try {
+
+    // Create the new student record
+    // const existStudent = await StudentModel.findAll()
+    // if(existStudent) {
+    //   existStudent.map(item => {
+
+    //   })
+    // }
+    const newStudent = await StudentModel.bulkCreate(
+      req.body
+    );
+
+    res.json(responsePayload(true, "Tạo sinh viên thành công!", newStudent));
+  } catch (err) {
+    res.status(500).json(responsePayload(false, err, null, req.body));
   }
 };
 

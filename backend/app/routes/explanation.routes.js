@@ -14,7 +14,12 @@ module.exports = function (app) {
 
 
     app.get("/api/explanations/", controller.findAll);
+    app.get("/api/acceptances/", controller.findAllAcc);
+
     app.post("/api/explanation/", controller.create)
+    app.get("/api/explanation/:id", controller.findById);
+    app.put("/api/explanation/:id", controller.updateBoard);
+    // app.put("/api/explanation/secretary/:id", controller.setSecretary);
 
 
 

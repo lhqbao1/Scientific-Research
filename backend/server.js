@@ -45,6 +45,20 @@ require("./app/routes/file.routes")(app);
 require("./app/routes/status.routes")(app);
 require("./app/routes/workplace.routes")(app);
 require("./app/routes/explanation.routes")(app);
+require("./app/routes/transcript.routes")(app);
+require("./app/routes/major.routes")(app);
+require("./app/routes/invitationacceptance.routes")(app);
+require("./app/routes/commissioner.routes")(app);
+require("./app/routes/email.routes")(app);
+require("./app/routes/notification.routes")(app);
+require("./app/routes/editexplanation.routes")(app);
+require("./app/routes/counter.routes")(app);
+require("./app/routes/transcriptcomment.routes")(app);
+require("./app/routes/transcriptscore.routes")(app);
+
+// require("./app/routes/email.routes")(app);
+
+
 
 
 // set port, listen for requests
@@ -54,31 +68,31 @@ app.listen(PORT, () => {
 });
 
 async function initial() {
-  await Role.findOrCreate({
-    where: { id: "82705bfa-cede-46e4-afca-5541b6068671" },
-    defaults: {
-      name: "Admin",
-      roleCode: "admin",
-    },
-  });
+  // await Role.findOrCreate({
+  //   where: { id: "4" },
+  //   defaults: {
+  //     name: "Admin",
+  //     roleCode: "admin",
+  //   },
+  // });
 
-  await Role.findOrCreate({
-    where: { id: "37dcfe4d-c74a-469b-9a25-61961e568ce1" },
-    defaults: {
-      name: "User",
-      roleCode: "user",
-    },
-  });
+  // await Role.findOrCreate({
+  //   where: { id: "2" },
+  //   defaults: {
+  //     name: "User",
+  //     roleCode: "user",
+  //   },
+  // });
 
-  await User.findOrCreate({
-    where: { email: "admin@gmail.com" },
-    defaults: {
-      email: "admin@gmail.com",
-      firstName: "Admin",
-      lastName: "Project",
-      password: bcrypt.hashSync("123456", 8),
-      phonenumber: "123456789",
-      roleId: "82705bfa-cede-46e4-afca-5541b6068671",
-    },
-  });
+  // await User.findOrCreate({
+  //   where: { email: "admin@gmail.com" },
+  //   defaults: {
+  //     email: "admin@gmail.com",
+  //     firstName: "Admin",
+  //     lastName: "Project",
+  //     password: bcrypt.hashSync("123456", 8),
+  //     phonenumber: "123456789",
+  //     role: "4",
+  //   },
+  // });
 }

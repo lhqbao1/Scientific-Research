@@ -1,9 +1,6 @@
 module.exports = (sequelize, Sequelize, DataTypes) => {
 
   const WorkplaceModel = require("./workplace.models")(sequelize, Sequelize, DataTypes);
-  // const ExplanationModel = require("./explanation.model")(sequelize, Sequelize, DataTypes);
-  const TopicModel = require("./topic.model")(sequelize, Sequelize, DataTypes);
-
   const InvitationModel = require("./invitation.models")(sequelize, Sequelize, DataTypes);
 
 
@@ -64,20 +61,16 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     as: "workplace",
   });
 
-  // LecturerModel.belongsTo(ExplanationModel, {
-  //   foreignKey: "explanationboard", // Use the correct foreign key
-  //   as: "coucil",
-  // });
+
 
   LecturerModel.hasMany(InvitationModel, {
     foreignKey: "lecturer",
     as: "invitation",
   });
 
-  LecturerModel.hasMany(TopicModel, {
-    foreignKey: "lecturer_id",
-    as: "topic",
-  });
+
+
+
 
 
 

@@ -1,10 +1,6 @@
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
-const Product = db.product;
-const Invoice = db.invoice;
-const InvoiceItem = db.invoiceItem;
-const SavedProduct = db.savedProduct;
 const { Op } = require("sequelize");
 
 responsePayload = (status, message, payload) => ({
@@ -15,33 +11,19 @@ responsePayload = (status, message, payload) => ({
 
 exports.findAll = async (req, res) => {
   try {
-    let query = {};
-    if (req.query.status) query.status = req.query.status;
-    if (req.query.keyword)
-      query[Op.or] = [
-        { firstname: { [Op.like]: `%${req.query.keyword}%` } },
-        { lastname: { [Op.like]: `%${req.query.keyword}%` } },
-      ];
-    const page = req.query.page ? parseInt(req.query.page) - 1 : 0;
-    const limit = parseInt(req.query.limit) || 10;
-    const offset = page * limit;
-    const total = await User.findAll({ where: query });
-    const totalPage = Math.ceil(total.length / limit);
     const users = await User.findAll({
-      where: query,
-      include: Role,
-      limit,
-      offset,
+      include: [
+        {
+          model: Role,
+          as: 'roleInfo'
+        }
+      ],
+
     });
     res.json(
       responsePayload(true, "Tải danh sách người dùng thành công!", {
         items: users,
-        meta: {
-          currentPage: page + 1,
-          limit,
-          totalItems: total.length,
-          totalPage,
-        },
+
       })
     );
   } catch (err) {
@@ -60,12 +42,8 @@ exports.findById = async (req, res) => {
         [Op.and]: [{ status: "active", id: req.params.id }],
       },
       include: [
-        {
-          model: Invoice,
-          include: [{ model: InvoiceItem, include: Product }, { model: User }],
-        },
+
         { model: Role },
-        { model: SavedProduct, include: [{ model: Product }] },
       ],
     });
     if (!user)

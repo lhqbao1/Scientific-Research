@@ -42,6 +42,14 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      student_class: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      role: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
 
     },
 

@@ -18,5 +18,11 @@ module.exports = function (app) {
     controller.signup
   );
 
+  app.post(
+    "/api/auth/bulksignup",
+    // [verifySignUp.checkDuplicateEmail, verifySignUp.checkRolesExisted],
+    controller.bulkSignup
+  );
+
   app.post("/api/auth/signin", [verifySignIn.validatior], controller.signin);
 };

@@ -22,7 +22,13 @@ module.exports = function (app) {
 
   app.get("/api/students/:id", controller.findById);
 
-  app.post("/api/students", controller.create);
+  app.get("/api/student-code/:code", controller.findByCode);
+
+
+  app.post("/api/student/", controller.create);
+
+  app.post("/api/students/", controller.bulkCreate);
+
 
   app.delete("/api/students/delete/:id", controller.remove);
 

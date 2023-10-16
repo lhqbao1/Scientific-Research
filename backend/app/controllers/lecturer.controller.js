@@ -1,13 +1,13 @@
 const db = require("../models");
 const LecturerModel = db.lecturer;
 const WorkplaceModel = db.workplace;
-const Invitation = db.invitation;
-const MajorModel = db.major
-const StatusModel = db.status
 const ExplanationModel = db.explanation
 const TopicModel = db.topic
+const FileModel = db.file
 const StudentModel = db.student
-
+const StatusModel = db.status
+const CommissionerModel = db.commissioner
+const CounterModel = db.counter
 const { Op } = require("sequelize");
 
 responsePayload = (status, message, payload) => ({
@@ -162,40 +162,109 @@ exports.findById = async (req, res) => {
     const lecturer = await LecturerModel.findOne({
       where: {
         [Op.or]: [
-          { user_id: req.params.id },
+          // { user_id: req.params.id },
           { lecturer_id: req.params.id }
         ],
       },
-      // include: [
-      //   // {
-      //   //   model: MajorModel,
-      //   //   as: "major", // Specify the alias for MajorModel
-      //   //   attributes: ["major_id", "major_name"],
-      //   // },
-      //   {
-      //     model: Invitation,
-      //     as: "invitation", // Specify the alias for TopicModel
-      //     include: [
-      //       {
-      //         model: StudentModel,
-      //         as: "studentInfo", // Specify the alias for MajorModel
-      //         include: [
-      //           {
-      //             model: MajorModel,
-      //             as: "major", // Specify the alias for MajorModel
-      //             // attributes: ["major_id", "major_name"],
-      //           },
-      //           {
-      //             model: TopicModel,
-      //             as: "topic", // Specify the alias for TopicModel
-      //           },
 
-      //         ]
-      //       }
-      //     ]
-      //   },
-      // ],
+
+
+      include: [
+        {
+          model: ExplanationModel,
+          as: 'presidentInfo',
+          include: [
+            {
+              model: TopicModel,
+              as: 'topicInfo',
+              include: [
+                {
+                  model: FileModel,
+                  as: 'file'
+                },
+                {
+                  model: StudentModel,
+                  as: 'student'
+                },
+                {
+                  model: StatusModel,
+                  as: 'status'
+                },
+                {
+                  model: LecturerModel,
+                  as: 'lecturerInfo'
+                },
+              ]
+            }
+          ]
+        },
+        {
+          model: ExplanationModel,
+          as: 'secretaryInfo',
+          include: [
+            {
+              model: TopicModel,
+              as: 'topicInfo',
+              include: [
+                {
+                  model: FileModel,
+                  as: 'file'
+                },
+                {
+                  model: StudentModel,
+                  as: 'student'
+                },
+                {
+                  model: StatusModel,
+                  as: 'status'
+                },
+                {
+                  model: LecturerModel,
+                  as: 'lecturerInfo'
+                },
+              ]
+            }
+          ]
+        },
+      ]
+
     });
+    const commissioner = await CommissionerModel.findAll({
+      where: {
+        lecturer: req.params.id
+      },
+      include: [
+        {
+          model: ExplanationModel,
+          as: 'boardInfo',
+          attributes: ["id"],
+          include: [
+            {
+              model: TopicModel,
+              as: 'topicInfo',
+              include: [
+                {
+                  model: FileModel,
+                  as: 'file'
+                },
+                {
+                  model: StudentModel,
+                  as: 'student'
+                },
+                {
+                  model: StatusModel,
+                  as: 'status'
+                },
+                {
+                  model: LecturerModel,
+                  as: 'lecturerInfo'
+                },
+              ]
+            }
+          ]
+        }
+      ]
+    })
 
     if (!lecturer) {
       return res.json(
@@ -204,13 +273,184 @@ exports.findById = async (req, res) => {
     }
 
     res.json(
-      responsePayload(true, "Tải thông tin người dùng thành công!", lecturer)
+      responsePayload(true, "Tải danh sách giảng viên thành công!", {
+        lecturer,
+        commissioner
+      })
     );
   } catch (err) {
     res.status(500).json(responsePayload(false, err.message, null));
   }
 };
-exports.getLecturerTopic = async (req, res) => {
+
+exports.findByIdAcc = async (req, res) => {
+  try {
+    if (!req.params.id) {
+      return res
+        .status(400)
+        .json(responsePayload(false, "Thiếu id người dùng!", null));
+    }
+
+    const lecturer = await LecturerModel.findOne({
+      where: {
+        // { user_id: req.params.id },
+        lecturer_id: req.params.id
+
+      },
+
+      include: [
+        {
+          model: ExplanationModel,
+          as: 'presidentInfo',
+          include: [
+            {
+              model: TopicModel,
+              as: 'topicAccInfo',
+              include: [
+                {
+                  model: FileModel,
+                  as: 'file'
+                },
+                {
+                  model: StudentModel,
+                  as: 'student'
+                },
+                {
+                  model: StatusModel,
+                  as: 'status'
+                },
+                {
+                  model: LecturerModel,
+                  as: 'lecturerInfo'
+                },
+              ]
+            }
+          ]
+        },
+        {
+          model: ExplanationModel,
+          as: 'secretaryInfo',
+          include: [
+            {
+              model: TopicModel,
+              as: 'topicAccInfo',
+              include: [
+                {
+                  model: FileModel,
+                  as: 'file'
+                },
+                {
+                  model: StudentModel,
+                  as: 'student'
+                },
+                {
+                  model: StatusModel,
+                  as: 'status'
+                },
+                {
+                  model: LecturerModel,
+                  as: 'lecturerInfo'
+                },
+              ]
+            }
+          ]
+        },
+      ]
+    });
+
+    const commissioner = await CommissionerModel.findAll({
+      where: {
+        lecturer: req.params.id
+      },
+      include: [
+        {
+          model: ExplanationModel,
+          as: 'boardInfo',
+          // attributes: ["id"],
+          include: [
+            {
+              model: TopicModel,
+              as: 'topicAccInfo',
+              include: [
+                {
+                  model: FileModel,
+                  as: 'file'
+                },
+                {
+                  model: StudentModel,
+                  as: 'student'
+                },
+                {
+                  model: StatusModel,
+                  as: 'status'
+                },
+                {
+                  model: LecturerModel,
+                  as: 'lecturerInfo'
+                },
+              ]
+            }
+          ]
+        }
+      ]
+    })
+
+    const counter = await CounterModel.findAll({
+      where: {
+        lecturer: req.params.id
+      },
+      include: [
+        {
+          model: ExplanationModel,
+          as: 'boardInfo',
+          // attributes: ["id"],
+          include: [
+            {
+              model: TopicModel,
+              as: 'topicAccInfo',
+              include: [
+                {
+                  model: FileModel,
+                  as: 'file'
+                },
+                {
+                  model: StudentModel,
+                  as: 'student'
+                },
+                {
+                  model: StatusModel,
+                  as: 'status'
+                },
+                {
+                  model: LecturerModel,
+                  as: 'lecturerInfo'
+                },
+              ]
+            }
+          ]
+        }
+      ]
+    })
+
+    if (!lecturer) {
+      return res.json(
+        responsePayload(false, "Người dùng không tồn tại!", null)
+      );
+    }
+
+    res.json(
+      responsePayload(true, "Tải danh sách giảng viên thành công!", {
+        lecturer,
+        commissioner,
+        counter
+      })
+    );
+  } catch (err) {
+    res.status(500).json(responsePayload(false, err.message, null));
+  }
+};
+
+exports.findByIdLogin = async (req, res) => {
   try {
     if (!req.params.id) {
       return res
@@ -222,21 +462,11 @@ exports.getLecturerTopic = async (req, res) => {
       where: {
         [Op.or]: [
           { user_id: req.params.id },
-          { lecturer_id: req.params.id }
+          // { lecturer_id: req.params.id }
         ],
       },
-      include: [
-        {
-          model: TopicModel,
-          as: 'topic',
-          include: [
-            {
-              model: StudentModel,
-              as: 'student'
-            }
-          ]
-        }
-      ]
+
+
 
     });
 

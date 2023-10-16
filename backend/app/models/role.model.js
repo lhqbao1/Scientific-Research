@@ -4,16 +4,18 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
     {
       // Attributes
       id: {
-        type: DataTypes.UUID,
-        defaultValue: Sequelize.UUIDV4,
+        type: DataTypes.INTEGER(11),
         primaryKey: true,
+        autoIncrement: true,
       },
       name: {
         type: DataTypes.STRING,
+        allowNull: false
       },
       roleCode: {
         type: DataTypes.STRING,
-        default: "student",
+        allowNull: false
+        // default: "student",
       },
     },
     {
@@ -22,6 +24,8 @@ module.exports = (sequelize, Sequelize, DataTypes) => {
       underscrored: true,
       createdAt: "createdAt",
       updatedAt: "updatedAt",
+      freezeTableName: true,
+      tableName: "roles",
     }
   );
 

@@ -18,7 +18,11 @@ module.exports = function (app) {
   );
 
   app.get("/api/lecturer/:id", controller.findById);
-  app.get("/api/lecturerTopic/:id", controller.getLecturerTopic);
+
+  app.get("/api/lecturer-acc/:id", controller.findByIdAcc);
+
+  // app.get("/api/lecturerTopic/:id", controller.getLecturerTopic);
+  app.get("/api/lecturer-login/:id", controller.findByIdLogin);
 
 
   app.get(
