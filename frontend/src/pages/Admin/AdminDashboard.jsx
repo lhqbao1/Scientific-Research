@@ -9,14 +9,15 @@ import { useState } from 'react'
 const AdminDashboard = () => {
     const [amoutStudent, setAmoutStudent] = useState()
 
-    const getStudentAmount = async () => {
-        const res = await callGetStudents()
-        if (res && res.data) {
-            setAmoutStudent(res.data.payload.items.length)
-        }
-    }
+
 
     useEffect(() => {
+        const getStudentAmount = async () => {
+            const res = await callGetStudents()
+            if (res && res.data) {
+                setAmoutStudent(res.data.payload.items.length)
+            }
+        }
         getStudentAmount()
     }, [])
     return (

@@ -6,12 +6,13 @@ import { useState } from "react";
 import { setToken, setUserData } from "../../lib/utils";
 import axios from "axios";
 import "./Login.scss";
-import { callGetLecturerById, callGetStudentById, callLogin } from "../../../services/api";
+import { callGetLecturerById, callGetLecturerLogin, callGetStudentById, callLogin } from "../../../services/api";
 import { doGetAccountAction, doLoginAction } from "../../redux/account/accountSlice";
 import { useDispatch } from "react-redux";
 import { doGetStudentInfoAction } from "../../redux/account/studentSlice";
 import { doGetLecturerInfoAction } from "../../redux/account/lecturerSlice";
 import { doGetAccountLecturerAction } from "../../redux/account/accountLecturerSlice";
+import { doGetAccountAdminAction } from "../../redux/account/accountAdminSlide";
 
 
 
@@ -33,8 +34,8 @@ const Login = () => {
   const onFinish = async (data) => {
 
     const res = await callLogin(data.email, data.password)
-    console.log(res.data.payload)
     if (res && res.data) {
+      form.resetFields()
       if (res.data.payload.user.role === 'student') {
         const resStudent = await callGetStudentById(res.data.payload.user.id)
         if (resStudent) {
@@ -43,14 +44,13 @@ const Login = () => {
         dispatch(doGetAccountAction(res.data.payload.user))
 
       }
-      if (res.data.payload.user.role === 'Admin') {
-        dispatch(doLoginAction(res.data.payload.user))
 
-        // dispatch(doGetAccountAction(res.data.payload.user))
-
+      if (res.data.payload.user.role === 'admin') {
+        dispatch(doGetAccountAdminAction(res.data.payload.user))
       }
+
       if (res.data.payload.user.role === 'lecturer') {
-        const resLecturer = await callGetLecturerById(res.data.payload.user.id)
+        const resLecturer = await callGetLecturerLogin(res.data.payload.user.id)
         if (resLecturer) {
           dispatch(doGetLecturerInfoAction(resLecturer.data.payload))
         }
@@ -62,8 +62,8 @@ const Login = () => {
         setIsLogin(false)
         // dispatch(doLoginAction(res.data.payload.user))
         localStorage.setItem('access_token', res.data.payload.accessToken)
-        console.log(res.data.payload.user)
-        if (res.data.payload.user.role === 'Admin') {
+        // console.log(res.data.payload.user)
+        if (res.data.payload.user.role === 'admin') {
           navigate("/admin")
         }
         if (res.data.payload.user.role === 'student') {
@@ -74,6 +74,11 @@ const Login = () => {
         }
       }, 1000)
 
+    } else {
+      notification.error({
+        message: 'Email hoặc mật khẩu không đúng',
+        duration: 2
+      })
     }
   };
   return (
@@ -81,8 +86,9 @@ const Login = () => {
       <div className="content">
         <div className="left-content"></div>
         <div className="right-content">
-          <h2 className="header"> User Login</h2>
+          <h2 className="header">Đăng nhập</h2>
           <Form
+            form={form}
             name="basic"
             labelCol={{
               span: 24,
@@ -102,13 +108,13 @@ const Login = () => {
             autoComplete="off"
           >
             <Form.Item
-              label="email"
+              label="Email"
               name="email"
               className="input"
               rules={[
                 {
                   required: true,
-                  message: "Please input your email!",
+                  message: "Bạn chưa nhập email!",
                 },
               ]}
               style={{
@@ -119,13 +125,13 @@ const Login = () => {
             </Form.Item>
 
             <Form.Item
-              label="password"
+              label="Mật khẩu"
               name="password"
               className="input"
               rules={[
                 {
                   required: true,
-                  message: "Please input your password!",
+                  message: "Bạn chưa nhập mật khẩu!",
                 },
               ]}
               style={{
@@ -146,7 +152,7 @@ const Login = () => {
                 htmlType="submit"
                 loading={isLogin}
               >
-                LOGIN
+                Đăng nhập
               </Button>
             </Form.Item>
           </Form>

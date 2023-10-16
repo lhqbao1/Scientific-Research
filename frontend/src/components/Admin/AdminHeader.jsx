@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { doLogoutAction } from '../../redux/account/accountSlice';
 import { useNavigate } from 'react-router-dom';
+import { doClearAdminInfo } from '../../redux/account/accountAdminSlide';
 
 
 
@@ -36,11 +37,9 @@ const AdminHeader = (props) => {
     ];
 
     const handleLogout = () => {
-        console.log('logout')
         dispatch(doLogoutAction())
-        message.success('Log out success')
-        navigate('/student')
-
+        dispatch(doClearAdminInfo())
+        navigate('/login')
     }
 
 

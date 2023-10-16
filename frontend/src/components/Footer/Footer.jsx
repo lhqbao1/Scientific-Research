@@ -1,6 +1,8 @@
 const Footer = () => {
     return (
-        <>Footer</>
+        <div style={{ backgroundColor: 'red' }}>
+            <div >footer</div>
+        </div>
     )
 }
 

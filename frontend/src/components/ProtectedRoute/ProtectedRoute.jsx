@@ -7,10 +7,10 @@ const RoleBaseRoute = (props) => {
     const isAdminRoute = window.location.pathname.startsWith('/admin');
     console.log(window.location.pathname)
     //get user info from redux
-    const user = useSelector(state => state.account.user)
+    const admin = useSelector(state => state.accountAdmin.user)
     //check role user
-    const userRole = user.role
-    if (isAdminRoute === true && userRole === 'Admin') {
+    const userRole = admin.role
+    if (isAdminRoute === true && userRole === 'admin') {
         return (<>{props.children}</>)
     } else {
         return (<Loading />)
@@ -18,7 +18,7 @@ const RoleBaseRoute = (props) => {
 }
 
 const ProtectedRoute = (props) => {
-    const isAuthenticated = useSelector(state => state.account.isAuthenticated)
+    const isAuthenticated = useSelector(state => state.accountAdmin.isAuthenticated)
 
     return (
         <>

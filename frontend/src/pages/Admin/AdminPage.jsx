@@ -12,7 +12,7 @@ import {
   RightCircleOutlined,
   CalendarOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, Button, Col, Layout, Menu, Row, Slider } from "antd";
+import { Breadcrumb, Button, Col, Layout, Menu, Row, Slider, notification } from "antd";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AdminDashboard from "./AdminDashboard";
@@ -32,6 +32,8 @@ import {
 import { doGetAccountAction } from "../../redux/account/accountSlice";
 import { useDispatch, useSelector } from "react-redux";
 import ManageExplanation from "./ManageExplanation";
+import ManageAcceptance from "./ManageAcceptance";
+import ManageDocument from "./ManageDocument";
 
 const AdminPage = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -42,17 +44,25 @@ const AdminPage = () => {
   const [openManageTopic, setOpenManageTopic] = useState(false);
   const [openManageSchedule, setOpenManageSchedule] = useState(false);
   const [openManageExplanation, setOpenManageExplanation] = useState(false);
+  const [openManageAcceptance, setOpenManageAcceptance] = useState(false);
+  const [openManageDocument, setOpenManageDocument] = useState(false);
 
   const [userInfo, setUserInfo] = useState()
 
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const user = useSelector(state => state.account.user)
+  const user = useSelector(state => state.accountAdmin.user)
+  const subRole = useSelector(state => state.accountAdmin.user.subRole)
 
   useEffect(() => {
     setUserInfo(user)
-  }, [])
+    if (subRole === 'admin-ctu') {
+      setOpenAD(false)
+      setOpenManageTopic(true)
+    }
+    // console.log(subRole)
+  }, [subRole])
 
 
   function getItem(label, key, icon, children, type) {
@@ -64,20 +74,44 @@ const AdminPage = () => {
       type,
     };
   }
-  const items = [
-    getItem("Dashboard", "1", <PieChartOutlined />),
-    getItem("Manage user", "sub1", <UserAddOutlined />, [
-      getItem("Student", "2", <RightCircleOutlined />),
-      getItem("Lecturer", "3", <RightCircleOutlined />),
-      getItem("Advisors", "4", <RightCircleOutlined />),
-    ]),
-    getItem("Manage topic", "5", <ContainerOutlined />),
-    getItem("Manage council", "sub2", <UsergroupAddOutlined />, [
-      getItem("Explanation council", "6", <RightCircleOutlined />),
-      getItem("Acceptance council", "7", <RightCircleOutlined />),
-    ]),
-    getItem("Manage schedule", "8", <CalendarOutlined />),
-  ];
+  let items = []
+  if (subRole === 'admin-ctu') {
+    items = [
+      // getItem("Dashboard", "1", <PieChartOutlined />),
+      // getItem("Manage user", "sub1", <UserAddOutlined />, [
+      //   getItem("Student", "2", <RightCircleOutlined />),
+      //   getItem("Lecturer", "3", <RightCircleOutlined />),
+      //   getItem("Advisors", "4", <RightCircleOutlined />),
+      // ]),
+      getItem("Manage topic", "5", <ContainerOutlined />),
+      // getItem("Manage council", "sub2", <UsergroupAddOutlined />, [
+      //   getItem("Explanation council", "6", <RightCircleOutlined />),
+      //   getItem("Acceptance council", "7", <RightCircleOutlined />),
+      // ]),
+      getItem("Manage schedule", "8", <CalendarOutlined />),
+      // getItem("Quản lí biểu mẫu", "9", <CalendarOutlined />),
+
+    ];
+  }
+  if (subRole === 'admin') {
+    items = [
+      getItem("Dashboard", "1", <PieChartOutlined />),
+      getItem("Manage user", "sub1", <UserAddOutlined />, [
+        getItem("Student", "2", <RightCircleOutlined />),
+        getItem("Lecturer", "3", <RightCircleOutlined />),
+        getItem("Advisors", "4", <RightCircleOutlined />),
+      ]),
+      getItem("Manage topic", "5", <ContainerOutlined />),
+      getItem("Manage council", "sub2", <UsergroupAddOutlined />, [
+        getItem("Explanation council", "6", <RightCircleOutlined />),
+        getItem("Acceptance council", "7", <RightCircleOutlined />),
+      ]),
+      // getItem("Manage schedule", "8", <CalendarOutlined />),
+      getItem("Quản lí biểu mẫu", "9", <CalendarOutlined />),
+
+    ];
+  }
+
 
   const onSignOut = () => {
     clearCookie();
@@ -94,6 +128,8 @@ const AdminPage = () => {
       setOpenManageAdvisor(false);
       setOpenManageTopic(false);
       setOpenManageExplanation(false)
+      setOpenManageAcceptance(false)
+      setOpenManageDocument(false)
     }
     if (key.key === "2") {
       setOpenManageStudent(!openManageSetudent);
@@ -102,7 +138,8 @@ const AdminPage = () => {
       setOpenManageAdvisor(false);
       setOpenManageTopic(false);
       setOpenManageExplanation(false)
-
+      setOpenManageAcceptance(false)
+      setOpenManageDocument(false)
       setOpenManageSchedule(false);
     }
     if (key.key === "3") {
@@ -111,7 +148,8 @@ const AdminPage = () => {
       setOpenManageAdvisor(false);
       setOpenManageTopic(false);
       setOpenManageExplanation(false)
-
+      setOpenManageAcceptance(false)
+      setOpenManageDocument(false)
       setOpenManageSchedule(false);
       setOpenManageLecturer(!openManageLecturer);
     }
@@ -120,7 +158,8 @@ const AdminPage = () => {
       setOpenAD(false);
       setOpenManageLecturer(false);
       setOpenManageExplanation(false)
-
+      setOpenManageAcceptance(false)
+      setOpenManageDocument(false)
       setOpenManageTopic(false);
       setOpenManageSchedule(false);
       setOpenManageAdvisor(!openManageAdvisor);
@@ -131,7 +170,8 @@ const AdminPage = () => {
       setOpenManageLecturer(false);
       setOpenManageAdvisor(false);
       setOpenManageExplanation(false)
-
+      setOpenManageAcceptance(false)
+      setOpenManageDocument(false)
       setOpenManageSchedule(false);
       setOpenManageTopic(!openManageTopic);
     }
@@ -143,16 +183,44 @@ const AdminPage = () => {
       setOpenManageSchedule(false);
       setOpenManageTopic(false);
       setOpenManageExplanation(!openManageExplanation)
+      setOpenManageAcceptance(false)
+      setOpenManageDocument(false)
+
+    }
+    if (key.key === "7") {
+      setOpenManageStudent(false);
+      setOpenAD(false);
+      setOpenManageLecturer(false);
+      setOpenManageAdvisor(false);
+      setOpenManageSchedule(false);
+      setOpenManageTopic(false);
+      setOpenManageExplanation(false)
+      setOpenManageAcceptance(!openManageAcceptance)
+      setOpenManageDocument(false)
+
     }
     if (key.key === "8") {
       setOpenManageStudent(false);
       setOpenAD(false);
       setOpenManageLecturer(false);
       setOpenManageExplanation(false)
-
+      setOpenManageAcceptance(false)
+      setOpenManageDocument(false)
       setOpenManageAdvisor(false);
       setOpenManageTopic(false);
       setOpenManageSchedule(!openManageSchedule);
+    }
+    if (key.key === "9") {
+      setOpenManageStudent(false);
+      setOpenAD(false);
+      setOpenManageLecturer(false);
+      setOpenManageExplanation(false)
+      setOpenManageAcceptance(false)
+      setOpenManageDocument(false)
+      setOpenManageAdvisor(false);
+      setOpenManageTopic(false);
+      setOpenManageSchedule(false);
+      setOpenManageDocument(!openManageDocument)
     }
   };
   return (
@@ -195,10 +263,6 @@ const AdminPage = () => {
             }}
           >
             <Content>
-              {/* <h1>
-                {userData.firstName} {userData.lastName} dang dang nhap
-              </h1>
-              <Button onClick={() => onSignOut()}>Đăng xuất</Button> */}
               <div
                 style={{
                   padding: 20,
@@ -212,6 +276,9 @@ const AdminPage = () => {
                 {openManageAdvisor === true ? <ManageInstructor /> : ""}
                 {openManageTopic === true ? <ManageTopic /> : ""}
                 {openManageSchedule === true ? <ManageSchedule /> : ""}
+                {openManageAcceptance === true ? <ManageAcceptance /> : ""}
+                {openManageDocument === true ? <ManageDocument /> : ""}
+
                 {openManageExplanation === true ? <ManageExplanation
                   openManageExplanation={openManageExplanation}
                   setOpenManageExplanation={setOpenManageExplanation}

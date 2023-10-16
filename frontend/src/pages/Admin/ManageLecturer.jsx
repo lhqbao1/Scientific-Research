@@ -1,10 +1,10 @@
-import { Button, Col, Drawer, Form, Input, message, Modal, Row, Select, Space, Table } from "antd";
+import { Button, Col, Drawer, Form, Input, message, Modal, notification, Row, Select, Space, Table } from "antd";
 import { useEffect, useState } from "react";
 import StudentDetail from "../../components/Admin/StudentDetail";
 import AddStudent from "../../components/Admin/AddStudent";
 import ImportStudent from "../../components/Admin/ImportStudent";
 import * as XLSX from 'xlsx'
-import { callGetCoucil, callGetLecturer, callSetLecturerCoucil } from "../../../services/api";
+import { callGetCoucil, callGetExplanationCoucilById, callGetLecturer, callSetLecturerCoucil, callUpdateBoard } from "../../../services/api";
 import SearchLecturer from "../../components/AdminLecturer/SearchLecturer";
 import AddLecturer from "../../components/AdminLecturer/AddLecturer";
 // import SearchLecturer from "../../components/AdminLecturer/SearchLecturer";
@@ -146,16 +146,105 @@ const ManageLecturer = () => {
     };
 
     const onFinish = async (values) => {
-        if (choosedLecturer.explanationboard === values.coucil) {
-            message.error('Giảng viên đã nằm trong hội đồng này!')
+        console.log(values)
+        const checkExist = await callGetExplanationCoucilById(values.coucil)
+        let existedBoard = checkExist.data.payload.items
+        console.log('check exist', existedBoard)
+        if (choosedLecturer.lecturer_id === checkExist.data.payload.items.president
+            || choosedLecturer.lecturer_id === checkExist.data.payload.items.secretary
+            || choosedLecturer.lecturer_id === checkExist.data.payload.items.couter
+            || choosedLecturer.lecturer_id === checkExist.data.payload.items.commissioner1
+            || choosedLecturer.lecturer_id === checkExist.data.payload.items.commissioner2
+            || choosedLecturer.lecturer_id === checkExist.data.payload.items.commissioner3
+        ) {
+            notification.error({
+                message: 'Giảng viên đã nằm trong hội đồng này'
+            })
+            return;
         } else {
-            const res = await callSetLecturerCoucil(choosedLecturer.lecturer_id, values.coucil, values.role)
-            if (res) {
-                console.log(res)
+            if (values.role === 'Chủ tịch hội đồng') {
+                const res = await callUpdateBoard(values.coucil, choosedLecturer.lecturer_id, existedBoard.secretary, existedBoard.couter, existedBoard.commissioner1, existedBoard.commissioner2, existedBoard.commissioner3)
+                notification.success({
+                    message: 'Phân công thành công',
+                    duration: 2
+                })
                 form.resetFields()
-                message.success('Phân công thành công')
+                setIsModalOpen(false)
             }
+            if (values.role === 'Thư ký') {
+                const res = await callUpdateBoard(values.coucil, existedBoard.president, choosedLecturer.lecturer_id, existedBoard.couter, existedBoard.commissioner1, existedBoard.commissioner2, existedBoard.commissioner3)
+                notification.success({
+                    message: 'Phân công thành công',
+                    duration: 2
+                })
+                form.resetFields()
+                setIsModalOpen(false)
+
+            }
+            if (values.role === 'Ủy viên') {
+                if (checkExist.data.payload.items.commissioner1 === null) {
+                    const res = await callUpdateBoard(values.coucil, existedBoard.president, existedBoard.secretary, existedBoard.couter, choosedLecturer.lecturer_id, existedBoard.commissioner2, existedBoard.commissioner3)
+                    notification.success({
+                        message: 'Phân công thành công',
+                        duration: 2
+                    })
+                    form.resetFields()
+                    setIsModalOpen(false)
+
+                } else {
+                    if (checkExist.data.payload.items.commissioner2 === null) {
+                        const res = await callUpdateBoard(values.coucil, existedBoard.president, existedBoard.secretary, existedBoard.couter, existedBoard.commissioner1, choosedLecturer.lecturer_id, existedBoard.commissioner3)
+                        notification.success({
+                            message: 'Phân công thành công',
+                            duration: 2
+                        })
+                        form.resetFields()
+                        setIsModalOpen(false)
+
+                    } else {
+                        if (checkExist.data.payload.items.commissioner3 === null) {
+                            const res = await callUpdateBoard(values.coucil, existedBoard.president, existedBoard.secretary, existedBoard.couter, existedBoard.commissioner1, existedBoard.commissioner2, choosedLecturer.lecturer_id)
+                            notification.success({
+                                message: 'Phân công thành công',
+                                duration: 2
+                            })
+                            form.resetFields()
+                            setIsModalOpen(false)
+
+                        }
+                    }
+                }
+            }
+
+
         }
+        // if (choosedLecturer.explanationboard === values.coucil) {
+        //     message.error('!')
+        // } else {
+        //     const res = await callGetExplanationCoucilById(values.coucil)
+        //     let listLecturer = res.data.payload.items.lecturer
+        //     // console.log(values.role)
+        //     if (values.role === 'Chủ tịch hội đồng') {
+        //         listLecturer.map(item => {
+        //             if (item.explanationrole === 'Chủ tịch hội đồng') {
+        //                 notification.error({
+        //                     message: 'Đề tài đã có chủ tịch',
+        //                     duration: 2
+        //                 })
+        //             }
+        //             return;
+        //         })
+        //         return;
+        //     }
+        //     const res1 = await callSetLecturerCoucil(choosedLecturer.lecturer_id, values.coucil, values.role)
+        //     if (res) {
+        //         form.resetFields()
+        //         message.success('Phân công thành công')
+        //     }
+        // }
+        // console.log(values)
+        // console.log(choosedLecturer)
+
 
     };
     const onFinishFailed = (errorInfo) => {

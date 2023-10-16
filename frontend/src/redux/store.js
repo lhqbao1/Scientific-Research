@@ -5,6 +5,7 @@ import workplaceReducer from '../redux/workplace/workplaceSlice'
 import studentReducer from '../redux/account/studentSlice'
 import lecturerReducer from '../redux/account/lecturerSlice'
 import accountLecturerReducer from '../redux/account/accountLecturerSlice'
+import accountAdminReducer from '../redux/account/accountAdminSlide'
 
 // import orderReducer from '../redux/order/orderSlice';
 import {
@@ -32,7 +33,9 @@ const rootReducer = combineReducers({
   workplace: workplaceReducer,
   student: studentReducer,
   lecturer: lecturerReducer,
-  accountLecturer: accountLecturerReducer
+  accountLecturer: accountLecturerReducer,
+  accountAdmin: accountAdminReducer
+
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

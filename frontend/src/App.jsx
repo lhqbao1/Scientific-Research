@@ -35,18 +35,20 @@ import ProtectedRouteStudent from './components/ProtectedRoute/ProtectedRouteStu
 import LecturerHomePage from './pages/Lecturer/LecturerHomePage';
 import ProtectedRouteLecturer from './components/ProtectedRoute/ProtectedRoteLecturer';
 import HeaderLecturer from './components/Header/HeaderLecturer';
+import LecturerExplanationBoard from './pages/Lecturer/LecturerExplanationBoard';
+import LecturerAcceptanceBoard from './pages/Lecturer/LecturerAcceptanceBoard';
 
 const Layout = () => {
   const student = useSelector(state => state.account.user.role)
   return (
-    <div>
-      {student === 'student' && <Header />
-      }
-
-      <Outlet />
-      {student === 'student' && <Footer />
-      }
-
+    <div className='container'>
+      <div className='content'>
+        {student === 'student' && <Header />
+        }
+        <Outlet />
+        {student === 'student' && <Footer />
+        }
+      </div>
     </div>
   )
 }
@@ -68,9 +70,9 @@ const LayoutLecturer = () => {
 
 const LayoutAdmin = () => {
   //get user info from redux
-  const user = useSelector(state => state.account.user)
+  const admin = useSelector(state => state.accountAdmin.user)
   //get role user
-  const userRole = user.role
+  const userRole = admin.role
   return (
     <div>
       {window.location.pathname === '/admin' && userRole === 'Admin' && ''
@@ -104,7 +106,7 @@ export default function App() {
             </ProtectedRouteStudent>
         },
         {
-          path: "lecturer",
+          path: "/student/lecturer",
           element: <LecturerCNPM />,
 
         },
@@ -123,9 +125,19 @@ export default function App() {
               <LecturerHomePage />
             </ProtectedRouteLecturer>
         },
+        {
+          path: "explanation-board",
+          element: <LecturerExplanationBoard />,
+        },
+        {
+          path: "acceptance-board",
+          element: <LecturerAcceptanceBoard />,
+        },
 
       ],
     },
+
+
 
 
 

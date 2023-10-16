@@ -1,8 +1,8 @@
-import { Col, Drawer, message, Row, Table } from "antd"
+import { Col, Drawer, message, notification, Row, Table } from "antd"
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Header from "../../components/Header/Header"
-import { callCreateInvitation, callGetInvitationById, callGetLecturerByWorkPlace, callGetTopicById } from "../../../services/api";
+import { callCreateInvitation, callGetInvitationById, callGetLecturerByWorkPlace, callGetStudentById, callGetTopicById } from "../../../services/api";
 
 const LecturerCNPM = () => {
 
@@ -104,25 +104,58 @@ const LecturerCNPM = () => {
     }
 
     const doInviteLecturer = async (text, record) => {
-
-        const topic = await callGetTopicById(student.topic_id)
-        if (topic && topic.data.payload.lecturer_id !== null) {
-            message.error('Bạn đã có giáo viên hướng dẫn cho đề tài!')
+        const studentInfo = await callGetStudentById(student.student_id)
+        const topic = await callGetTopicById(studentInfo.data.payload.topic_id)
+        console.log(topic.data.payload)
+        if (topic.data.payload.student.length < 1) {
+            notification.error({
+                message: 'Đề tài phải có ít nhất 1 thành viên!',
+                duration: 2
+            })
         } else {
-            // console.log('check recored', record)
-            // console.log('check student', student)
-            const checkInvitation = await callGetInvitationById(student.student_id)
-            if (checkInvitation.data?.payload?.lecturer !== record.lecturer_id) {
-                const invitation = await callCreateInvitation(student.student_id, record.lecturer_id, student.topic_id)
-                message.success(`Gửi lời mời thành công đến giảng viên ${record.lecturer_name}`)
-            } else {
-                message.error(`Bạn đã gửi lời mời cho giảng viên ${record.lecturer_name}! `)
+            if (topic && topic.data.payload.lecturer_id !== null) {
+                message.error('Bạn đã có giáo viên hướng dẫn cho đề tài!')
             }
+            else {
+                if (topic.data.payload.status.status_id === 4) {
+                    const checkInvitation = await callGetInvitationById(student?.student_id)
+                    let existInvitation = checkInvitation.data.payload
+                    console.log('check exist', existInvitation)
+                    if (checkInvitation.data.payload.length > 0) {
+                        notification.error({
+                            message: `Bạn đã có lời mời cho giảng viên ${existInvitation[0].lecturerInfo.lecturer_name}, hãy đợi phản hồi!`,
+                            duration: 2
+                        })
+                    } else {
+                        if (checkInvitation.data?.payload?.lecturer !== record.lecturer_id) {
+                            const invitation = await callCreateInvitation(student.student_id, record.lecturer_id, topic.data.payload.topic_id)
+                            notification.success({
+                                message: `Gửi lời mời thành công đến giảng viên ${record.lecturer_name}`,
+                                // description: ``,
+                                duration: 2
+                            })
+                        } else {
+                            notification.error({
+                                message: `Bạn đã gửi lời mời cho giảng viên ${record.lecturer_name}! `,
+                                // description: ``,
+                                duration: 2
+                            })
+                        }
+                    }
+
+                } else {
+                    notification.error({
+                        message: 'Bạn cần tải lên file thuyết minh trước khi mời giáo viên hướng dẫn',
+                        // description: ``,
+                        duration: 2
+                    })
+                }
 
 
+            }
         }
-        // console.log('check topic', topic)
-        // console.log(student)
+
+
     }
     const onClose = () => {
         setOpenDrawer(false);
