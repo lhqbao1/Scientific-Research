@@ -3,8 +3,6 @@ import { useForm } from "antd/es/form/Form";
 import { Button, Form, Input, Checkbox, message, notification } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { setToken, setUserData } from "../../lib/utils";
-import axios from "axios";
 import "./Login.scss";
 import { callGetLecturerById, callGetLecturerLogin, callGetStudentById, callLogin } from "../../../services/api";
 import { doGetAccountAction, doLoginAction } from "../../redux/account/accountSlice";
@@ -32,49 +30,51 @@ const Login = () => {
   };
 
   const onFinish = async (data) => {
-
-    const res = await callLogin(data.email, data.password)
-    if (res && res.data) {
-      form.resetFields()
-      if (res.data.payload.user.role === 'student') {
-        const resStudent = await callGetStudentById(res.data.payload.user.id)
-        if (resStudent) {
-          dispatch(doGetStudentInfoAction(resStudent.data.payload))
-        }
-        dispatch(doGetAccountAction(res.data.payload.user))
-
-      }
-
-      if (res.data.payload.user.role === 'admin') {
-        dispatch(doGetAccountAdminAction(res.data.payload.user))
-      }
-
-      if (res.data.payload.user.role === 'lecturer') {
-        const resLecturer = await callGetLecturerLogin(res.data.payload.user.id)
-        if (resLecturer) {
-          dispatch(doGetLecturerInfoAction(resLecturer.data.payload))
-        }
-        dispatch(doGetAccountLecturerAction(res.data.payload.user))
-      }
-
-      setIsLogin(true)
-      setTimeout(() => {
-        setIsLogin(false)
-        // dispatch(doLoginAction(res.data.payload.user))
-        localStorage.setItem('access_token', res.data.payload.accessToken)
-        // console.log(res.data.payload.user)
-        if (res.data.payload.user.role === 'admin') {
-          navigate("/admin")
-        }
+    try {
+      const res = await callLogin(data.email, data.password)
+      console.log(res.data)
+      if (res) {
+        // form.resetFields()
         if (res.data.payload.user.role === 'student') {
-          navigate("/student")
-        }
-        if (res.data.payload.user.role === 'lecturer') {
-          navigate("/lecturer")
-        }
-      }, 1000)
+          const resStudent = await callGetStudentById(res.data.payload.user.id)
+          if (resStudent) {
+            dispatch(doGetStudentInfoAction(resStudent.data.payload))
+          }
+          dispatch(doGetAccountAction(res.data.payload.user))
 
-    } else {
+        }
+
+        if (res.data.payload.user.role === 'admin') {
+          dispatch(doGetAccountAdminAction(res.data.payload.user))
+        }
+
+        if (res.data.payload.user.role === 'lecturer') {
+          const resLecturer = await callGetLecturerLogin(res.data.payload.user.id)
+          if (resLecturer) {
+            dispatch(doGetLecturerInfoAction(resLecturer.data.payload))
+          }
+          dispatch(doGetAccountLecturerAction(res.data.payload.user))
+        }
+
+        setIsLogin(true)
+
+        setTimeout(() => {
+          setIsLogin(false)
+          localStorage.setItem('access_token', res.data.payload.accessToken)
+          if (res.data.payload.user.role === "admin") {
+            navigate("/admin")
+          }
+          if (res.data.payload.user.role === 'student') {
+            navigate("/student")
+          }
+          if (res.data.payload.user.role === 'lecturer') {
+            navigate("/lecturer")
+          }
+        }, 1000)
+
+
+      }
+    } catch (error) {
       notification.error({
         message: 'Email hoặc mật khẩu không đúng',
         duration: 2
@@ -143,14 +143,18 @@ const Login = () => {
 
             <Form.Item
               wrapperCol={{
-                offset: 8,
-                span: 16,
+                offset: 6,
+                span: 24,
               }}
             >
               <Button
                 className="login-button"
                 htmlType="submit"
                 loading={isLogin}
+              // style={{
+              //   borderRadius: 15,
+              //   width: 120,
+              // }}
               >
                 Đăng nhập
               </Button>

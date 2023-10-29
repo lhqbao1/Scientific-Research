@@ -1,52 +1,11 @@
-import { CaretLeftOutlined, CaretRightOutlined } from "@ant-design/icons"
-import { Button, Collapse, Modal, notification } from "antd"
-import { Document, Page, pdfjs } from 'react-pdf';
+import { Button, Collapse, Modal } from "antd"
 
-import { useState } from "react"
-import { callUpdateTopicStatus } from "../../../services/api";
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
+const ModalGetTranscriptExplanation = (props) => {
+    const { isModalExplanationOpen, setIsModalExplanationOpen, transcriptInfo, topicInfo } = props
 
-
-const ModalApproveTopic = (props) => {
-
-    const { isModalApproveOpen, setIsModalApproveOpen, transcriptInfo, editExFile, topicScore, subRole, explanationBoard, choosedTopic } = props
-    const [numPages, setNumPages] = useState(null);
-    const [pageNumber, setPageNumber] = useState(1);
-    const handleCancelApprove = () => {
-        setIsModalApproveOpen(false)
-    }
-
-    const downloadFile = () => {
-        const linkSource = editExFile.file_url;
-        const downloadLink = document.createElement("a");
-        const fileName = "File giai trinh thuyet minh.pdf";
-        downloadLink.href = linkSource;
-        downloadLink.download = fileName;
-        downloadLink.click();
-    }
-    const handleApprove = async (values) => {
-        console.log(choosedTopic)
-        const status = await callUpdateTopicStatus(choosedTopic?.topic_id, 6)
-        if (status) {
-            setIsModalApproveOpen(false)
-            notification.success({
-                message: 'Duyệt đề tài thành công',
-                duration: 2
-            })
-        }
-    }
-
-    const prevPage = () => {
-        setPageNumber(pageNumber - 1 <= 1 ? 1 : pageNumber - 1)
-    }
-
-    const nextPage = () => {
-        setPageNumber(pageNumber + 1 >= numPages ? pageNumber : pageNumber + 1)
-    }
-
-    function onDocumentLoadSuccess({ numPages }) {
-        setNumPages(numPages);
-        setPageNumber(1);
+    let explanationBoard = topicInfo?.board
+    const handleCancel = () => {
+        setIsModalExplanationOpen(false)
     }
 
     var arr = [];
@@ -78,7 +37,6 @@ const ModalApproveTopic = (props) => {
             children:
                 [
                     <div>
-                        {transcriptInfo[i]?.lecturerInfo?.lecturer_name === explanationBoard?.presidentInfo?.lecturer_name}
                         <>
                             <table style={{ width: '100%', marginBottom: 30 }}>
                                 <tr style={{ backgroundColor: '#E0E0E0', border: '1px solid #E0E0E0', borderRadius: 10 }}>
@@ -125,37 +83,15 @@ const ModalApproveTopic = (props) => {
                 ],
         });
     }
-    arr.push({
-        key: len + 1,
-        label: 'File giải trình thuyết minh',
-        children: [
-            <div>
-                <div style={{ textAlign: 'center' }}>
-                    <CaretLeftOutlined onClick={prevPage} style={{ fontSize: 30 }} />
-                    <CaretRightOutlined onClick={nextPage} style={{ fontSize: 30 }} />
-                </div>
-                <div style={{ float: 'center', marginLeft: 150 }}>
-                    <Document
-                        file={editExFile?.file_url}
-                        onLoadSuccess={onDocumentLoadSuccess}
-                        noData={''}
-                        loading={''}
-                    >
-                        <Page pageNumber={pageNumber} renderAnnotationLayer={true} renderTextLayer={true}></Page>
-                    </Document>
-                </div>
-            </div>
-        ]
-    })
+
     return (
         <>
             <Modal
-                title="Nhận xét thuyết minh đề tài"
-                open={isModalApproveOpen}
-                onCancel={handleCancelApprove}
-                okButtonProps={{ style: { display: 'none' } }}
+                title="Nhận xét của hội đồng thuyết minh"
+                open={isModalExplanationOpen}
+                onCancel={handleCancel}
                 cancelButtonProps={{ style: { display: 'none' } }}
-                okText={'Duyệt đề tài'}
+                okButtonProps={{ style: { display: 'none' } }}
                 style={{
                     marginTop: -80,
                     height: 780,
@@ -163,7 +99,6 @@ const ModalApproveTopic = (props) => {
                     borderRadius: 10
                 }}
                 width={1000}
-                maskClosable={false}
             >
                 <Collapse
                     items={
@@ -173,15 +108,9 @@ const ModalApproveTopic = (props) => {
                     style={{ marginTop: 25 }}
 
                 />
-
-                {subRole === 'admin' ?
-                    <Button type="primary" onClick={handleApprove} style={{ marginTop: 25 }}>Duyệt đề tài</Button>
-
-                    : ''}
-
             </Modal>
         </>
     )
 }
 
-export default ModalApproveTopic
+export default ModalGetTranscriptExplanation

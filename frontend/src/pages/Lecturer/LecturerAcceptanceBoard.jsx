@@ -2,13 +2,14 @@ import { CaretLeftOutlined, CaretRightOutlined } from "@ant-design/icons"
 import { Button, Card, Col, Collapse, Descriptions, Form, Input, InputNumber, Modal, notification, Row, Select, Table } from "antd"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import { callCheckExistedTranscript, callCheckExistedTranscriptAcc, callCreateExplanationTranscript, callCreateTranscriptComment, callCreateTranscriptScore, callGetExplanationByid, callGetLecturerById, callGetLecturerByIdAcc, callGetTranscriptAccByTopicId, callUpdateTopicStatus, callUpdateTranscriptComment, callUpdateTranscriptScore, callUpdateTranscriptStatus } from "../../../services/api"
+import { callCheckExistedTranscript, callCheckExistedTranscriptAcc, callCreateExplanationTranscript, callCreateTranscriptComment, callCreateTranscriptScore, callGetExplanationByid, callGetLecturerById, callGetLecturerByIdAcc, callGetTranscriptAcc1ByTopicId, callGetTranscriptAccByTopicId, callUpdateTopicStatus, callUpdateTranscriptComment, callUpdateTranscriptScore, callUpdateTranscriptStatus } from "../../../services/api"
 import { Document, Page, pdfjs } from 'react-pdf';
 import { Buffer } from 'buffer';
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import Column from "antd/es/table/Column"
 import TextArea from "antd/es/input/TextArea"
+import DrawerListFile from "./ModalLecturerHomePage/DrawerListFile"
 
 
 
@@ -28,8 +29,15 @@ const LecturerAcceptanceBoard = () => {
     const [choosedTopic, setChoosedTopic] = useState()
     const [isOpenTranscriptComment, setIsOpenTranscriptComment] = useState(false)
     const [dataTable, setDataTable] = useState([])
+    const [drawerTopic, setDrawerTopic] = useState()
+    const [isOpenDrawerListFile, setIsOpenDrawerListFile] = useState(false)
+    const [choosedBoard, setChoosedBoard] = useState()
+
+
+
     const [formTranscript] = Form.useForm()
     const [formTranscriptComment] = Form.useForm()
+
 
 
 
@@ -43,7 +51,6 @@ const LecturerAcceptanceBoard = () => {
         const callGetTopic = async () => {
             let topicData = []
             const res = await callGetLecturerByIdAcc(lecturerId)
-            console.log(res.data.payload)
             let data = res?.data?.payload?.lecturer
             let dataCommissioner = res?.data?.payload?.commissioner
             let dataCounter = res?.data?.payload?.counter
@@ -52,7 +59,6 @@ const LecturerAcceptanceBoard = () => {
             if (data?.presidentInfo?.length > 0) {
                 setHasRole(true)
                 data?.presidentInfo.map(presidentInfo => {
-                    // console.log('check president', presidentInfo)
                     if (presidentInfo.type === 'hội đồng nghiệm thu') {
                         presidentInfo?.topicAccInfo.map(topicAccInfo => {
                             topicData.push(topicAccInfo)
@@ -63,7 +69,6 @@ const LecturerAcceptanceBoard = () => {
             if (data?.secretaryInfo?.length > 0) {
                 setHasRole(true)
                 data?.secretaryInfo.map(secretaryInfo => {
-                    // console.log('check secretatry', secretaryInfo)
                     if (secretaryInfo.type === 'hội đồng nghiệm thu') {
                         secretaryInfo?.topicAccInfo.map(topicAccInfo => {
                             topicData.push(topicAccInfo)
@@ -74,7 +79,6 @@ const LecturerAcceptanceBoard = () => {
 
             if (dataCounter?.length > 0) {
                 dataCounter.map(data => {
-                    // console.log('cjeck maspdpasd', data)
                     data?.boardInfo?.topicAccInfo.map(topic => {
                         topicData.push(topic)
                     })
@@ -84,7 +88,6 @@ const LecturerAcceptanceBoard = () => {
 
             if (dataCommissioner?.length > 0) {
                 dataCommissioner.map(data => {
-                    // console.log('cjeck maspdpasd', data)
                     data?.boardInfo?.topicAccInfo.map(topic => {
                         topicData.push(topic)
                     })
@@ -92,14 +95,17 @@ const LecturerAcceptanceBoard = () => {
 
             }
             if (topicData?.length > 0) {
+                let today = new Date()
+                let todayInt = today.getTime()
                 topicData.map(item => {
                     item.dateString = (new Date(+item.acceptancedate)).toLocaleDateString()
-                    // item.acceptancedate = (new Date(+item.acceptancedate)).toLocaleDateString()
+                    if (+item.acceptancedate < todayInt) {
+                        item.canReport = true
+                    } else {
+                        item.canReport = false
+                    }
                 })
                 setTopicList(topicData)
-
-                console.log('chcek topicasc,', topicData)
-                // console.log('check data', data)
             }
         }
 
@@ -122,8 +128,6 @@ const LecturerAcceptanceBoard = () => {
     }
 
     const openTranscriptComment = async (topic) => {
-        // console.log(lecturerId)
-        // console.log(topic.topic_id)
         const checkExist = await callCheckExistedTranscriptAcc(lecturerId, topic.topic_id)
         console.log(checkExist.data.payload)
         if (checkExist.data.payload.length === 0) {
@@ -209,8 +213,10 @@ const LecturerAcceptanceBoard = () => {
     };
 
     const handleGetTranscript = async (topic) => {
+        console.log(hasRole)
         setChoosedTopic(topic)
         const board = await callGetExplanationByid(topic?.acceptanceboard)
+        setChoosedBoard(board?.data?.payload?.items)
         let member = 0
         if (board?.data?.payload?.items?.president !== null) {
             member = member + 1
@@ -224,10 +230,10 @@ const LecturerAcceptanceBoard = () => {
         if (board?.data?.payload?.items?.counter !== null) {
             member = member + board?.data?.payload?.items?.counter?.length
         }
-        const transcript = await callGetTranscriptAccByTopicId(topic.topic_id)
+        const transcript = await callGetTranscriptAcc1ByTopicId(topic.topic_id)
         if (member === transcript.data.payload.length) {
             setIsModalAccOpen(true)
-            const res = await callGetTranscriptAccByTopicId(topic.topic_id)
+            const res = await callGetTranscriptAcc1ByTopicId(topic.topic_id)
             let data = res.data.payload
             let arrData = []
             data.map(item => {
@@ -253,7 +259,6 @@ const LecturerAcceptanceBoard = () => {
 
                 arrData.push(object)
             })
-            console.log(arrData)
             setDataTranscript(res?.data?.payload)
             setDataTable(arrData)
         } else {
@@ -574,73 +579,41 @@ const LecturerAcceptanceBoard = () => {
         }
     }
 
-    const items = [
-
-        {
-
-            key: '1',
-            label: dataTranscript[0]?.lecturerInfo?.lecturer_name,
-            children:
-                [
-                    <div>
-                        <table style={{ width: '100%', marginBottom: 30 }}>
-                            <tr style={{ backgroundColor: '#E0E0E0', border: '1px solid #E0E0E0', borderRadius: 10 }}>
-                                <th style={{ border: '1px solid #E0E0E0' }}></th>
-                                <th style={{ height: 40, border: '1px solid #E0E0E0' }}>Điểm</th>
-                                <th style={{ border: '1px solid #E0E0E0' }}>Nhận xét</th>
-                            </tr >
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Tổng quan tình hình nghiên cứu, lý do chọn đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.scoreInfo?.score1}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.commentInfo?.comment1}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Mục tiêu đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.scoreInfo?.score2}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.commentInfo?.comment2}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Phương pháp nghiên cứu</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.scoreInfo?.score3}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.commentInfo?.comment3}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Nội dung khoa họcNội dung khoa học</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.scoreInfo?.score4}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.commentInfo?.comment4}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Đóng góp về mặt kinh tế - xã hội, giáo dục và đào tạo, an ninh, quốc phòng</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.scoreInfo?.score5}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.commentInfo?.comment5}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Hình thức trình bày báo cáo tổng kết đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.scoreInfo?.score6}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.commentInfo?.comment6}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Thời gian và tiến độ thực hiện đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.scoreInfo?.score7}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.commentInfo?.comment7}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Điểm thưởng</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[0]?.scoreInfo?.score8}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}></td>
-                            </tr>
-                        </table >
-                        <span style={{ marginBottom: 30 }}><b>Ý kiến của hội đồng về kết quả của đề tài: </b>{dataTranscript[0]?.commentInfo?.comment8}</span>
-                        <br></br>
-                        <span><b>Những tồn tại và đề xuất hướng hoặc biện pháp để giải quyết: </b>{dataTranscript[0]?.commentInfo?.comment9}</span>
-
-                    </div>
-
-                ],
-        },
-        {
-            key: '2',
-            label: dataTranscript[1]?.lecturerInfo?.lecturer_name,
+    var arr = [];
+    var len = dataTranscript?.length;
+    for (var i = 0; i < len; i++) {
+        arr.push({
+            key: i + 1,
+            label: [
+                <div>
+                    {choosedBoard?.presidentInfo?.lecturer_name === dataTranscript[i]?.lecturerInfo?.lecturer_name ?
+                        <>                        Chủ tịch: {choosedBoard?.presidentInfo?.lecturer_name}
+                        </>
+                        : ''}
+                    {choosedBoard?.secretaryInfo?.lecturer_name === dataTranscript[i]?.lecturerInfo?.lecturer_name ?
+                        <>                        Thư ký: {choosedBoard?.secretaryInfo?.lecturer_name}
+                        </>
+                        : ''}
+                    {choosedBoard?.commissioners.map(item => {
+                        if (item?.lecturerInfo?.lecturer_name === dataTranscript[i]?.lecturerInfo?.lecturer_name) {
+                            return (
+                                <>
+                                    Ủy viên: {item?.lecturerInfo?.lecturer_name}
+                                </>
+                            )
+                        }
+                    })}
+                    {choosedBoard?.counter.map(item => {
+                        if (item?.lecturerInfo?.lecturer_name === dataTranscript[i]?.lecturerInfo?.lecturer_name) {
+                            return (
+                                <>
+                                    Phản biện: {item?.lecturerInfo?.lecturer_name}
+                                </>
+                            )
+                        }
+                    })}
+                </div>
+            ],
             children:
                 [
                     <div>
@@ -653,305 +626,57 @@ const LecturerAcceptanceBoard = () => {
                             </tr >
                             <tr >
                                 <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Tổng quan tình hình nghiên cứu, lý do chọn đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.scoreInfo?.score1}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.commentInfo?.comment1}</td>
+                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.scoreInfo?.score1}</td>
+                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.commentInfo?.comment1}</td>
                             </tr>
                             <tr >
                                 <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Mục tiêu đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.scoreInfo?.score2}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.commentInfo?.comment2}</td>
+                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.scoreInfo?.score2}</td>
+                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.commentInfo?.comment2}</td>
                             </tr>
                             <tr >
                                 <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Phương pháp nghiên cứu</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.scoreInfo?.score3}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.commentInfo?.comment3}</td>
+                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.scoreInfo?.score3}</td>
+                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.commentInfo?.comment3}</td>
                             </tr>
                             <tr >
                                 <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Nội dung khoa họcNội dung khoa học</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.scoreInfo?.score4}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.commentInfo?.comment4}</td>
+                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.scoreInfo?.score4}</td>
+                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.commentInfo?.comment4}</td>
                             </tr>
                             <tr >
                                 <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Đóng góp về mặt kinh tế - xã hội, giáo dục và đào tạo, an ninh, quốc phòng</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.scoreInfo?.score5}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.commentInfo?.comment5}</td>
+                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.scoreInfo?.score5}</td>
+                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.commentInfo?.comment5}</td>
                             </tr>
                             <tr >
                                 <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Hình thức trình bày báo cáo tổng kết đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.scoreInfo?.score6}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.commentInfo?.comment6}</td>
+                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.scoreInfo?.score6}</td>
+                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.commentInfo?.comment6}</td>
                             </tr>
                             <tr >
                                 <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Thời gian và tiến độ thực hiện đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.scoreInfo?.score7}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.commentInfo?.comment7}</td>
+                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.scoreInfo?.score7}</td>
+                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.commentInfo?.comment7}</td>
                             </tr>
                             <tr >
                                 <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Điểm thưởng</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[1]?.scoreInfo?.score8}</td>
+                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[i]?.scoreInfo?.score8}</td>
                                 <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}></td>
                             </tr>
                         </table >
-                        <span style={{ marginBottom: 30 }}><b>Ý kiến của hội đồng về kết quả của đề tài: </b>{dataTranscript[1]?.commentInfo?.comment8}</span>
+                        <span style={{ marginBottom: 30 }}><b>Ý kiến của hội đồng về kết quả của đề tài: </b>{dataTranscript[i]?.commentInfo?.comment8}</span>
                         <br></br>
-                        <span><b>Những tồn tại và đề xuất hướng hoặc biện pháp để giải quyết: </b>{dataTranscript[1]?.commentInfo?.comment9}</span>
+                        <span><b>Những tồn tại và đề xuất hướng hoặc biện pháp để giải quyết: </b>{dataTranscript[i]?.commentInfo?.comment9}</span>
 
                     </div>
 
                 ],
-        },
-        {
-            key: '3',
-            label: dataTranscript[2]?.lecturerInfo?.lecturer_name,
-            children:
-                [
-                    <div>
+        });
+    }
 
-                        <table style={{ width: '100%', marginBottom: 30 }}>
-                            <tr style={{ backgroundColor: '#E0E0E0', border: '1px solid #E0E0E0', borderRadius: 10 }}>
-                                <th style={{ border: '1px solid #E0E0E0' }}></th>
-                                <th style={{ height: 40, border: '1px solid #E0E0E0' }}>Điểm</th>
-                                <th style={{ border: '1px solid #E0E0E0' }}>Nhận xét</th>
-                            </tr >
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Tổng quan tình hình nghiên cứu, lý do chọn đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.scoreInfo?.score1}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.commentInfo?.comment1}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Mục tiêu đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.scoreInfo?.score2}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.commentInfo?.comment2}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Phương pháp nghiên cứu</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.scoreInfo?.score3}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.commentInfo?.comment3}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Nội dung khoa họcNội dung khoa học</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.scoreInfo?.score4}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.commentInfo?.comment4}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Đóng góp về mặt kinh tế - xã hội, giáo dục và đào tạo, an ninh, quốc phòng</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.scoreInfo?.score5}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.commentInfo?.comment5}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Hình thức trình bày báo cáo tổng kết đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.scoreInfo?.score6}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.commentInfo?.comment6}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Thời gian và tiến độ thực hiện đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.scoreInfo?.score7}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.commentInfo?.comment7}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Điểm thưởng</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[2]?.scoreInfo?.score8}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}></td>
-                            </tr>
-                        </table >
-                        <span style={{ marginBottom: 30 }}><b>Ý kiến của hội đồng về kết quả của đề tài: </b>{dataTranscript[2]?.commentInfo?.comment8}</span>
-                        <br></br>
-                        <span><b>Những tồn tại và đề xuất hướng hoặc biện pháp để giải quyết: </b>{dataTranscript[2]?.commentInfo?.comment9}</span>
-
-                    </div>
-
-                ],
-        },
-        {
-            key: '3',
-            label: dataTranscript[3]?.lecturerInfo?.lecturer_name,
-            children:
-                [
-                    <div>
-
-                        <table style={{ width: '100%', marginBottom: 30 }}>
-                            <tr style={{ backgroundColor: '#E0E0E0', border: '1px solid #E0E0E0', borderRadius: 10 }}>
-                                <th style={{ border: '1px solid #E0E0E0' }}></th>
-                                <th style={{ height: 40, border: '1px solid #E0E0E0' }}>Điểm</th>
-                                <th style={{ border: '1px solid #E0E0E0' }}>Nhận xét</th>
-                            </tr >
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Tổng quan tình hình nghiên cứu, lý do chọn đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.scoreInfo?.score1}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.commentInfo?.comment1}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Mục tiêu đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.scoreInfo?.score2}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.commentInfo?.comment2}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Phương pháp nghiên cứu</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.scoreInfo?.score3}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.commentInfo?.comment3}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Nội dung khoa họcNội dung khoa học</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.scoreInfo?.score4}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.commentInfo?.comment4}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Đóng góp về mặt kinh tế - xã hội, giáo dục và đào tạo, an ninh, quốc phòng</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.scoreInfo?.score5}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.commentInfo?.comment5}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Hình thức trình bày báo cáo tổng kết đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.scoreInfo?.score6}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.commentInfo?.comment6}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Thời gian và tiến độ thực hiện đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.scoreInfo?.score7}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.commentInfo?.comment7}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Điểm thưởng</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[3]?.scoreInfo?.score8}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}></td>
-                            </tr>
-                        </table >
-                        <span style={{ marginBottom: 30 }}><b>Ý kiến của hội đồng về kết quả của đề tài: </b>{dataTranscript[3]?.commentInfo?.comment8}</span>
-                        <br></br>
-                        <span><b>Những tồn tại và đề xuất hướng hoặc biện pháp để giải quyết: </b>{dataTranscript[3]?.commentInfo?.comment9}</span>
-
-                    </div>
-
-                ],
-        },
-        {
-            key: '4',
-            label: dataTranscript[4]?.lecturerInfo?.lecturer_name,
-            children:
-                [
-                    <div>
-
-                        <table style={{ width: '100%', marginBottom: 30 }}>
-                            <tr style={{ backgroundColor: '#E0E0E0', border: '1px solid #E0E0E0', borderRadius: 10 }}>
-                                <th style={{ border: '1px solid #E0E0E0' }}></th>
-                                <th style={{ height: 40, border: '1px solid #E0E0E0' }}>Điểm</th>
-                                <th style={{ border: '1px solid #E0E0E0' }}>Nhận xét</th>
-                            </tr >
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Tổng quan tình hình nghiên cứu, lý do chọn đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.scoreInfo?.score1}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.commentInfo?.comment1}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Mục tiêu đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.scoreInfo?.score2}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.commentInfo?.comment2}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Phương pháp nghiên cứu</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.scoreInfo?.score3}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.commentInfo?.comment3}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Nội dung khoa họcNội dung khoa học</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.scoreInfo?.score4}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.commentInfo?.comment4}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Đóng góp về mặt kinh tế - xã hội, giáo dục và đào tạo, an ninh, quốc phòng</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.scoreInfo?.score5}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.commentInfo?.comment5}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Hình thức trình bày báo cáo tổng kết đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.scoreInfo?.score6}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.commentInfo?.comment6}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Thời gian và tiến độ thực hiện đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.scoreInfo?.score7}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.commentInfo?.comment7}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Điểm thưởng</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[4]?.scoreInfo?.score8}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}></td>
-                            </tr>
-                        </table >
-                        <span style={{ marginBottom: 30 }}><b>Ý kiến của hội đồng về kết quả của đề tài: </b>{dataTranscript[4]?.commentInfo?.comment8}</span>
-                        <br></br>
-                        <span><b>Những tồn tại và đề xuất hướng hoặc biện pháp để giải quyết: </b>{dataTranscript[4]?.commentInfo?.comment9}</span>
-
-                    </div>
-
-                ],
-        },
-        {
-            key: '5',
-            label: dataTranscript[5]?.lecturerInfo?.lecturer_name,
-            children:
-                [
-                    <div>
-
-                        <table style={{ width: '100%', marginBottom: 30 }}>
-                            <tr style={{ backgroundColor: '#E0E0E0', border: '1px solid #E0E0E0', borderRadius: 10 }}>
-                                <th style={{ border: '1px solid #E0E0E0' }}></th>
-                                <th style={{ height: 40, border: '1px solid #E0E0E0' }}>Điểm</th>
-                                <th style={{ border: '1px solid #E0E0E0' }}>Nhận xét</th>
-                            </tr >
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Tổng quan tình hình nghiên cứu, lý do chọn đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.scoreInfo?.score1}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.commentInfo?.comment1}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Mục tiêu đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.scoreInfo?.score2}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.commentInfo?.comment2}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Phương pháp nghiên cứu</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.scoreInfo?.score3}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.commentInfo?.comment3}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Nội dung khoa họcNội dung khoa học</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.scoreInfo?.score4}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.commentInfo?.comment4}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Đóng góp về mặt kinh tế - xã hội, giáo dục và đào tạo, an ninh, quốc phòng</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.scoreInfo?.score5}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.commentInfo?.comment5}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Hình thức trình bày báo cáo tổng kết đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.scoreInfo?.score6}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.commentInfo?.comment6}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Thời gian và tiến độ thực hiện đề tài</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.scoreInfo?.score7}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.commentInfo?.comment7}</td>
-                            </tr>
-                            <tr >
-                                <td style={{ width: 450, borderBottom: '1px solid #E0E0E0', height: '50px', paddingLeft: 5 }}><b>Điểm thưởng</b></td>
-                                <td style={{ textAlign: 'center', borderBottom: '1px solid #E0E0E0' }}>{dataTranscript[5]?.scoreInfo?.score8}</td>
-                                <td style={{ paddingLeft: 10, borderBottom: '1px solid #E0E0E0' }}></td>
-                            </tr>
-                        </table >
-                        <span style={{ marginBottom: 30 }}><b>Ý kiến của hội đồng về kết quả của đề tài: </b>{dataTranscript[5]?.commentInfo?.comment8}</span>
-                        <br></br>
-                        <span><b>Những tồn tại và đề xuất hướng hoặc biện pháp để giải quyết: </b>{dataTranscript[5]?.commentInfo?.comment9}</span>
-
-                    </div>
-
-                ],
-        },
-    ];
 
     const approveTopicReport = async () => {
-        console.log(choosedTopic)
         let idArr = []
         dataTranscript.map(item => {
             idArr.push(item.id)
@@ -965,6 +690,10 @@ const LecturerAcceptanceBoard = () => {
                 duration: 2
             })
         }
+    }
+    const openDrawerFile = (topic) => {
+        setDrawerTopic(topic)
+        setIsOpenDrawerListFile(true)
     }
 
     return (
@@ -1005,39 +734,20 @@ const LecturerAcceptanceBoard = () => {
                                                             <Descriptions.Item label="Mã số đề tài">{topicList?.topic_code}</Descriptions.Item>
                                                             <Descriptions.Item label="Ngày báo cáo">{topicList?.dateString}</Descriptions.Item>
                                                             <Descriptions.Item label="Giáo viên hướng dẫn">{topicList?.lecturerInfo?.lecturer_name}</Descriptions.Item>
-                                                            {topicList?.file.map(item => {
-                                                                if (item?.file_type === 'acceptance') {
-                                                                    return (
-                                                                        <Descriptions.Item label="Đơn xin nghiệm thu" ><a onClick={() => getFileUrl(item?.file_name)}>{item?.file_name}</a></Descriptions.Item>
-                                                                    )
-                                                                }
-                                                                if (item?.file_type === 'report-decide') {
-                                                                    return (
-                                                                        <Descriptions.Item label="Quyết định nghiệm thu" ><a onClick={() => getFileUrl(item?.file_name)}>{item?.file_name}</a></Descriptions.Item>
-                                                                    )
-                                                                }
-                                                                if (item?.file_type === 'report-finalreport') {
-                                                                    return (
-                                                                        <Descriptions.Item label="Bản báo cáo tổng kết" ><a onClick={() => getFileUrl(item?.file_name)}>{item?.file_name}</a></Descriptions.Item>
-                                                                    )
-                                                                }
-                                                                if (item?.file_type === 'report-assessmentform') {
-                                                                    return (
-                                                                        <Descriptions.Item label="Phiếu nhận xét đánh giá đề tài" ><a onClick={() => getFileUrl(item?.file_name)}>{item?.file_name}</a></Descriptions.Item>
-                                                                    )
-                                                                }
-                                                            })}
+                                                            <Descriptions.Item label="Danh sách file" >
+                                                                <Button type='primary' onClick={() => openDrawerFile(topicList)}>Xem danh sách file</Button>
+                                                            </Descriptions.Item>
                                                             <Descriptions.Item label="Thao tác">
                                                                 <div>
-                                                                    {topicList?.status?.status_id === 18 ? <Button type='primary' onClick={() => openTranscript(topicList)}>Chấm điểm đề tài</Button>
+                                                                    {topicList?.status?.status_id === 18 && topicList?.canReport === true ? <Button type='primary' onClick={() => openTranscript(topicList)}>Chấm điểm đề tài</Button>
                                                                         : ''}
                                                                 </div>
                                                                 <div style={{ marginTop: 15 }}>
-                                                                    {topicList?.status?.status_id === 18 ? <Button type='primary' onClick={() => openTranscriptComment(topicList)}>Nhận xét đề tài</Button>
+                                                                    {topicList?.status?.status_id === 18 && topicList?.canReport === true ? <Button type='primary' onClick={() => openTranscriptComment(topicList)}>Nhận xét đề tài</Button>
                                                                         : ''}
                                                                 </div>
                                                                 <div style={{ marginTop: 15 }}>
-                                                                    {hasRole === true && topicList?.status?.status_id === 18 || topicList?.status?.status_id === 20 ? <Button onClick={() => handleGetTranscript(topicList)} type="primary">Xem đánh giá</Button> : ''}
+                                                                    {hasRole === true && topicList?.canReport === true && topicList?.status?.status_id === 18 || topicList?.status?.status_id === 20 ? <Button onClick={() => handleGetTranscript(topicList)} type="primary">Xem đánh giá</Button> : ''}
                                                                 </div>
                                                             </Descriptions.Item>
 
@@ -1315,17 +1025,22 @@ const LecturerAcceptanceBoard = () => {
 
                                 <Collapse
                                     items={
-                                        items
+                                        arr
                                     }
                                     defaultActiveKey={['1']}
                                     style={{ marginTop: 25 }}
 
                                 />
-                                {hasRole === true && topicList?.status?.status_id === 18 ?
+                                {hasRole === true && choosedTopic?.status?.status_id === 18 ?
                                     <Button style={{ marginTop: 30 }} type="primary" onClick={approveTopicReport}>Duyệt qua kết quả nghiệm thu</Button>
                                     : ''}
                             </Modal>
 
+                            <DrawerListFile
+                                isOpenDrawerListFile={isOpenDrawerListFile}
+                                setIsOpenDrawerListFile={setIsOpenDrawerListFile}
+                                drawerTopic={drawerTopic}
+                            />
                             <Col span={5}>
 
                             </Col>

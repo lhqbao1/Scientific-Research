@@ -3,13 +3,15 @@ import { InboxOutlined } from '@ant-design/icons';
 import { useState } from "react";
 import * as XLSX from 'xlsx'
 import { callCreateBulkStudent, callCreateBulkUser, callGetStudents, callGetUser } from "../../../services/api";
+import Item from "antd/es/list/Item";
 
 
 
 const ImportStudent = (props) => {
     const { Dragger } = Upload;
-    const { openModalImport, setOpenModalImport } = props
+    const { openModalImport, setOpenModalImport, reload, setReload } = props
     const [dataExcel, setDataExcel] = useState()
+    const [tableData, setTableData] = useState()
     const [dataExcelLength, setDataExcelLength] = useState(0)
 
     const handleCancel = () => {
@@ -39,22 +41,21 @@ const ImportStudent = (props) => {
                 console.log('cloading', info.file, info.fileList);
             }
             if (status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully.`);
-
                 let file = info.fileList[0].originFileObj
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     let data = new Uint8Array(e.target.result);
                     let workbook = XLSX.read(data, { type: 'array' });
-                    // find the name of your sheet in the workbook first
                     let worksheet = workbook.Sheets[workbook.SheetNames[0]];
 
-                    // convert to json format
                     const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-                        header: ["student_name", "student_code", "email", "major_id", "student_class", "grade"],
+                        header: ["Họ tên", "Mã số sinh viên", "Email", "Nghành học", "Lớp học", "Niên khóa"],
                         range: 1
                     });
+                    setTableData(jsonData)
+
                     if (jsonData && jsonData.length > 0) {
+
                         setDataExcel(jsonData)
                         setDataExcelLength(jsonData.length)
                     }
@@ -73,31 +74,31 @@ const ImportStudent = (props) => {
 
     const columns = [
         {
-            title: 'Tên sinh viên',
-            dataIndex: 'student_name',
+            title: 'Họ tên',
+            dataIndex: 'Họ tên',
         },
         {
             title: 'Mã số sinh viên',
-            dataIndex: 'student_code',
+            dataIndex: 'Mã số sinh viên',
         },
 
         {
             title: 'Email',
-            dataIndex: 'email',
+            dataIndex: 'Email',
 
         },
         {
             title: 'Chuyên nghành',
-            dataIndex: 'major_id',
+            dataIndex: 'Nghành học',
 
         },
         {
             title: 'Lớp học',
-            dataIndex: 'student_class',
+            dataIndex: 'Lớp học',
         },
         {
-            title: 'Khóa học',
-            dataIndex: 'grade',
+            title: 'Niên khóa',
+            dataIndex: 'Niên khóa',
         }
 
 
@@ -105,66 +106,112 @@ const ImportStudent = (props) => {
     ];
 
     const handleImport = async () => {
-        let data = []
-        let dataExcelMap = []
-        dataExcelMap.push(dataExcel)
-        dataExcel.map((item, index) => {
-            let object = {}
-            object.email = item.email
-            data.push(object)
-        });
-        data.map(item => {
-            item.password = 123456,
-                item.role = 1
+        dataExcel.map(item => {
+            if (item["Nghành học"] === "Công nghệ thông tin") {
+                item["Nghành học"] = 1
+            }
+            if (item["Nghành học"] === "Công nghệ phần mềm") {
+                item["Nghành học"] = 2
+            }
+            if (item["Nghành học"] === "An toàn thông tin") {
+                item["Nghành học"] = 3
+            }
+            if (item["Nghành học"] === "Hệ thống thông tin") {
+                item["Nghành học"] = 4
+            }
+            if (item["Nghành học"] === "Khoa học máy tính") {
+                item["Nghành học"] = 5
+            }
+            if (item["Nghành học"] === "Mạng máy tính và truyền thông dữ liệu") {
+                item["Nghành học"] = 6
+            }
+            if (item["Nghành học"] === "Truyền thông đa phương tiện") {
+                item["Nghành học"] = 7
+            }
+            if (item["Nghành học"] === "Kỹ thuật phần mềm") {
+                item["Nghành học"] = 8
+            }
+
+            item.email = item.Email
+            item.student_name = item["Họ tên"]
+            item.student_class = item["Lớp học"]
+            item.student_code = item["Mã số sinh viên"]
+            item.major_id = item["Nghành học"]
+            item.grade = item["Niên khóa"]
+            delete item.Email
+            delete item["Họ tên"]
+            delete item["Lớp học"]
+            delete item["Mã số sinh viên"]
+            delete item["Nghành học"]
+            delete item["Niên khóa"]
         })
 
-        const student = await callGetStudents()
-        const user = await callGetUser()
-        // console.log('check student', student.data.payload.items)
-        // console.log('check user', user.data.payload.items)
-        // console.log('check data', dataExcel)
+        try {
 
-
-        student.data.payload.items.map(student => {
-            data.map(data1 => {
-                if (data1.email === student.email) {
-                    data = data.filter(data => data.email !== data1.email)
-                }
+            let data = []
+            let dataExcelMap = []
+            dataExcelMap.push(dataExcel)
+            dataExcel.map((item, index) => {
+                let object = {}
+                object.email = item.email
+                data.push(object)
+            });
+            data.map(item => {
+                item.password = 123456,
+                    item.role = 1
             })
-        })
+
+            const student = await callGetStudents()
+            const user = await callGetUser()
 
 
-        user.data.payload.items.map(user => {
-            dataExcelMap[0].map(dataExcelMap1 => {
-                if (dataExcelMap1.email === user.email) {
-                    dataExcelMap[0] = dataExcelMap[0].filter(dataExcelMap => dataExcelMap.email !== dataExcelMap1.email)
-                }
+            student.data.payload.items.map(student => {
+                data.map(data1 => {
+                    if (data1.email === student.email) {
+                        data = data.filter(data => data.email !== data1.email)
+                    }
+                })
             })
-        })
 
-        // console.log('check user', data)
-        const bulkUser = await callCreateBulkUser(data)
-        // console.log('chcek data', bulkUser)
-        let userInfo = bulkUser?.data?.payload
-        let studentId = []
-        userInfo.map((item, index) => {
-            let object = {}
-            object.user_id = item.id
-            studentId.push(object)
-        })
-        // console.log('check id', studentId)
-        for (let i = 0; i < studentId.length; i++) {
-            // console.log('check id loop', studentId[i].user_id)
-            dataExcelMap[0][i].user_id = studentId[i].user_id
+
+            user.data.payload.items.map(user => {
+                dataExcelMap[0].map(dataExcelMap1 => {
+                    if (dataExcelMap1.email === user.email) {
+                        dataExcelMap[0] = dataExcelMap[0].filter(dataExcelMap => dataExcelMap.email !== dataExcelMap1.email)
+                    }
+                })
+            })
+            console.log(data)
+            const bulkUser = await callCreateBulkUser(data)
+            let userInfo = bulkUser?.data?.payload
+            let studentId = []
+            userInfo.map((item, index) => {
+                let object = {}
+                object.user_id = item.id
+                studentId.push(object)
+            })
+            for (let i = 0; i < studentId.length; i++) {
+                dataExcelMap[0][i].user_id = studentId[i].user_id
+            }
+
+
+            const bulkStudent = await callCreateBulkStudent(dataExcelMap[0])
+            if (bulkStudent?.data?.payload.length > 0) {
+                setDataExcel([])
+                setReload(!reload)
+                notification.success({
+                    message: 'Nhập thông tin sinh viên thành công',
+                    duration: 2
+                })
+            }
+        } catch (error) {
+            // notification.error({
+            //     message: 'Tất cả sinh viên trong file đã tồn tại',
+            //     duration: 2
+            // })
+            console.log(error)
         }
-        const bulkStudent = await callCreateBulkStudent(dataExcelMap[0])
-        if (bulkStudent?.data?.payload.length > 0) {
-            setDataExcel([])
-            notification.success({
-                message: 'Nhập thông tin sinh viên thành công',
-                duration: 2
-            })
-        }
+
     }
     const onRemoveFile = () => {
         setDataExcel([])
@@ -172,14 +219,14 @@ const ImportStudent = (props) => {
     return (
         <div>
             <Modal
-                title="Import Student"
+                title="Thêm nhiều sinh viên"
                 open={openModalImport}
                 onOk={handleImport}
                 onCancel={handleCancel}
                 maskClosable={false}
                 cancelButtonProps={{ style: { display: 'none' } }}
                 width={850}
-                okText="Import"
+                okText="Thêm"
 
 
 
@@ -193,17 +240,16 @@ const ImportStudent = (props) => {
                     <p className="ant-upload-drag-icon">
                         <InboxOutlined />
                     </p>
-                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                    <p className="ant-upload-text">Bấm vào đây hoặc kéo thả file vào để tải lên</p>
                     <p className="ant-upload-hint">
-                        Support for a single or bulk upload. Strictly prohibited from uploading company data or other
-                        banned files.
+                        Chấp nhận file csv
                     </p>
                 </Dragger>
 
                 <Table
                     style={{ marginTop: 40 }}
                     columns={columns}
-                    dataSource={dataExcel}
+                    dataSource={tableData}
                     pagination={false}
                 />
             </Modal>

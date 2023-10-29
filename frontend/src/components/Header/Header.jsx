@@ -1,6 +1,6 @@
 import './Header.scss'
 import { Badge, Button, Col, Popover, Row, message, Space } from 'antd'
-import { HomeOutlined, UserOutlined, LaptopOutlined, NotificationOutlined, BookOutlined } from "@ant-design/icons";
+import { HomeOutlined, UserOutlined, LaptopOutlined, NotificationOutlined, BookOutlined, LogoutOutlined } from "@ant-design/icons";
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
@@ -8,7 +8,7 @@ import { doLogoutAction } from '../../redux/account/accountSlice';
 import { doGetWorkplace } from '../../redux/workplace/workplaceSlice';
 import { doClearStudentInfo } from '../../redux/account/studentSlice';
 import { useEffect } from 'react';
-import { callGetAcceptedInvitation, callGetLecturerById, callGetNotification, callGetNotificationAddFile, callGetNotificationAddFilePhase2, callGetNotificationPhase2, callGetRefusedInvitation } from '../../../services/api';
+import { callGetAcceptedInvitation, callGetLecturerById, callGetNotification, callGetNotificationAddFile, callGetNotificationAddFileExplanation, callGetNotificationAddFilePhase2, callGetNotificationPhase2, callGetRefusedInvitation, callGetTopicById } from '../../../services/api';
 
 
 const Header = () => {
@@ -21,7 +21,9 @@ const Header = () => {
     const [dataNoti2, setDataNoti2] = useState()
     const [dataNoti3, setDataNoti3] = useState()
     const [dataNoti4, setDataNoti4] = useState()
-
+    const [dataNoti5, setDataNoti5] = useState()
+    const [dataNoti6, setDataNoti6] = useState()
+    const [topic, setTopic] = useState()
 
 
     const navigate = useNavigate()
@@ -35,14 +37,8 @@ const Header = () => {
     let content = ''
     if (userInfo !== '') {
         content = (
-            <div>
-                {/* {userInfo.role === '' ? '' : */}
-                <div style={{ height: 40, marginBottom: 20, marginTop: -15 }}>
-                    <p>Thông tin tài khoản
-                    </p>
-                    <p style={{ cursor: 'pointer' }} onClick={() => handleLogout()}>Đăng xuất</p>
-                </div>
-                {/* } */}
+            <div style={{ width: 100 }}>
+                <p style={{ cursor: 'pointer', display: 'inline-block', fontSize: 15 }} onClick={() => handleLogout()}><LogoutOutlined style={{ marginRight: 10, fontSize: 16 }} />Đăng xuất</p>
             </div>
 
         );
@@ -74,6 +70,14 @@ const Header = () => {
     )
 
     useEffect(() => {
+        const getTopic = async () => {
+            const res = await callGetTopicById(userInfo.topic_id)
+            if (res) {
+                console.log('topic', res.data.payload)
+                setTopic(res?.data?.payload)
+            }
+        }
+
         const getAcceptedInvitation = async () => {
             const res = await callGetAcceptedInvitation(userInfo.student_id)
             setInvitationInfo(res?.data?.payload?.status)
@@ -93,24 +97,24 @@ const Header = () => {
         const getNotification = async () => {
             const res = await callGetNotification()
             const res3 = await callGetNotificationAddFile()
+            const res4 = await callGetNotificationAddFileExplanation()
             let dataNotiCreate = ''
             let dataNotiAddFile = ''
+            let dataNotiAddFileExplanation = ''
 
             let data = []
             let data2 = []
-            // let data3 = []
-            // let data4 = []
+            let data3 = []
+
 
             dataNotiAddFile = res3.data.payload.items
             dataNotiCreate = res.data.payload.items
+            dataNotiAddFileExplanation = res4.data.payload.items
+
             if (dataNotiCreate.length > 0) {
                 let today = new Date()
                 let todayInt = today.getTime()
                 dataNotiCreate.map(item => {
-                    // console.log(todayInt)
-                    // console.log(+item.start_date)
-                    // console.log(+item.end_date)
-
                     if (todayInt >= +item?.start_date && todayInt <= item.end_date) {
                         console.log('item', item)
                         if (item.type === 'đợt 2') {
@@ -137,10 +141,6 @@ const Header = () => {
                 let today = new Date()
                 let todayInt = today.getTime()
                 dataNotiAddFile.map(item => {
-                    // console.log(todayInt)
-                    // console.log(+item.start_date)
-                    // console.log(+item.end_date)
-
                     if (todayInt >= +item?.start_date && todayInt <= item.end_date) {
                         console.log('chcek item', item)
                         if (item.type === 'nghiệm thu và báo cáo đợt 1') {
@@ -162,92 +162,33 @@ const Header = () => {
 
             }
 
-            // console.log('cjeck res 2', res2.data.payload.items.length)
-            // if (res.data.payload.items.length > 0) {
-            //     setCountNoti(1)
+            if (dataNotiAddFileExplanation.length > 0) {
+                let today = new Date()
+                let todayInt = today.getTime()
+                dataNotiAddFileExplanation.map(item => {
+                    if (todayInt >= +item?.start_date && todayInt <= item.end_date) {
+                        console.log('chcek item', item)
+                        if (item.type === 'Thông báo nộp hồ sơ thuyết minh đợt 1') {
+                            data3 = item
+                            data3.start_date = (new Date(+item.start_date)).toLocaleDateString()
+                            data3.end_date = (new Date(+item.end_date)).toLocaleDateString()
+                            setDataNoti5(data3)
+                        }
+                        if (item.type === 'Thông báo nộp hồ sơ thuyết minh đợt 2') {
+                            data3 = item
+                            data3.start_date = (new Date(+item.start_date)).toLocaleDateString()
+                            data3.end_date = (new Date(+item.end_date)).toLocaleDateString()
+                            setDataNoti6(data3)
+                        }
+                    } else {
+                        return
+                    }
+                })
 
-            //     console.log('check today', todayInt)
-            //     console.log('check staet', +res.data.payload.items[0].start_date)
-            //     console.log('check staet', +res.data.payload.items[0].end_date)
-
-
-
-            // }
-
-            // if (res2?.data?.payload?.items.length > 0) {
-            //     setCountNoti(1)
-            //     let today = new Date()
-            //     let todayInt = today.getTime()
-            //     console.log('check today', todayInt)
-            //     console.log('check start', +res2.data.payload.items[0].start_date)
-            //     console.log('check end', +res2.data.payload.items[[0].end_date])
-
-            //     if (todayInt >= +res2.data.payload.items[0].start_date && todayInt <= +res2.data.payload.items[0].end_date) {
-            //         data2.push(res2.data.payload.items)
-            //         data2[0].map(item => {
-            //             item.start_date = (new Date(+item.start_date)).toLocaleDateString()
-            //             item.end_date = (new Date(+item.end_date)).toLocaleDateString()
-
-            //         })
-            //         setDataNoti2(data2[0])
-            //         // console.log('check data 2', data2[0])
-            //     } else {
-            //         setDataNoti2([])
-            //     }
-
-            // }
-
-            // if (res3?.data?.payload?.items.length > 0) {
-            //     setCountNoti(1)
-            //     let today = new Date()
-            //     let todayInt = today.getTime()
-            //     console.log('check today', todayInt)
-            //     console.log('check start', +res2.data.payload.items[0].start_date)
-            //     console.log('check end', +res2.data.payload.items[[0].end_date])
-
-            //     if (todayInt >= +res3.data.payload.items[0].start_date && todayInt <= +res3.data.payload.items[0].end_date) {
-            //         data3.push(res3.data.payload.items)
-            //         data3[0].map(item => {
-            //             item.start_date = (new Date(+item.start_date)).toLocaleDateString()
-            //             item.end_date = (new Date(+item.end_date)).toLocaleDateString()
-
-            //         })
-            //         setDataNoti3(data3[0])
-            //         // console.log('check data 2', data2[0])
-            //     } else {
-            //         setDataNoti3([])
-            //     }
-
-            // }
-
-            // if (res4?.data?.payload?.items.length > 0) {
-            //     setCountNoti(1)
-            //     let today = new Date()
-            //     let todayInt = today.getTime()
-            //     // console.log('check today', todayInt)
-            //     // console.log('check start', +res4.data.payload.items[0].start_date)
-            //     // console.log('check end', +res4.data.payload.items[[0].end_date])
-
-            //     if (todayInt >= +res4.data.payload.items[0].start_date && todayInt <= +res4.data.payload.items[0].end_date) {
-            //         data4.push(res4.data.payload.items)
-            //         data4[0].map(item => {
-            //             item.start_date = (new Date(+item.start_date)).toLocaleDateString()
-            //             item.end_date = (new Date(+item.end_date)).toLocaleDateString()
-
-            //         })
-            //         setDataNoti4(data4[0])
-            //         // console.log('check data 2', data2[0])
-            //     } else {
-            //         setDataNoti4([])
-            //     }
-
-            // }
-
-            // console.log(data[0])
-
-
+            }
         }
 
+        getTopic()
         getNotification()
         getAcceptedInvitation()
         getRefusedInvitation()
@@ -259,7 +200,7 @@ const Header = () => {
 
     const contentNoti = (
         <div>
-            {invitationInfo === 2 ?
+            {invitationInfo === 2 && topic?.status?.status_id === 5 ?
                 <div style={{ marginBottom: 15 }}>
                     <div><b>Thông báo về giảng viên hướng dẫn</b></div>
                     <div>Giảng viên <b>{lecturerInfo?.lecturer_name} </b> đã chấp nhận yêu cầu hướng dẫn nghiên cứu khoa học của bạn.</div>
@@ -267,15 +208,14 @@ const Header = () => {
                 :
                 <p></p>
             }
-            {refusedInvitation.length > 0 ?
+            {refusedInvitation.length > 0 && invitationInfo !== 2 ?
                 <div>
                     <p>Giảng viên <b>{refusedInvitation[0]?.lecturerInfo?.lecturer_name} </b> đã từ chối yêu cầu hướng dẫn nghiên cứu khoa học của bạn, hãy chọn giảng viên khác.</p>
                 </div>
                 : ''
             }
-            {dataNoti ?
+            {dataNoti && topic?.status?.status_id < 4 ?
                 <>
-
                     <div>
                         <div><b>{dataNoti.name}</b></div>
                         <div>{dataNoti.content}</div>
@@ -298,7 +238,7 @@ const Header = () => {
                 : ''
             }
 
-            {dataNoti3 ?
+            {dataNoti3 && topic?.status?.status_id === 8 ?
                 <>
 
                     <div>
@@ -310,12 +250,86 @@ const Header = () => {
                 </>
                 : ''
             }
-            {dataNoti4 ?
+            {dataNoti4 && topic?.status?.status_id === 8 ?
                 <>
                     <div>
                         <div><b>{dataNoti4.name}</b></div>
                         <div>{dataNoti4.content}</div>
                         <div>Thời hạn từ {dataNoti4.start_date} đến {dataNoti4.end_date}</div>
+                    </div>
+                </>
+                : ''
+            }
+            {dataNoti5 && topic?.status?.status_id < 5 ?
+                <>
+                    <div>
+                        <div><b>{dataNoti5.name}</b></div>
+                        <div>{dataNoti5.content}</div>
+                        <div>Thời hạn từ {dataNoti5.start_date} đến {dataNoti5.end_date}</div>
+                    </div>
+                </>
+                : ''
+            }
+            {dataNoti6 && topic?.status?.status_id < 5 ?
+                <>
+                    <div>
+                        <div><b>{dataNoti6.name}</b></div>
+                        <div>{dataNoti6.content}</div>
+                        <div>Thời hạn từ {dataNoti6.start_date} đến {dataNoti6.end_date}</div>
+                    </div>
+                </>
+                : ''
+            }
+            {topic?.status?.status_id === 6 ?
+                <>
+                    <div>
+                        <div><b>Thông báo từ Trường Công nghệ Thông tin và Truyền thông</b></div>
+                        <div>Đề tài được duyệt bởi Trường Công nghệ thông tin và Truyền thông</div>
+                        <div>Chờ công văn duyệt của Trường Đại học Cần Thơ</div>
+                    </div>
+                </>
+                : ''
+            }
+            {topic?.status?.status_id === 7 ?
+                <>
+                    <div>
+                        <div><b>Thông báo từ Trường Đại học Cần Thơ</b></div>
+                        <div>Đề tài được duyệt bởi Trường Đại học Cần Thơ kèm theo công văn
+                            <br></br>
+                            (đã gửi cho chủ nhiệm các đề tài qua email)</div>
+                    </div>
+                </>
+                : ''
+            }
+            {topic?.status?.status_id === 10 ?
+                <>
+                    <div>
+                        <div><b>Thông báo</b></div>
+                        <div>Giáo viên hướng dẫn đã duyệt đơn xin nghiệm thu của bạn
+                            <br></br>
+                            Chờ phòng quản lí khoa học Đại học Cần Thơ duyệt</div>
+                    </div>
+                </>
+                : ''
+            }
+            {topic?.status?.status_id === 11 ?
+                <>
+                    <div>
+                        <div><b>Thông báo</b></div>
+                        <div>Phòng quản lí khoa học Đại học Cần Thơ đã duyệt đơn xin nghiệm thu của bạn
+                        </div>
+                    </div>
+                </>
+                : ''
+            }
+            {topic?.status?.status_id === 12 ?
+                <>
+                    <div>
+                        <div><b>Thông báo</b></div>
+                        <div>Phòng quản lí khoa học Đại học Cần Thơ đã gửi
+                            <br></br>
+                            quyết định nghiệm thu cho chủ nhiệm đề tài
+                        </div>
                     </div>
                 </>
                 : ''
@@ -390,15 +404,6 @@ const Header = () => {
                                     </Popover>
                                 </div>
                             </div>
-                            {/* {checkHasLecturer !== 'active' ?
-                                <div className='header-button' >
-                                    <div style={{ marginTop: 0 }} >
-                                        <Popover placement="bottomLeft" content={contentLecturer}  >
-                                            <LaptopOutlined style={{ marginRight: 6, marginLeft: 2 }} />
-                                            <span>Lecturer</span>
-                                        </Popover>
-                                    </div>
-                                </div> : ''} */}
 
                             <div className='header-button' >
                                 <div style={{ marginTop: 0 }} >

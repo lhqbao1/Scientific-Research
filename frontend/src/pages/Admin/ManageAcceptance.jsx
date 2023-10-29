@@ -7,10 +7,6 @@ import { callCreateCoucil, callGetAcceptance, callGetCoucil } from "../../../ser
 const ManageAcceptance = (props) => {
     const [coucil, setCoucil] = useState([])
 
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-
     useEffect(() => {
         getAcceptanceBoard()
     }, [])
@@ -19,22 +15,14 @@ const ManageAcceptance = (props) => {
         const res = await callGetAcceptance()
         if (res) {
             setCoucil(res?.data?.payload?.items)
-            console.log('aschecekdmsa', res.data.payload.items)
         }
     }
-
-
-
-
-
     return (
         <>
             <h2 style={{ marginLeft: 35 }}>Các hội đồng nghiệm thu</h2>
-            <Button style={{ marginLeft: 35, marginBottom: 20 }} type='primary' onClick={showModal}>Tạo hội đồng mới</Button>
 
             <Row>
-                {/* <Col span={4}></Col> */}
-                {/* <Col span={16} > */}
+
                 {coucil.map((coucil, index) => {
                     return (
                         <Col span={11} style={{ border: '0px solid black', marginBottom: 30, marginLeft: 35, padding: 10, borderRadius: '0% 0% 0% 0% / 0% 0% 0% 0%', boxShadow: '5px 5px  5px 6px  rgba(0,0,0,.15)', }}>
@@ -79,11 +67,7 @@ const ManageAcceptance = (props) => {
                         </Col>
                     )
                 })}
-                {/* </Col> */}
             </Row>
-
-
-
         </>
     )
 }

@@ -416,7 +416,7 @@ const LecturerExplanationBoard = () => {
             })
             if (topicApprove.status.status_id !== 15) {
                 notification.error({
-                    message: 'Đề tài đã được thông qua kết quả nghiệm thu',
+                    message: 'Đề tài đã được thông qua kết quả thuyết minh',
                     duration: 2
                 })
             } else {
@@ -425,7 +425,7 @@ const LecturerExplanationBoard = () => {
                 if (res1 && res2) {
                     setIsModalAccOpen(false)
                     notification.success({
-                        message: 'Đã thông qua kết quả báo cáo nghiệm thu của hội đồng',
+                        message: 'Đã thông qua kết quả báo cáo thuyết minh',
                         duration: 2
                     })
                 }
@@ -705,6 +705,7 @@ const LecturerExplanationBoard = () => {
                                 <Page pageNumber={pageNumber} renderAnnotationLayer={true} renderTextLayer={true}></Page>
                             </Document>
                         </Modal>
+
                         <Modal
                             title="Nhận xét của hội đồng thuyết minh"
                             open={isModalAccOpen}

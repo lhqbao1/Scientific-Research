@@ -25,7 +25,6 @@ const ManageTopic = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalApproveOpen, setIsModalApproveOpen] = useState(false)
     const [isModalOpenAcc, setIsOpenModalAcc] = useState(false)
-    const [isOpenModalResult, setIsOpenModalResult] = useState(false)
     const [isOpenModalNotification, setIsOpenModalNotification] = useState(false)
     const [listBoard, setListBoard] = useState([])
     const [selectedTopic, setSelectedTopic] = useState()
@@ -123,11 +122,9 @@ const ManageTopic = () => {
     }
 
     const handleSendNotification = async () => {
-        // console.log('check ', pdfFile)
-        // console.log('check topic', topicData)
         let studentEmail = []
         let idArr = []
-        const res = await callGetTopicWithStatus(6)
+        const res = await callGetTopicWithStatus(7)
 
         let topic = res.data.payload.items
 
@@ -142,7 +139,6 @@ const ManageTopic = () => {
 
         if (studentEmail.length > 0 && pdfFile && csvFile) {
             const resEmail = await callSendEmailNotification(studentEmail, csvFile, pdfFile)
-            console.log(resEmail)
             if (resEmail) {
                 const updateTopic = await callUpdateTopicStatusStartBulk(idArr)
                 notification.success({
@@ -322,7 +318,7 @@ const ManageTopic = () => {
                         color: 'black',
                     }}
                 >
-                    {record?.cost}
+                    {record?.cost ? record?.cost : 'Đề tài chưa được cấp kinh phí'}
                 </div>,
             },
             {
@@ -350,46 +346,6 @@ const ManageTopic = () => {
 
                             : ''
                         }
-
-                        {record?.status?.status_id === 10 ?
-                            <div>
-                                <button
-                                    onClick={() => ApproveAcceptanceTopic(record)}
-                                    style={{
-                                        backgroundColor: "#1677ff",
-                                        border: 'none',
-                                        color: 'white',
-                                        cursor: "pointer",
-                                        padding: 10,
-                                        borderRadius: 7
-                                    }}
-                                >
-                                    Thông qua đơn xin nghiệm thu
-                                </button>
-
-                            </div>
-
-                            : ''
-                        }
-
-
-                        {record?.status?.status_id === 13 ?
-                            <button
-                                onClick={() => openResult(record)}
-                                style={{
-                                    backgroundColor: "#1677ff",
-                                    border: 'none',
-                                    color: 'white',
-                                    cursor: "pointer",
-                                    padding: 10,
-                                    borderRadius: 7
-                                }}
-                            >
-                                Kết quả báo cáo
-                            </button>
-                            : ''
-                        }
-
                     </div>
 
             },
@@ -516,54 +472,15 @@ const ManageTopic = () => {
         setTopicDetail(topic)
     }
 
-    const getTransriptCtu = async (record) => {
-        const resFile = await callGetTopicEditExFile(record.topic_id)
-        // console.log(resFile.data.payload.items[0].file_url)
-        setEditExFile(resFile.data.payload.items[0])
-        const res = await callGetTranscriptByTopicId(record.topic_id)
-        // console.log(res.data.payload)
 
-        if (res.data.payload.length > 0) {
-            setIsModalApproveOpen(true)
-            // setChoosedTopic(record)
-            setTranscriptInfo(res.data.payload)
-            let totalScore = 0
-            let data = res.data.payload
-            // console.log('chcek data', data)
-            if (data?.length >= 3) {
-                data.map(item => {
-                    totalScore += item.score
-                })
-                setTopicScore(totalScore / data.length)
-            }
-        } else {
-            notification.error({
-                message: 'Đề tài chưa có nhận xét',
-                duration: 2
-            })
-        }
-    }
 
     const getSelectTopis = (record) => {
         if (isChoosed === false) {
             selectTopics.push(record)
-            // setSelectTopics(record)
-
         }
         // console.log(selectTopics)
         setOpenApproveCtu(true)
     }
-
-    const openResult = (data) => {
-        setIsOpenModalResult(true)
-    }
-
-    const handleCancelResult = () => {
-        setIsOpenModalResult(false)
-    }
-
-
-
 
     const ApproveTopic = async (record) => {
 
@@ -587,54 +504,27 @@ const ManageTopic = () => {
             })
             return;
         }
-        if (record.topic_code !== null) {
-            notification.error({
-                message: 'Đề tài đã được duyệt',
-                duration: 2
-            })
-        } else {
+
+        setIsModalApproveOpen(true)
+        setChoosedTopic(record)
+        const res = await callGetTranscriptByTopicId(record.topic_id)
+        if (res.data.payload.length > 0) {
+            setTranscriptInfo(res.data.payload)
+            let totalScore = 0
+            let data = res.data.payload
+            console.log('chcek data', data)
+            if (data?.length >= 3) {
+                data.map(item => {
+                    totalScore += item.score
+                })
+                setTopicScore(totalScore / data.length)
+            }
+
+        }
+        if (record.explanationboard !== null) {
             setIsModalApproveOpen(true)
-            setChoosedTopic(record)
-            const res = await callGetTranscriptByTopicId(record.topic_id)
-            if (res.data.payload.length > 0) {
-                setTranscriptInfo(res.data.payload)
-                let totalScore = 0
-                let data = res.data.payload
-                console.log('chcek data', data)
-                if (data?.length >= 3) {
-                    data.map(item => {
-                        totalScore += item.score
-                    })
-                    setTopicScore(totalScore / data.length)
-                }
-
-            }
-            if (record.explanationboard !== null) {
-                setIsModalApproveOpen(true)
-            }
         }
 
-    }
-
-    const ApproveAcceptanceTopic = async (data) => {
-        const res = await callApproveAccTopic(data.topic_id, 11)
-        if (res.data.payload) {
-            notification.success({
-                message: 'Đã duyệt yêu cầu nghiệm thu',
-                duration: 2
-            })
-        }
-        if (data.acceptanceboard !== null) {
-            notification.error({
-                message: 'Đề tài đã có hội đồng nghiệm thu',
-                duration: 2
-            })
-        } else {
-            const res = await callCreateCoucil('Hội đồng nghiệm thu', data?.topic_name, 'hội đồng nghiệm thu')
-            if (res.data.payload) {
-                const ress = await callSetTopicAccBoard(data?.topic_id, res.data.payload.id)
-            }
-        }
     }
 
     const onChange = (pagination, filters, sorter, extra) => {
@@ -657,6 +547,7 @@ const ManageTopic = () => {
     };
     const handleCancelAcc = () => {
         setIsOpenModalAcc(false)
+        setSelectTopics([])
     }
 
     const onFinish = async (values) => {
@@ -673,21 +564,21 @@ const ManageTopic = () => {
     };
 
     const openConfirmBoard = async (record) => {
-        console.log('checek topic ', selectTopics)
-        // setSelectTopics(record)
-        setIsOpenModalAcc(true)
-        const res = await callGetTopicAccById(record.topic_id)
-        setChoosedTopic(res.data.payload)
-        // setAccBoardData(res?.data?.payload?.accBoard)
+        if (selectTopics?.length === 0) {
+            notification.error({
+                message: 'Bạn chưa chọn đề tài',
+                duration: 2
+            })
+        } else {
+            setIsOpenModalAcc(true)
+        }
     }
 
     const handleConfirmAcc = async () => {
         let idArr = []
-        console.log(selectTopics)
         selectTopics.map(item => {
             idArr.push(item.topic_id)
         })
-        console.log(idArr)
         const res = await callUpdateTopicStatusBulkTrue(idArr, 11)
         if (res) {
             notification.success({
@@ -708,21 +599,6 @@ const ManageTopic = () => {
 
     const chooseDate = (date, dateString) => {
         setDate(dateString)
-    };
-
-
-
-
-
-    const onOk = (value) => {
-        let start = value[0].$d.getTime()
-        let end = value[1].$d.getTime()
-        setStartDate(start)
-        setEndDate(end)
-    };
-
-    const onFinishFailedCreate = (errorInfo) => {
-        console.log('Failed:', errorInfo);
     };
 
     const handleExportData = () => {
@@ -781,7 +657,7 @@ const ManageTopic = () => {
         const worksheet = XLSX.utils.json_to_sheet(dataCsv);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet2");
-        XLSX.writeFile(workbook, "DataTopics.csv");
+        XLSX.writeFile(workbook, "Danh sach de tai.csv");
     }
 
     const chooseStatus = async (e) => {
@@ -841,13 +717,10 @@ const ManageTopic = () => {
             console.log('selectedRows: ', selectedRows);
             setIsChoosed(true)
             setSelectTopics(selectedRows)
-            // selectedRows.map(item => {
-            //     delete 
-            // })
+
         },
         getCheckboxProps: (record) => ({
             disabled: record.topic_name === 'Disabled User',
-            // Column configuration not to be checked
             name: record.topic_name,
         }),
     };
@@ -901,9 +774,8 @@ const ManageTopic = () => {
 
     return (
         <div>
-            {value === 1 ? '' :
-                <Button style={{ marginBottom: 20 }} onClick={handleExportData} type="primary">Xuất file danh sách đề tài</Button>
-            }
+            <Button style={{ marginBottom: 20 }} onClick={handleExportData} type="primary">Xuất file danh sách đề tài</Button>
+
             {subRole === 'admin-ctu' && value === 7 ?
                 <Button style={{ marginBottom: 20, marginLeft: 20 }} onClick={() => setIsOpenModalNotification(true)} type="primary">Gửi email duyệt thuyết minh</Button>
                 : ''}
@@ -919,10 +791,14 @@ const ManageTopic = () => {
                         value={value}
                     >
                         <Radio value={1}>Tất cả</Radio>
-                        <Radio value={15}>Chờ báo cáo</Radio>
-                        <Radio value={17}>Chờ duyệt</Radio>
+                        <Radio value={15}>Chờ báo cáo thuyết minh</Radio>
+                        <Radio value={17}>Chờ duyệt file giải trình thuyết minh</Radio>
+                        <Radio value={6}>Chờ duyệt thuyết minh</Radio>
                         <Radio value={7}>Đang thực hiện</Radio>
-
+                        <Radio value={10}>Chờ duyệt nghiệm thu</Radio>
+                        <Radio value={11}>Đã duyệt nghiệm thu</Radio>
+                        <Radio style={{ marginTop: 10 }} value={12}>Đã có quyết định nghiệm thu</Radio>
+                        <Radio style={{ marginTop: 10 }} value={20}>Đã nghiệm thu</Radio>
                     </Radio.Group>
 
                     <Divider />
@@ -935,14 +811,14 @@ const ManageTopic = () => {
                         value={value}
                     >
                         <Radio value={1}>Tất cả</Radio>
+                        <Radio value={15}>Chờ báo cáo thuyết minh</Radio>
+                        <Radio value={17}>Chờ duyệt file giải trình thuyết minh</Radio>
                         <Radio value={6}>Chờ duyệt thuyết minh</Radio>
                         <Radio value={7}>Đang thực hiện</Radio>
                         <Radio value={10}>Chờ duyệt nghiệm thu</Radio>
                         <Radio value={11}>Đã duyệt nghiệm thu</Radio>
-                        <Radio value={12}>Đã có quyết định nghiệm thu</Radio>
-                        <Radio value={20}>Đã nghiệm thu</Radio>
-
-
+                        <Radio style={{ marginTop: 10 }} value={12}>Đã có quyết định nghiệm thu</Radio>
+                        <Radio style={{ marginTop: 10 }} value={20}>Đã nghiệm thu</Radio>
                     </Radio.Group>
 
                     <Divider />
@@ -950,7 +826,6 @@ const ManageTopic = () => {
                 : ''}
 
             <Table
-                // title={tableUserHeader}
                 dataSource={topicData}
                 columns={columns}
                 onChange={onChange}
@@ -961,7 +836,7 @@ const ManageTopic = () => {
                     pageSize: pageSize,
                     showSizeChanger: true,
                     pageSizeOptions: ['2', '5', '10', '20'],
-                    showTotal: (total, range) => { return (<div>{range[0]} - {range[1]} on {total} results</div>) }
+                    showTotal: (total, range) => { return (<div>{range[0]} - {range[1]} trên {total} kết quả</div>) }
                 }}
                 rowSelection={subRole === 'admin-ctu' && value !== 1 ?
                     {
@@ -1064,7 +939,7 @@ const ManageTopic = () => {
                         customRequest={dummyRequest}
                         onChange={chooseFile}
                         fileList={defaultFileListCsv}
-                    // onChange={handleChange}
+                        accept='text/csv'
                     >
                         <Button
                             icon={<UploadOutlined />}  >
@@ -1077,6 +952,7 @@ const ManageTopic = () => {
                     customRequest={dummyRequest}
                     onChange={chooseFilePdf}
                     fileList={defaultFileListPdf}
+                    accept='application/pdf'
                 >
                     <Button icon={<UploadOutlined />}  >
                         Chọn file bản quyết định phê duyệt (pdf)
@@ -1181,7 +1057,6 @@ const ManageTopic = () => {
                                 >
                                     <InputNumber
                                         addonAfter="VND"
-                                        defaultValue={1000}
                                         formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                                         parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
                                         style={{

@@ -2,13 +2,15 @@ import { Card, Col, Row, Statistic } from 'antd'
 import './AdminDashboard.scss'
 import { ArrowDownOutlined, ArrowUpOutlined, UserOutlined } from '@ant-design/icons'
 import { useEffect } from 'react'
-import { callGetStudents } from '../../../services/api'
+import { callGetAcceptance, callGetCoucil, callGetLecturer, callGetStudents } from '../../../services/api'
 import { useState } from 'react'
 
 
 const AdminDashboard = () => {
     const [amoutStudent, setAmoutStudent] = useState()
-
+    const [lecturer, setLecturer] = useState()
+    const [explanation, setExplanation] = useState()
+    const [acceptance, setAcceptance] = useState()
 
 
     useEffect(() => {
@@ -18,7 +20,29 @@ const AdminDashboard = () => {
                 setAmoutStudent(res.data.payload.items.length)
             }
         }
+        const getLecturer = async () => {
+            const res = await callGetLecturer()
+            if (res) {
+                setLecturer(res.data.payload.items.length)
+            }
+        }
+        const getExplanationCoucil = async () => {
+            const res = await callGetCoucil()
+            if (res) {
+                setExplanation(res.data.payload.items.length)
+            }
+        }
+        const getAcceptanceCoucil = async () => {
+            const res = await callGetAcceptance()
+            if (res) {
+                setAcceptance(res.data.payload.items.length)
+            }
+        }
+
         getStudentAmount()
+        getLecturer()
+        getExplanationCoucil()
+        getAcceptanceCoucil()
     }, [])
     return (
         <div className="admin-dashboard-container">
@@ -28,28 +52,28 @@ const AdminDashboard = () => {
                         <Col span={12}>
                             <Card bordered={true}>
                                 <Statistic
-                                    title="Students"
+                                    title="Sinh viên"
                                     value={amoutStudent}
                                     precision={0}
                                     valueStyle={{
                                         color: '#3f8600',
                                     }}
                                     prefix={<UserOutlined />}
-                                    suffix="students"
+                                    suffix="sinh viên"
                                 />
                             </Card>
                         </Col>
                         <Col span={12}>
                             <Card bordered={true}>
                                 <Statistic
-                                    title="Lecturer"
-                                    value={100}
+                                    title="Giảng viên"
+                                    value={lecturer}
                                     precision={0}
                                     valueStyle={{
                                         color: '#3f8600',
                                     }}
                                     prefix={<UserOutlined />}
-                                    suffix="Lecturers"
+                                    suffix="giảng viên"
                                 />
                             </Card>
                         </Col>
@@ -58,28 +82,28 @@ const AdminDashboard = () => {
                         <Col span={12}>
                             <Card bordered={true}>
                                 <Statistic
-                                    title="Advisors"
-                                    value={100}
+                                    title="Hội đồng thuyết minh"
+                                    value={explanation}
                                     precision={0}
                                     valueStyle={{
                                         color: '#3f8600',
                                     }}
                                     prefix={<UserOutlined />}
-                                    suffix="Advisors"
+                                    suffix="hội đồng thuyết minh"
                                 />
                             </Card>
                         </Col>
                         <Col span={12}>
                             <Card bordered={true}>
                                 <Statistic
-                                    title="Council"
-                                    value={100}
+                                    title="Hội đồng nghiệm thu"
+                                    value={acceptance}
                                     precision={0}
                                     valueStyle={{
                                         color: '#3f8600',
                                     }}
                                     prefix={<UserOutlined />}
-                                    suffix="Councils"
+                                    suffix="hội đồng nghiệm thu"
                                 />
                             </Card>
                         </Col>

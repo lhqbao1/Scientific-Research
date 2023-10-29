@@ -1,13 +1,14 @@
-import { Modal, Table, Upload, message } from "antd";
+import { Modal, Table, Upload, message, notification } from "antd";
 import { InboxOutlined } from '@ant-design/icons';
 import { useState } from "react";
 import * as XLSX from 'xlsx'
+import { callCreateBulkLecturer, callCreateBulkUser, callGetLecturer, callGetUser } from "../../../services/api";
 
 
 
 const ImportLecturer = (props) => {
     const { Dragger } = Upload;
-    const { openModalImport, setOpenModalImport } = props
+    const { openModalImport, setOpenModalImport, reload, setReload } = props
     const [dataExcel, setDataExcel] = useState()
     const [dataExcelLength, setDataExcelLength] = useState(0)
 
@@ -30,15 +31,15 @@ const ImportLecturer = (props) => {
         multiple: false,
         maxCount: 1,
         customRequest: dummyRequest,
-        accept: ".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel",
-        // action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+        accept: "text/csv",
         onChange(info) {
             const { status } = info.file;
             if (status !== 'uploading') {
                 console.log('cloading', info.file, info.fileList);
             }
             if (status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully.`);
+
+                message.success(`${info.file.name} file đã được chọn`);
 
                 let file = info.fileList[0].originFileObj
                 const reader = new FileReader();
@@ -47,10 +48,9 @@ const ImportLecturer = (props) => {
                     let workbook = XLSX.read(data, { type: 'array' });
                     // find the name of your sheet in the workbook first
                     let worksheet = workbook.Sheets[workbook.SheetNames[0]];
-
                     // convert to json format
                     const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-                        header: ["name", "studentID", "email", "grade", "major"],
+                        header: ["Họ tên", "Học hàm", "Chức vụ", "Email", "Nơi làm việc"],
                         range: 1
                     });
                     if (jsonData && jsonData.length > 0) {
@@ -72,36 +72,113 @@ const ImportLecturer = (props) => {
 
     const columns = [
         {
-            title: 'Name',
-            dataIndex: 'name',
+            title: 'Họ tên',
+            dataIndex: 'Họ tên',
         },
         {
-            title: 'Student ID',
-            dataIndex: 'studentID',
+            title: 'Học hàm',
+            dataIndex: 'Học hàm',
         },
 
+        {
+            title: 'Chức vụ',
+            dataIndex: 'Chức vụ',
+
+        },
         {
             title: 'Email',
-            dataIndex: 'email',
+            dataIndex: 'Email',
 
         },
         {
-            title: 'Grade',
-            dataIndex: 'grade',
+            title: 'Nơi làm việc',
+            dataIndex: 'Nơi làm việc',
 
         },
-        {
-            title: 'Major',
-            dataIndex: 'major',
-
-        },
-
-
-
     ];
 
-    const handleImport = () => {
-        console.log('check data', dataExcel)
+    const handleImport = async () => {
+        let dataUser = []
+        let data = []
+        dataExcel.map(item => {
+            let object = {}
+            object.lecturer_name = item["Họ tên"]
+            object.position = item["Chức vụ"]
+            object.degree = item["Học hàm"]
+            object.email = item["Email"]
+            if (item["Nơi làm việc"] === 'Khoa Công nghệ thông tin') {
+                object.work_place_id = 'CNTT'
+            }
+            if (item["Nơi làm việc"] === 'Khoa khoa học máy tính') {
+                object.work_place_id = 'KHMT'
+            }
+            if (item["Nơi làm việc"] === 'Khoa hệ thống thông tin') {
+                object.work_place_id = 'HTTT'
+            }
+            if (item["Nơi làm việc"] === 'Khoa mạng máy tính và truyền thông') {
+                object.work_place_id = 'MMTVTT'
+            }
+            if (item["Nơi làm việc"] === 'Khoa truyền thông đa phương tiện') {
+                object.work_place_id = 'TTDPT'
+            }
+            if (item["Nơi làm việc"] === 'Khoa công nghệ phần mềm') {
+                object.work_place_id = 'CNPM'
+            }
+            data.push(object)
+        })
+
+        data.map(item => {
+            let object = {}
+            object.email = item.email
+            object.password = 123456
+            object.role = 2
+            dataUser.push(object)
+        })
+
+        const resUser = await callGetUser()
+        const resLecturer = await callGetLecturer()
+        let user = resUser?.data?.payload?.items
+        let lecturer = resLecturer?.data?.payload?.items
+
+        user.map(user => {
+            dataUser.map(dataUser1 => {
+                if (user.email === dataUser1.email) {
+                    dataUser = dataUser.filter(dataUser => dataUser.email !== dataUser1.email)
+                }
+            })
+        })
+
+        lecturer.map(lecturer => {
+            data.map(data1 => {
+                if (lecturer.email === data1.email) {
+                    data = data.filter(data => data.email !== data1.email)
+                }
+            })
+        })
+
+
+        const bulkUser = await callCreateBulkUser(dataUser)
+
+        let listUser = bulkUser.data.payload
+        let userId = []
+        listUser.map(item => {
+            userId.push(item.id)
+        })
+
+        for (let i = 0; i < data.length; i++) {
+            data[i].user_id = userId[i]
+        }
+        const bulkLecturer = await callCreateBulkLecturer(data)
+        if (bulkUser && bulkLecturer) {
+            setDataExcel([])
+            setReload(!reload)
+            setOpenModalImport(false)
+            notification.success({
+                message: 'Tạo nhiều tài khoản giảng viên thành công',
+                duration: 2
+            })
+        }
+        console.log('chekc user', data)
     }
     const onRemoveFile = () => {
         setDataExcel([])
@@ -130,10 +207,9 @@ const ImportLecturer = (props) => {
                     <p className="ant-upload-drag-icon">
                         <InboxOutlined />
                     </p>
-                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                    <p className="ant-upload-text">Bấm vào đây hoặc kéo thả file vào để tải lên</p>
                     <p className="ant-upload-hint">
-                        Support for a single or bulk upload. Strictly prohibited from uploading company data or other
-                        banned files.
+                        Chấp nhận file csv
                     </p>
                 </Dragger>
 

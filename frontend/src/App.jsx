@@ -15,21 +15,12 @@ import {
   Outlet
 } from "react-router-dom";
 import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
 import HomePage from './pages/HomePage/HomePage';
 import Loading from './components/Loading/Loading';
-import BookPage from './pages/Book/BookPage'
 import Login from './pages/Login/Login';
 import AdminPage from './pages/Admin/AdminPage';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
-import { doGetAccountAction } from './redux/account/accountSlice';
-import { callGetUser } from '../services/api';
 import LecturerCNPM from './pages/Student/LecturerCNPM';
-import LecturerCNTT from './pages/Student/LecturerCNTT';
-import LecturerHTTT from './pages/Student/LecturerHTTT';
-import LecturerKHMT from './pages/Student/LecturerKHMT';
-import LecturerMMTVTT from './pages/Student/LecturerMMTVTT';
-import LecturerTTDPT from './pages/Student/LecturerTTDPT';
 import StudentTopic from './pages/Student/StudentTopic';
 import ProtectedRouteStudent from './components/ProtectedRoute/ProtectedRouteStudent';
 import LecturerHomePage from './pages/Lecturer/LecturerHomePage';
@@ -46,8 +37,8 @@ const Layout = () => {
         {student === 'student' && <Header />
         }
         <Outlet />
-        {student === 'student' && <Footer />
-        }
+        {/* {student === 'student' && <Footer />
+        } */}
       </div>
     </div>
   )
@@ -61,8 +52,7 @@ const LayoutLecturer = () => {
       }
 
       <Outlet />
-      {lecturer === 'lecturer' && <Footer />
-      }
+
 
     </div>
   )
@@ -70,9 +60,9 @@ const LayoutLecturer = () => {
 
 const LayoutAdmin = () => {
   //get user info from redux
-  const admin = useSelector(state => state.accountAdmin.user)
+  const admin = useSelector(state => state?.accountAdmin?.user)
   //get role user
-  const userRole = admin.role
+  const userRole = admin?.role
   return (
     <div>
       {window.location.pathname === '/admin' && userRole === 'Admin' && ''
@@ -91,7 +81,7 @@ const LayoutAdmin = () => {
 export default function App() {
   const dispatch = useDispatch();
   const isLoading = useSelector(state => state.account.isLoading)
-
+  // const user = useSelector(state => state.accountAdmin.user)
 
   const router = createBrowserRouter([
     {
@@ -163,22 +153,12 @@ export default function App() {
       path: "/topic",
       element: <StudentTopic />,
     },
-
-    // {
-    //   path: "/register",
-    //   element: <RegisterPage />,
-    // },
-
-
-
-
   ]);
 
   return (
     <>
       {isLoading === false
         || window.location.pathname === '/login'
-        || window.location.pathname === '/register'
         || window.location.pathname === '/'
 
         ? <RouterProvider router={router} />

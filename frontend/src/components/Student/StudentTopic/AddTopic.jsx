@@ -36,15 +36,11 @@ const AddTopic = () => {
 
                             setHasNoti(true)
                         }
-                        console.log('check data', data)
                     } else {
                         return
                     }
                 })
-
             }
-
-
         }
         getNotification()
     }, [])
@@ -66,12 +62,15 @@ const AddTopic = () => {
                 // console.log(res.data.payload)
                 const updateTopic = await callAddStudentTopic(student_id, res?.data?.payload?.topic_id)
                 if (updateTopic) {
-                    window.location.reload()
-                    form.resetFields()
                     notification.success({
                         message: `Tạo đề tài ${values.topic_name} thành công`,
                         duration: 2
                     })
+                    setTimeout(() => {
+                        form.resetFields()
+                        window.location.reload()
+                    }, 2000)
+
                 }
             }
         }
@@ -83,11 +82,14 @@ const AddTopic = () => {
                 // console.log(res.data.payload)
                 const updateTopic = await callAddStudentTopic(student_id, res?.data?.payload?.topic_id)
                 if (updateTopic) {
-                    form.resetFields()
                     notification.success({
                         message: `Tạo đề tài ${values.topic_name} thành công`,
                         duration: 2
                     })
+                    setTimeout(() => {
+                        form.resetFields()
+                        window.location.reload()
+                    }, 2000)
                 }
             }
         }
@@ -101,7 +103,7 @@ const AddTopic = () => {
 
     return (
         <>
-            <div style={{ backgroundColor: '#efefef', marginLeft: -8, marginRight: -8, marginTop: 8 }}>
+            <div style={{ backgroundColor: '#efefef', marginLeft: -8, marginRight: -8, marginTop: 8, paddingBottom: 25, marginBottom: -8 }}>
                 <div style={{ minHeight: 570 }}>
                     <Row>
                         <Col span={5}></Col>

@@ -5,7 +5,6 @@ import { searchStudent } from "../../../services/api";
 
 const SearchStudent = (props) => {
 
-    const [keyword, setKeyword] = useState()
     const [userSearch, setUserSearch] = useState()
 
     const onFinish = async (dataSearch) => {
@@ -39,53 +38,15 @@ const SearchStudent = (props) => {
                 <Row>
                     <Col span={7} >
                         <Form.Item
-                            label="Find student (student name or grade or student ID)"
+                            label="Tìm sinh viên (tên hoặc mã số sinh viên)"
                             name="student_name"
-                            rules={[
-                                {
-                                    message: 'Please input your username!',
-                                },
-                            ]}
                         >
                             <Input />
                         </Form.Item>
                     </Col>
                     <Col span={3}></Col>
-                    {/* <Col span={6}>
-                        <Form.Item
-                            label="Student grade"
-                            name="studentGrade"
-                            rules={[
-                                {
-                                    message: 'Please input your username!',
-                                },
-                            ]}
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col> */}
                     <Col span={3}></Col>
-
-                    {/* <Col span={6}>
-                        <Form.Item
-                            label="Student ID"
-                            name="studentID"
-                            rules={[
-                                {
-                                    message: 'Please input your password!',
-                                },
-                            ]}
-                        >
-                            <Input />
-                        </Form.Item>
-
-                    </Col> */}
                 </Row>
-
-
-
-
-
                 <Form.Item
                     wrapperCol={{
                         offset: 0,
@@ -93,7 +54,7 @@ const SearchStudent = (props) => {
                     }}
                 >
                     <Button type="primary" htmlType="submit">
-                        Submit
+                        Tìm
                     </Button>
                 </Form.Item>
             </Form>

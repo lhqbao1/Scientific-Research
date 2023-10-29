@@ -5,11 +5,8 @@ import Loading from "../Loading/Loading";
 const RoleBaseRoute = (props) => {
     //get URL
     const isAdminRoute = window.location.pathname.startsWith('/admin');
-    console.log(window.location.pathname)
-    //get user info from redux
-    const admin = useSelector(state => state.accountAdmin.user)
-    //check role user
-    const userRole = admin.role
+    const admin = useSelector(state => state?.accountAdmin?.user)
+    const userRole = admin?.role
     if (isAdminRoute === true && userRole === 'admin') {
         return (<>{props.children}</>)
     } else {
@@ -18,7 +15,7 @@ const RoleBaseRoute = (props) => {
 }
 
 const ProtectedRoute = (props) => {
-    const isAuthenticated = useSelector(state => state.accountAdmin.isAuthenticated)
+    const isAuthenticated = useSelector(state => state?.accountAdmin?.isAuthenticated)
 
     return (
         <>

@@ -52,6 +52,7 @@ const ManageExplanation = (props) => {
     const getCoucil = async () => {
         const res = await callGetCoucil()
         if (res) {
+            console.log(res.data.payload.items)
             setCoucil(res?.data?.payload?.items)
         }
     }
@@ -248,7 +249,7 @@ const ManageExplanation = (props) => {
     }
 
     const confirm = async () => {
-        // console.log('check board', choosedBoard)
+        console.log('check board', choosedBoard)
         let choosed = []
         choosedBoard?.commissioners.map(item => {
             if (choosedLecturer.lecturer_id === item.lecturer) {

@@ -3,12 +3,16 @@ import { Button, Card, Col, DatePicker, Descriptions, Drawer, Form, message, Mod
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { callCheckInvi, callCheckInviRole, callCreateAccInvitation, callGetAcceptanceFile, callGetExplanationCoucilById, callGetLecturerByWorkPlace, callGetNotificationAddFile, callGetSentInvi, callGetTopicById, callGetTopicStudent, callGetTopicWithExplanation, callGetTranscriptAccByTopicId, callGetTranscriptByTopicId, callSetDateTopic, callUpdateTopicStatus } from '../../../services/api'
+import { callCheckInvi, callCheckInviRole, callCreateAccInvitation, callCreateCoucil, callGetAcceptanceFile, callGetExplanationCoucilById, callGetLecturerByWorkPlace, callGetNotificationAddFile, callGetNotificationStartReport, callGetSentInvi, callGetTopicById, callGetTopicStudent, callGetTopicWithExplanation, callGetTranscriptAccByTopicId, callGetTranscriptByTopicId, callSetDateTopic, callSetTopicAccBoard, callUpdateTopicStatus } from '../../../services/api'
 import './LecturerHomePage.scss'
 import { Buffer } from 'buffer';
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import { Document, Page, pdfjs } from 'react-pdf';
+import DrawerListFile from './ModalLecturerHomePage/DrawerListFile'
+import ModalExplanationTranscript from './ModalLecturerHomePage/ModalExplanationTranscript'
+import ModalAcceptanceTranscript from './ModalLecturerHomePage/ModalAcceptanceTranscript'
+import ModalAddLecturer from './ModalLecturerHomePage/ModalAddLecturer'
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/legacy/build/pdf.worker.min.js`;
 
@@ -20,7 +24,6 @@ const LecturerHomePage = () => {
     const [numPages, setNumPages] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [openModalEx, setOpenModalEx] = useState(false)
     const [openModalAcc, setOpenModalAcc] = useState(false)
 
     const [open, setOpen] = useState(false);
@@ -35,6 +38,18 @@ const LecturerHomePage = () => {
     const [exTranscript, setExTranscript] = useState([])
     const [accTranscript, setAccTranscript] = useState([])
     const [choosedDate, setChoosedDate] = useState()
+    const [hasNotiStartReport, setHasNotiStartReport] = useState(false)
+
+    const [drawerTopic, setDrawerTopic] = useState()
+    const [drawerTopicTranscript, setDrawerTopicTranscript] = useState()
+    const [isOpenDrawerListFile, setIsOpenDrawerListFile] = useState(false)
+    const [isModalExplanationOpen, setIsModalExplanationOpen] = useState(false)
+    const [openModalAdd, setOpenModalAdd] = useState(false)
+
+    const [isModalAcceptanceOpen, setIsModalAcceptanceOpen] = useState(false)
+    const [drawerTopicTranscriptAcc, setDrawerTopicTranscriptAcc] = useState()
+    const [reload, setReload] = useState(false)
+
 
     const chooseRole = (e) => {
         setValueRole(e.target.value);
@@ -57,7 +72,6 @@ const LecturerHomePage = () => {
     ];
 
     const confirm = async () => {
-        // console.log('check full', choosedTopic)
         if (choosedLecturer.lecturer_id === lecturerId) {
             notification.error({
                 message: 'Bạn đã là giáo viên hướng dẫn cho đề tài này!',
@@ -75,10 +89,29 @@ const LecturerHomePage = () => {
                 const checkRole = await callCheckInviRole(lecturerId, choosedTopic.topic_id, valueRole)
                 let check = checkRole?.data?.payload
                 let isCheck = false
-                console.log('check roleasd', checkRole)
                 for (let i = 0; i < check.length; i++) {
                     if (check[i].type === 3) {
                         if (check.length >= 2) {
+                            notification.error({
+                                message: 'Bạn đã mời giảng viên khác cho vị trí này',
+                                duration: 2
+                            })
+                            isCheck = true
+                            break;
+                        }
+                    }
+                    if (check[i].type === 2) {
+                        if (check.length >= 1) {
+                            notification.error({
+                                message: 'Bạn đã mời giảng viên khác cho vị trí này',
+                                duration: 2
+                            })
+                            isCheck = true
+                            break;
+                        }
+                    }
+                    if (check[i].type === 1) {
+                        if (check.length >= 1) {
                             notification.error({
                                 message: 'Bạn đã mời giảng viên khác cho vị trí này',
                                 duration: 2
@@ -96,22 +129,9 @@ const LecturerHomePage = () => {
                             duration: 2
                         })
                     }
-
                 }
-
             }
-
-
         }
-
-
-        // message.info('Clicked on Yes.');
-        // console.log('check res', check)
-        // console.log('check role', valueRole)
-        // console.log('check lectrurer', choosedLecturer)
-        // console.log('check id', lecturerId)
-        // console.log('check topic', choosedTopic)
-
     };
     const cancel = () => {
         message.info('Clicked on Yes.');
@@ -126,12 +146,39 @@ const LecturerHomePage = () => {
                 setLecturerTopic(res?.data?.payload)
             }
         }
+        const getNotiStartReport = async () => {
+            const res = await callGetNotificationStartReport()
+            let dataNotiStartReport = ''
+            dataNotiStartReport = res.data.payload.items
+            let data = []
+            if (dataNotiStartReport.length > 0) {
+                let today = new Date()
+                let todayInt = today.getTime()
+                dataNotiStartReport.map(item => {
+                    if (todayInt >= +item?.start_date && todayInt <= item.end_date) {
+                        if (item.type === 'Bắt đầu nghiệm thu đợt 2') {
+                            data = item
+                            data.start_date = (new Date(+item.start_date)).toLocaleDateString()
+                            data.end_date = (new Date(+item.end_date)).toLocaleDateString()
+                            setHasNotiStartReport(true)
+                        }
+                        if (item.type === 'Bắt đầu nghiệm thu đợt 1') {
+                            data = item
+                            data.start_date = (new Date(+item.start_date)).toLocaleDateString()
+                            data.end_date = (new Date(+item.end_date)).toLocaleDateString()
+                            setHasNotiStartReport(true)
+                        }
+                    } else {
+                        return
+                    }
+                })
+            }
+        }
+        getNotiStartReport()
         callGetTopic()
     }
-        , [lecturerTopic]
+        , [reload]
     )
-
-
 
     const columns = [
         {
@@ -201,13 +248,6 @@ const LecturerHomePage = () => {
         setPageNumber(1);
     }
 
-    const getFileUrl = (file_url) => {
-        let fileBase64 = new Buffer(file_url, 'base64').toString('binary')
-        console.log('check buffer', fileBase64)
-        setIsModalOpen(true);
-        setPdfFile(fileBase64)
-    };
-
 
     const handleOk = () => {
         setIsModalOpen(false);
@@ -226,14 +266,14 @@ const LecturerHomePage = () => {
 
 
     const openDrawer = async (data) => {
-
+        if (data.acceptanceboard === null) {
+            const createBoard = await callCreateCoucil('Hội đồng nghiệm thu', data.topic_name, 'hội đồng nghiệm thu')
+            const updateBoard = await callSetTopicAccBoard(data?.topic_id, createBoard?.data?.payload?.id)
+        }
         const res = await callGetNotificationAddFile()
         let noti = res.data.payload.items
-        // const res2 = await callGetNotificationAddFilePhase2()
-        // console.log('check res', res.data.payload.items)
         const topic = await callGetTopicById(data.topic_id)
         let topicPhase = topic.data.payload.phase
-        // console.log('check phase', topicPhase)
         let notiCheck = false
         let today = new Date()
         let todayInt = today.getTime()
@@ -313,6 +353,7 @@ const LecturerHomePage = () => {
             checkMember.commissioners.length > 0
         ) {
             const update = await callUpdateTopicStatus(data.topic_id, 8)
+            setReload(!reload)
             notification.success({
                 message: 'Duyệt hội đồng thành công',
                 duration: 2
@@ -326,31 +367,26 @@ const LecturerHomePage = () => {
     }
 
     const handleOpenEx = async (data) => {
-        setOpenModalEx(true)
         const res = await callGetTranscriptByTopicId(data.topic_id)
-        console.log('check ex', res.data.payload)
         if (res.data.payload) {
             setExTranscript(res.data.payload)
         }
+        console.log(res.data.payload)
+        setDrawerTopicTranscript(data)
+        setIsModalExplanationOpen(true)
     }
 
     const handleOpenAcc = async (data) => {
         setOpenModalAcc(true)
         const res = await callGetTranscriptAccByTopicId(data.topic_id)
-        console.log('check acc', res.data.payload)
 
         if (res.data.payload) {
             setAccTranscript(res.data.payload)
         }
+        setDrawerTopicTranscriptAcc(data)
+        setIsModalAcceptanceOpen(true)
     }
 
-    const handleCancelModalEx = () => {
-        setOpenModalEx(false)
-    }
-
-    const handleCancelModalAcc = () => {
-        setOpenModalAcc(false)
-    }
     const chooseDateReport = async (data) => {
         console.log(choosedDate)
         const res = await callSetDateTopic(data.topic_id, choosedDate)
@@ -364,15 +400,22 @@ const LecturerHomePage = () => {
     }
 
     const changeDate = (date, dateString) => {
-        // let dateNumber = 
         let dateNumber = date.$d.getTime()
         setChoosedDate(dateNumber)
-        console.log(dateNumber);
     };
+
+    const openDrawerFile = (topic) => {
+        setDrawerTopic(topic)
+        setIsOpenDrawerListFile(true)
+    }
+
+    const openAddLecturer = () => {
+        setOpenModalAdd(true)
+    }
 
 
     return (
-        <div style={{ backgroundColor: '#efefef', marginLeft: -8, marginRight: -8, marginTop: 8 }}>
+        <div style={{ backgroundColor: '#efefef', marginLeft: -8, marginRight: -8, marginTop: 8, minHeight: 585, paddingBottom: 10, marginBottom: -8 }}>
             <div className="LecturerHomePage-page">
                 <Row>
                     <Col span={5}></Col>
@@ -389,7 +432,7 @@ const LecturerHomePage = () => {
                                                     {lecturerTopic?.student.map((student, index) => {
                                                         return (
                                                             <>
-                                                                <Descriptions.Item style={{ width: 230 }} label="Tên sinh viên">{student?.student_name}</Descriptions.Item>
+                                                                <Descriptions.Item style={{ width: 230 }} label="Tên sinh viên">{student?.student_name} <br></br>({student?.role})</Descriptions.Item>
                                                                 <Descriptions.Item label="Mã số sinh viên">{student?.student_code}</Descriptions.Item>
                                                             </>
                                                         )
@@ -401,47 +444,40 @@ const LecturerHomePage = () => {
                                                     <Descriptions.Item style={{ width: 100 }} label="Tên đề tài">{lecturerTopic?.topic_name}</Descriptions.Item>
                                                     <Descriptions.Item label="Mô tả đề tài">{lecturerTopic?.basic_description}</Descriptions.Item>
                                                     <Descriptions.Item label="Lĩnh vực nghiên cứu">{lecturerTopic?.research_area}</Descriptions.Item>
-                                                    <Descriptions.Item label="Mã số đề tài">{lecturerTopic?.topic_code ? lecturerTopic?.topic_code : 'Đề tài chưa được cấp mã số'}</Descriptions.Item>
-                                                    <Descriptions.Item label="Trạng thái">{lecturerTopic?.status?.status}</Descriptions.Item>
-                                                    <Descriptions.Item label="File thuyết minh" >
-                                                        {lecturerTopic?.file.map(item => {
-                                                            if (item.file_type === 'explanation') {
-                                                                return (
-                                                                    <a onClick={() => getFileUrl(item?.file_url)}>{item?.file_name}</a>
-                                                                )
-                                                            }
-
-                                                        })}
+                                                    <Descriptions.Item label="Mã số đề tài">
+                                                        {lecturerTopic?.topic_code ? lecturerTopic?.topic_code : 'Đề tài chưa được cấp mã số'}
                                                     </Descriptions.Item>
-                                                    <Descriptions.Item label="Đơn xin nghiệm thu" >
-                                                        {lecturerTopic?.file.map(item => {
-                                                            if (item.file_type === 'acceptance') {
-                                                                return (
-                                                                    <a onClick={() => getFileUrl(item?.file_url)}>{item?.file_name}</a>
-                                                                )
-                                                            }
-
-                                                        })}
+                                                    <Descriptions.Item label="Danh sách file" >
+                                                        <Button type='primary' onClick={() => openDrawerFile(lecturerTopic)}>Xem danh sách file</Button>
                                                     </Descriptions.Item>
-                                                    <Descriptions.Item label="Hội đồng thuyết minh" >{lecturerTopic?.explanationboard !== null ? <Button onClick={() => handleOpenEx(lecturerTopic)} type='primary'>Xem nhận xét hội đồng</Button> : 'Chưa có hội đồng'}</Descriptions.Item>
-                                                    <Descriptions.Item label="Hội đồng nghiệm thu" >{lecturerTopic?.acceptanceboard !== null ? <Button onClick={() => handleOpenAcc(lecturerTopic)} type='primary'>Xem nhận xét hội đồng</Button> : 'Chưa có hội đồng'}</Descriptions.Item>
+                                                    <Descriptions.Item label="Hội đồng thuyết minh" >
+                                                        {lecturerTopic?.explanationboard !== null ? <Button onClick={() => handleOpenEx(lecturerTopic)} type='primary'>Xem nhận xét hội đồng</Button> : 'Chưa có hội đồng'}
+                                                    </Descriptions.Item>
+                                                    <Descriptions.Item label="Hội đồng nghiệm thu" >
+                                                        {lecturerTopic?.acceptanceboard !== null ? <Button onClick={() => handleOpenAcc(lecturerTopic)} type='primary'>Xem nhận xét hội đồng</Button> : 'Chưa có hội đồng'}
+                                                    </Descriptions.Item>
                                                     <Descriptions.Item label="Thao tác">
                                                         <div>
-                                                            <div>
-                                                                {lecturerTopic?.status?.status_id === 7 ?
-                                                                    <Button style={{ marginTop: 20 }} onClick={() => openDrawer(lecturerTopic)} type='primary'>Mời thành viên hội đồng nghiệm thu</Button>
-                                                                    : ''}
-                                                            </div>
-                                                            <div>
-                                                                {lecturerTopic?.status?.status_id === 7 ?
-                                                                    <Button style={{ marginTop: 15 }} onClick={() => openDrawerInvi(lecturerTopic)} type='primary'>Xem danh sách lời mời</Button>
-                                                                    : ''}
-                                                            </div>
-                                                            <div>
-                                                                {lecturerTopic?.status?.status_id === 7 ?
-                                                                    <Button style={{ marginTop: 15 }} type='primary' onClick={() => confirmBoard(lecturerTopic)}>Chốt danh sách hội đồng</Button>
-                                                                    : ''}
-                                                            </div>
+                                                            {hasNotiStartReport === true ?
+                                                                <div>
+                                                                    <div>
+                                                                        {lecturerTopic?.status?.status_id === 7 ?
+                                                                            <Button style={{ marginTop: 20 }} onClick={() => openDrawer(lecturerTopic)} type='primary'>Mời thành viên hội đồng nghiệm thu</Button>
+                                                                            : ''}
+                                                                    </div>
+                                                                    <div>
+                                                                        {lecturerTopic?.status?.status_id === 7 ?
+                                                                            <Button style={{ marginTop: 15 }} onClick={() => openDrawerInvi(lecturerTopic)} type='primary'>Xem danh sách lời mời</Button>
+                                                                            : ''}
+                                                                    </div>
+                                                                    <div>
+                                                                        {lecturerTopic?.status?.status_id === 7 ?
+                                                                            <Button style={{ marginTop: 15 }} type='primary' onClick={() => confirmBoard(lecturerTopic)}>Chốt danh sách hội đồng</Button>
+                                                                            : ''}
+                                                                    </div>
+                                                                </div>
+                                                                : ''}
+
                                                             <div>
                                                                 {lecturerTopic?.status?.status_id === 12 ?
                                                                     <div>
@@ -454,7 +490,7 @@ const LecturerHomePage = () => {
                                                                     : ''}
                                                             </div>
                                                             <div>
-                                                                {lecturerTopic?.status?.status_id === 9 || lecturerTopic?.status?.status_id === 8 ?
+                                                                {lecturerTopic?.status?.status_id === 9 ?
                                                                     <Button style={{ marginTop: 15 }} type='primary' onClick={() => approveAcceptance(lecturerTopic)}>Duyệt đơn xin nghiệm thu</Button>
                                                                     : ''}
                                                             </div>
@@ -464,21 +500,10 @@ const LecturerHomePage = () => {
                                                     </Descriptions.Item>
 
                                                 </Descriptions>
-
-
-
-
-
-
-
                                             </div>
 
                                         </div>
-
-
-
                                     </div>
-
                                 )
                             })}
 
@@ -504,6 +529,8 @@ const LecturerHomePage = () => {
                             <Radio.Button value="TTDPT">Khoa truyền thông đa phương tiện</Radio.Button>
 
                         </Radio.Group>
+                        <Button style={{ marginTop: 20, marginBottom: 20 }} type="primary" onClick={() => openAddLecturer()}>Thêm giảng viên</Button>
+
 
                         {/* </Row> */}
                         <Table
@@ -512,15 +539,8 @@ const LecturerHomePage = () => {
                             pagination={false}
                             columns={columns}
                             dataSource={dataLecturer}
-                        // onChange={onChange} 
                         />
                     </Drawer>
-
-
-
-
-
-
 
                     <Drawer title="Danh sách lời mời" placement="right" onClose={onCloseInvi} open={openInvi} width={1000} >
                         <div style={{ marginBottom: 20 }}>
@@ -538,25 +558,17 @@ const LecturerHomePage = () => {
                                     role = 'Phản biện'
                                 }
                                 if (item.type === 4) {
-                                    role = 'Ủy viên 1'
+                                    role = 'Ủy viên'
                                 }
-                                if (item.type === 5) {
-                                    role = 'Ủy viên 2'
-                                }
-                                if (item.type === 6) {
-                                    role = 'Ủy viên 3'
-                                }
+
                                 return (
                                     <Descriptions
                                         // title="Lời mời đã gửi"
                                         bordered={true}
                                     >
-
                                         <Descriptions.Item style={{ width: 200 }} label="Tên giảng viên">{item?.lecturerInfo?.lecturer_name}</Descriptions.Item>
                                         <Descriptions.Item style={{ width: 200 }} label="Chức vụ hội đồng">{role}</Descriptions.Item>
-                                        <Descriptions.Item style={{ width: 200 }} label="Chức vụ hội đồng">{item?.statusInfo?.status}</Descriptions.Item>
-
-
+                                        <Descriptions.Item style={{ width: 200 }} label="Trạng thái">{item?.statusInfo?.status}</Descriptions.Item>
                                     </Descriptions>
 
 
@@ -575,7 +587,6 @@ const LecturerHomePage = () => {
                         cancelButtonProps={{ style: { display: 'none' } }}
                         okButtonProps={{ style: { display: 'none' } }}
                         closeIcon={false}
-                    // bodyStyle={{ height: 100 }}
                     >
                         <Row gutter={24}>
                             <Col span={10}></Col>
@@ -597,37 +608,29 @@ const LecturerHomePage = () => {
                             <Page pageNumber={pageNumber} renderAnnotationLayer={true} renderTextLayer={true}></Page>
                         </Document>
                     </Modal>
-                    <Modal title="Hội đồng thuyết minh"
-                        open={openModalEx}
-                        onCancel={handleCancelModalEx}
-                        cancelButtonProps={{ style: { display: 'none' } }}
-                        okButtonProps={{ style: { display: 'none' } }}>
-                        {exTranscript.map((item, index) => {
-                            return (
-                                <div style={{ border: '0px solid black', borderRadius: '0% 0% 0% 0% / 0% 0% 0% 0%', marginBottom: 20, position: 'relative', boxShadow: '5px 5px 10px rgba(0,0,0,.15)', padding: 10 }}>
-                                    <div>Giảng viên: {item.lecturerInfo.lecturer_name}</div>
-                                    {/* <div>Chức vụ: {item.lecturerInfo.explanationrole}</div> */}
-                                    <div>Nhận xét: {item.comment}</div>
-                                    <div>Điểm: {item.score}</div>
-                                </div>
-                            )
-                        })}
 
-                    </Modal>
+                    <ModalAddLecturer
+                        openModalAdd={openModalAdd}
+                        setOpenModalAdd={setOpenModalAdd}
+                    />
 
-                    <Modal title="Hội đồng nghiệm thu" open={openModalAcc} onCancel={handleCancelModalAcc}>
-                        {accTranscript.map((item, index) => {
-                            return (
-                                <div style={{ border: '0px solid black', borderRadius: '0% 0% 0% 0% / 0% 0% 0% 0%', marginBottom: 20, position: 'relative', boxShadow: '5px 5px 10px rgba(0,0,0,.15)', padding: 10 }}>
-                                    <div>Giảng viên: {item.lecturerInfo.lecturer_name}</div>
-                                    {/* <div>Chức vụ: {item.lecturerInfo.explanationrole}</div> */}
-                                    <div>Nhận xét: {item.comment}</div>
-                                    <div>Điểm: {item.score}</div>
-                                </div>
-                            )
-                        })}
-                    </Modal>
-
+                    <DrawerListFile
+                        isOpenDrawerListFile={isOpenDrawerListFile}
+                        setIsOpenDrawerListFile={setIsOpenDrawerListFile}
+                        drawerTopic={drawerTopic}
+                    />
+                    <ModalExplanationTranscript
+                        isModalExplanationOpen={isModalExplanationOpen}
+                        setIsModalExplanationOpen={setIsModalExplanationOpen}
+                        exTranscript={exTranscript}
+                        drawerTopicTranscript={drawerTopicTranscript}
+                    />
+                    <ModalAcceptanceTranscript
+                        isModalAcceptanceOpen={isModalAcceptanceOpen}
+                        setIsModalAcceptanceOpen={setIsModalAcceptanceOpen}
+                        drawerTopicTranscriptAcc={drawerTopicTranscriptAcc}
+                        accTranscript={accTranscript}
+                    />
                     <Col span={5}>
                     </Col>
                 </Row >

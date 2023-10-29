@@ -24,7 +24,7 @@ const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-  // blacklist: ['account'] // account will not be persisted
+  // blacklist: ['account','accountAdminReducer','accountLecturer'] // account will not be persisted
 }
 
 const rootReducer = combineReducers({

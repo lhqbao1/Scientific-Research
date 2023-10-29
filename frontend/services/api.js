@@ -15,6 +15,9 @@ export const callGetStudents = () => {
     return axios.get(`http://localhost:8080/api/students`)
 }
 
+export const callDeleteStudent = (id) => {
+    return axios.delete(`http://localhost:8080/api/students/delete/${id}`)
+}
 
 export const searchStudent = (keyword) => {
     return axios.get(`http://localhost:8080/api/students?keyword=${keyword}`)
@@ -157,12 +160,16 @@ export const callCheckExistedTranscript = (lecturer, topic) => {
 export const callCheckExistedTranscriptAcc = (lecturer, topic) => {
     return axios.get(`http://localhost:8080/api/transcript-acc/${lecturer}/${topic}/`)
 }
-export const callGetTranscriptByTopicId = (topic) => {
-    return axios.get(`http://localhost:8080/api/transcript/${topic}`)
+export const callGetTranscriptByTopicId = (topicid) => {
+    return axios.get(`http://localhost:8080/api/transcript/${topicid}`)
 }
 
-export const callGetTranscriptAccByTopicId = (topic) => {
-    return axios.get(`http://localhost:8080/api/transcript-acc/${topic}`)
+export const callGetTranscriptAccByTopicId = (topic_id) => {
+    return axios.get(`http://localhost:8080/api/transcript-acc/${topic_id}/`)
+}
+
+export const callGetTranscriptAcc1ByTopicId = (topic_id) => {
+    return axios.get(`http://localhost:8080/api/transcript-acc-1/${topic_id}/`)
 }
 
 export const callGetMajors = () => {
@@ -284,15 +291,28 @@ export const callCreateBulkUser = (data) => {
 export const callCreateBulkStudent = (data) => {
     return axios.post(`http://localhost:8080/api/students/`, data)
 }
+
+export const callCreateBulkLecturer = (data) => {
+    return axios.post(`http://localhost:8080/api/lecturers/`, data)
+}
 export const callGetAcceptance = () => {
     return axios.get(`http://localhost:8080/api/acceptances/`)
+}
+export const callDeleteUser = (id) => {
+    return axios.delete(`http://localhost:8080/api/user/${id}`)
 }
 
 export const callCreateNotification = (name, content, start_date, end_date, students, type) => {
     return axios.post(`http://localhost:8080/api/notification/`, { name, content, start_date, end_date, students, type })
 }
+export const callCreateNotificationAddFileExplanation = (name, content, start_date, end_date, type) => {
+    return axios.post(`http://localhost:8080/api/notification/`, { name, content, start_date, end_date, type })
+}
 export const callGetNotification = () => {
     return axios.get(`http://localhost:8080/api/notifications/`)
+}
+export const callGetNotificationStartReport = () => {
+    return axios.get(`http://localhost:8080/api/notifications-start-report/`)
 }
 
 export const callGetNotificationPhase2 = () => {
@@ -305,9 +325,16 @@ export const callUpdateNotification = (id, name, content, start_date, end_date, 
 export const callUpdateNotificationAddFile = (id, name, content, start_date, end_date) => {
     return axios.put(`http://localhost:8080/api/notification/${id}`, { name, content, start_date, end_date })
 }
+export const callUpdateNotificationAddFileExplanation = (id, name, content, start_date, end_date) => {
+    return axios.put(`http://localhost:8080/api/notification/${id}`, { name, content, start_date, end_date })
+}
 
 export const callUpdateStudentRole = (id, role) => {
     return axios.put(`http://localhost:8080/api/students/${id}`, { role })
+}
+
+export const callUpdateStudentInfo = (id, student_name, student_code, grade, email) => {
+    return axios.put(`http://localhost:8080/api/students/${id}`, { student_name, student_code, grade, email })
 }
 
 export const callGetStudentByCode = (student_code) => {
@@ -377,11 +404,15 @@ export const callUpdateTranscriptStatus = (idArr) => {
     return axios.put(`http://localhost:8080/api/transcript/`, { idArr })
 }
 
+export const callGetAllFileOfTopic = (id) => {
+    return axios.get(`http://localhost:8080/api/file/${id}`)
+}
+
 export const callBulkCreateFile = (data) => {
     return axios.post(`http://localhost:8080/api/bulk-file`, data)
 }
-export const callUpdateTopicPlace = (topic_id, acceptanceplace) => {
-    return axios.put(`http://localhost:8080/api/topics/${topic_id}`, acceptanceplace)
+export const callUpdateTopicPlace = (id, acceptanceplace) => {
+    return axios.put(`http://localhost:8080/api/topics/${id}`, { acceptanceplace })
 }
 export const callCreateTranscriptComment = (comment1, comment2, comment3, comment4, comment5, comment6, comment7, comment8, comment9, type) => {
     return axios.post(`http://localhost:8080/api/transcript-comment/`, { comment1, comment2, comment3, comment4, comment5, comment6, comment7, comment8, comment9, type })
@@ -394,4 +425,8 @@ export const callUpdateTranscriptComment = (id, comment) => {
 }
 export const callUpdateTranscriptScore = (id, score) => {
     return axios.put(`http://localhost:8080/api/transcript-score/`, { id, score })
+}
+
+export const callGetNotificationAddFileExplanation = () => {
+    return axios.get(`http://localhost:8080/api/notifications-add-file-explanation/`)
 }

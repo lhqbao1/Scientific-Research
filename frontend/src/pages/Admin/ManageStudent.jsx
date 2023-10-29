@@ -1,11 +1,13 @@
-import { Button, Col, Drawer, Row, Table } from "antd";
+import { Button, Col, Drawer, notification, Row, Table } from "antd";
 import SearchStudent from "../../components/Admin/SearchStudent"
 import { useEffect, useState } from "react";
 import StudentDetail from "../../components/Admin/StudentDetail";
 import AddStudent from "../../components/Admin/AddStudent";
 import ImportStudent from "../../components/Admin/ImportStudent";
 import * as XLSX from 'xlsx'
-import { searchStudent } from "../../../services/api";
+import { callDeleteStudent, callDeleteUser, searchStudent } from "../../../services/api";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import ModalEditStudent from "./ModalManageStudent/ModalEditStudent";
 
 const ManageStudent = () => {
 
@@ -18,7 +20,41 @@ const ManageStudent = () => {
     const [openModalImport, setOpenModalImport] = useState(false)
     const [dataStudent, setDataStudent] = useState()
     const [dataExport, setDataExport] = useState([])
+    const [reload, setReload] = useState(false)
+    const [openModalEdit, setOpenModalEdit] = useState(false)
+    const [choosedStudent, setChoosedStudent] = useState()
 
+
+    const deleteStudent = async (student) => {
+        console.log(student)
+        if (student.topic_id) {
+            notification.error({
+                message: 'Sinh viên đã tham gia đề tài, không thể xóa',
+                duration: 2
+            })
+            return;
+        }
+        try {
+            const res = await callDeleteStudent(student.student_id)
+            const user = await callDeleteUser(student.user_id)
+
+            if (res && user) {
+                setReload(!reload)
+                notification.success({
+                    message: 'Xóa sinh viên thành công',
+                    duration: 2
+                })
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const editStudent = async (student) => {
+        console.log(student)
+        setOpenModalEdit(true)
+        setChoosedStudent(student)
+    }
 
     const columns = [
         {
@@ -39,63 +75,60 @@ const ManageStudent = () => {
         {
             title: 'Tên sinh viên',
             dataIndex: 'student_name',
-            sorter: true,
         },
         {
             title: 'Email',
             dataIndex: 'email',
-            sorter: true
         },
         {
             title: 'Khóa',
             dataIndex: 'grade',
-            // sorter: {
-            //     compare: (a, b) => a.english - b.english,
-            //     multiple: 1,
-            // },
         },
         {
             title: 'Chuyên nghành',
             dataIndex: 'major_name',
             render: (text, record) =>
                 <div>{record?.major?.major_name}</div>
-            // sorter: {
-            //     compare: (a, b) => a.math - b.math,
-            //     multiple: 2,
-            // },
+
         },
         {
             title: 'Lớp học',
             dataIndex: 'student_class',
-            // sorter: {
-            //     compare: (a, b) => a.math - b.math,
-            //     multiple: 2,
-            // },
         },
         {
-            title: 'Đề tài',
-            dataIndex: 'topic_name',
+            title: 'Thao tác',
             render: (text, record) =>
-                <div>{record?.topicInfo === null ? 'Chưa có đề tài' : record?.topicInfo?.topic_name}</div>
-
+                <div>
+                    <EditOutlined
+                        style={{
+                            cursor: 'pointer',
+                            fontSize: 20,
+                            marginRight: 20,
+                            color: 'green'
+                        }}
+                        onClick={() => editStudent(record)}
+                    />
+                    <DeleteOutlined
+                        style={{
+                            cursor: 'pointer',
+                            fontSize: 20,
+                            color: 'red'
+                        }}
+                        onClick={() => deleteStudent(record)}
+                    />
+                </div>
 
         },
-
     ];
-
-
-
 
     const handleSearch = (dataProps) => {
         setDataStudent(dataProps.items)
         setTotal(dataProps.meta.totalItems)
     }
 
-
     const getStudents = async () => {
         let keyword = ''
         const res = await searchStudent(`${keyword}`)
-        // console.log('check meta', res.data.payload.meta)
         setTotal(res.data.payload.meta.totalItems)
         setDataStudent(res.data.payload.items)
     }
@@ -110,7 +143,7 @@ const ManageStudent = () => {
             setDataExport(dataStudent)
         }
         getStudents()
-    }, [])
+    }, [reload])
 
 
 
@@ -130,11 +163,6 @@ const ManageStudent = () => {
         setDetailStudent(record)
     }
 
-
-    const onClose = () => {
-        setOpenDetail(false);
-    };
-
     const openAddStudent = () => {
         setOpenModalAdd(true)
     }
@@ -143,12 +171,32 @@ const ManageStudent = () => {
         setOpenModalImport(true)
     }
     const downloadFile = () => {
+        dataExport.map(item => {
+            item["Họ tên"] = item.student_name
+            item["Mã số sinh viên"] = item.student_code
+            item["Email"] = item.email
+            if (item.major_id === 1) {
+                item["Chuyên nghành"] = 'Công nghệ thông tin'
+            }
+            if (item.major_id === 7) {
+                item["Chuyên nghành"] = 'Truyền thông đa phương tiện'
+            }
+            item["Lớp"] = item.student_class
+            item["Niên khóa"] = item.grade
+            delete item.topic_id
+            delete item.student_name
+            delete item.student_code
+            delete item.email
+            delete item.major_id
+            delete item.student_class
+            delete item.grade
+            delete item.student_id
+        })
+
         const worksheet = XLSX.utils.json_to_sheet(dataExport);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
-        //let buffer = XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
-        //XLSX.write(workbook, { bookType: "xlsx", type: "binary" });
-        XLSX.writeFile(workbook, "DataStudent.csv");
+        XLSX.writeFile(workbook, "Danh sach sinh vien.csv");
     }
     const tableUserHeader = () => {
         return (
@@ -156,17 +204,21 @@ const ManageStudent = () => {
                 <Row>
                     <Col span={18}></Col>
                     <Col span={6} style={{ display: "flex", gap: 15 }}>
-                        <Button type="primary" style={{ minWidth: 80 }} onClick={openAddStudent}>Add</Button>
+                        <Button type="primary" onClick={openAddStudent}>Thêm</Button>
                         <AddStudent
+                            reload={reload}
+                            setReload={setReload}
                             openModalAdd={openModalAdd}
                             setOpenModalAdd={setOpenModalAdd}
                         />
-                        <Button type="primary" style={{ minWidth: 80 }} onClick={openImportStudent}>Import</Button>
+                        <Button type="primary" onClick={openImportStudent}>Thêm nhiều</Button>
                         <ImportStudent
+                            reload={reload}
+                            setReload={setReload}
                             openModalImport={openModalImport}
                             setOpenModalImport={setOpenModalImport}
                         />
-                        <Button type="primary" style={{ minWidth: 80 }} onClick={downloadFile}>Export</Button>
+                        <Button type="primary" onClick={downloadFile}>Xuất file</Button>
                     </Col>
                 </Row>
             </div>
@@ -199,6 +251,14 @@ const ManageStudent = () => {
                 openDetail={openDetail}
                 setOpenDetail={setOpenDetail}
                 detailStudent={detailStudent}
+            />
+
+            <ModalEditStudent
+                openModalEdit={openModalEdit}
+                setOpenModalEdit={setOpenModalEdit}
+                choosedStudent={choosedStudent}
+                setReload={setReload}
+                reload={reload}
             />
 
         </div>

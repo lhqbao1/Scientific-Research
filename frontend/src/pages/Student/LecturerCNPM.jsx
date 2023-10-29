@@ -166,7 +166,7 @@ const LecturerCNPM = () => {
     };
     return (
         <>
-            <div style={{ backgroundColor: '#efefef', marginLeft: -8, marginRight: -8, marginTop: 8 }}>
+            <div style={{ backgroundColor: '#efefef', marginLeft: -8, marginRight: -8, marginTop: 8, marginBottom: -8, paddingBottom: 25 }}>
                 <div style={{ minHeight: 570 }}>
                     <Row>
                         <Col span={5}></Col>

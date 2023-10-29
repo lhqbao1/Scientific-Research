@@ -2,7 +2,9 @@ import { Button, DatePicker, Descriptions, Form, Input, InputNumber, Modal, noti
 import { useForm } from "antd/es/form/Form";
 import { useState } from "react";
 import { useEffect } from "react"
-import { callCreateNotification, callCreateNotificationAddFile, callGetNotification, callGetNotificationAddFile, callGetNotificationAddFilePhase2, callGetNotificationPhase2, callUpdateNotification, callUpdateNotificationAddFile } from "../../../services/api";
+import { callCreateNotification, callCreateNotificationAddFile, callGetNotification, callGetNotificationAddFile, callGetNotificationAddFileExplanation, callGetNotificationAddFilePhase2, callGetNotificationPhase2, callGetNotificationStartReport, callUpdateNotification, callUpdateNotificationAddFile, callUpdateNotificationAddFileExplanation } from "../../../services/api";
+import ModalCreateNotificationAddExplanation from "./ModalManageSchedule/ModalCreateNotificationAddExplanation";
+import ModalCreateNotificationStartReport from "./ModalManageSchedule/ModalCreateNotificationStartReport";
 const { RangePicker } = DatePicker;
 
 const ManageSchedule = () => {
@@ -12,8 +14,15 @@ const ManageSchedule = () => {
     const [openModalCreateFile, setOpenModalCreateFile] = useState(false)
     const [openModalUpdateFile, setOpenModalUpdateFile] = useState(false)
 
+    const [openModalCreateNotificationAddExplanation, setOpenModalCreateNotificationAddExplanation] = useState(false)
+    const [openModalEditNotificationAddExplanation, setOpenModalEditNotificationAddExplanation] = useState(false)
+
+    const [openModalCreateNotificationStartReport, setOpenModalCreateNotificationStartReport] = useState(false)
+
     const [dataNoti, setDataNoti] = useState([])
     const [dataNotiAdd, setDataNotiAdd] = useState([])
+    const [dataNotiAddExplanation, setDataNotiAddExplanation] = useState([])
+    const [dataNotiStartReport, setDataNotiStartReport] = useState([])
 
     const [form] = Form.useForm();
 
@@ -21,8 +30,11 @@ const ManageSchedule = () => {
 
     const [formFile] = Form.useForm();
     const [formUpdateFile] = Form.useForm();
+    const [formUpdateAddFileExplanation] = Form.useForm();
+
 
     const [choosedNotiCreate, setChoosedNotiCreate] = useState([])
+    const [choosedNotiAddFileExplanation, setChoosedNotiAddFileExplanation] = useState()
     const [change, setChange] = useState(false)
 
 
@@ -44,7 +56,6 @@ const ManageSchedule = () => {
 
 
         }
-
         const getNotificationAddFile = async () => {
             const res = await callGetNotificationAddFile()
             let data = []
@@ -58,13 +69,42 @@ const ManageSchedule = () => {
                 })
                 setDataNotiAdd(data[0])
             }
-
-            // console.log(data[0])
-            // console.log('check res', res.data.payload.items)
         }
 
+        const getNotiAddFileExplanation = async () => {
+            const res = await callGetNotificationAddFileExplanation()
+            let data = []
+            if (res.data.payload.items.length > 0) {
+                data.push(res.data.payload.items)
+            }
+            if (data[0]?.length > 0) {
+                data[0].map(item => {
+                    item.start_date = (new Date(+item.start_date)).toLocaleDateString()
+                    item.end_date = (new Date(+item.end_date)).toLocaleDateString()
+                })
+                setDataNotiAddExplanation(data[0])
+            }
+        }
+
+        const getNotiStartReport = async () => {
+            const res = await callGetNotificationStartReport()
+            let data = []
+            if (res.data.payload.items.length > 0) {
+                data.push(res.data.payload.items)
+            }
+            if (data[0]?.length > 0) {
+                data[0].map(item => {
+                    item.start_date = (new Date(+item.start_date)).toLocaleDateString()
+                    item.end_date = (new Date(+item.end_date)).toLocaleDateString()
+                })
+                setDataNotiStartReport(data[0])
+            }
+        }
+
+        getNotiStartReport()
         getNotification()
         getNotificationAddFile()
+        getNotiAddFileExplanation()
     }, [change])
 
     const hanleOpenModalCreateTopic = () => {
@@ -253,6 +293,11 @@ const ManageSchedule = () => {
         formUpdateFile.resetFields()
     }
 
+    const handleCancelUpdateAddFileExplanation = () => {
+        setOpenModalEditNotificationAddExplanation(false)
+        formUpdateAddFileExplanation.resetFields()
+    }
+
 
 
     const onFinishUpdateFile = async (values) => {
@@ -281,11 +326,11 @@ const ManageSchedule = () => {
         console.log(err)
     }
 
-
-
-    const onFinishFailedUpdateFile2 = (err) => {
-        console.log(err)
+    const openModalEditAddFileExplanation = (data) => {
+        setChoosedNotiAddFileExplanation(data)
+        setOpenModalEditNotificationAddExplanation(true)
     }
+
 
     const rangeConfig = {
         rules: [
@@ -297,11 +342,36 @@ const ManageSchedule = () => {
         ],
     };
 
+    const onFinishUpdateAddFileExplanation = async (values) => {
+        let start = values.rangeTime[0].$d.getTime()
+        let end = values.rangeTime[1].$d.getTime()
+        if (start && end) {
+            const res = await callUpdateNotificationAddFileExplanation(choosedNotiAddFileExplanation.id, values.name, values.content, start, end)
+            if (res) {
+                notification.success({
+                    message: 'Sửa thông báo thành công',
+                    duration: 2
+                })
+                setChange(!change)
+                formUpdateAddFileExplanation.resetFields()
+                setOpenModalEditNotificationAddExplanation(false)
+            }
+        } else {
+            notification.error({
+                message: 'Hãy nhập thời hạn',
+                duration: 2
+            })
+        }
+    }
+
+
+
 
 
     return (
         <div>
             <div>
+
                 <div style={{ display: 'flex' }}>
                     <h3 style={{ marginTop: 5 }}>Thông báo đăng kí đề tài</h3>
                     <Button style={{ marginLeft: 10 }} type="primary" onClick={hanleOpenModalCreateTopic}>Tạo thông báo</Button>
@@ -324,10 +394,51 @@ const ManageSchedule = () => {
                     )
                 })}
 
+                <div style={{ display: 'flex', marginTop: 30, marginBottom: 20 }}>
+                    <h3 style={{ marginTop: 5 }}>Thông báo nộp hồ sơ thuyết minh</h3>
+                    <Button style={{ marginLeft: 10 }} type="primary" onClick={() => setOpenModalCreateNotificationAddExplanation(true)}>Tạo thông báo</Button>
+                </div>
+
+                {dataNotiAddExplanation.map((item, index) => {
+                    return (
+                        <>
+                            <Descriptions bordered={true} column={1} style={{ marginTop: 20 }}>
+                                <Descriptions.Item style={{ width: 300 }} span={1} label="Tiêu đề">{item?.name} {item?.type}</Descriptions.Item>
+                                <Descriptions.Item style={{ width: 300 }} span={1} label="Thông báo">{item?.content}</Descriptions.Item>
+                                <Descriptions.Item span={1} label="Thời hạn"> Từ {item?.start_date} đến {item?.end_date}</Descriptions.Item>
+                                <Descriptions.Item span={1} label="Chỉnh sửa">
+                                    <Button type="primary" onClick={() => openModalEditAddFileExplanation(item)}>Chỉnh sửa </Button>
+                                </Descriptions.Item>
+                            </Descriptions>
+
+                        </>
+                    )
+                })}
 
 
                 <div style={{ display: 'flex', marginTop: 30, marginBottom: 20 }}>
-                    <h3 style={{ marginTop: 5 }}>Thông báo nộp đơn xin nghiệm thu và file báo cáo</h3>
+                    <h3 style={{ marginTop: 5 }}>Thông báo bắt đầu nghiệm thu</h3>
+                    <Button style={{ marginLeft: 10 }} type="primary" onClick={() => setOpenModalCreateNotificationStartReport(true)}>Tạo thông báo</Button>
+                </div>
+
+                {dataNotiStartReport.map((item, index) => {
+                    return (
+                        <>
+                            <Descriptions bordered={true} column={1} style={{ marginTop: 20 }}>
+                                <Descriptions.Item style={{ width: 300 }} span={1} label="Tiêu đề">{item?.name} {item?.type}</Descriptions.Item>
+                                <Descriptions.Item style={{ width: 300 }} span={1} label="Thông báo">{item?.content}</Descriptions.Item>
+                                <Descriptions.Item span={1} label="Thời hạn"> Từ {item?.start_date} đến {item?.end_date}</Descriptions.Item>
+                                <Descriptions.Item span={1} label="Chỉnh sửa">
+                                    <Button type="primary" onClick={() => openModalEditAddFileExplanation(item)}>Chỉnh sửa </Button>
+                                </Descriptions.Item>
+                            </Descriptions>
+
+                        </>
+                    )
+                })}
+
+                <div style={{ display: 'flex', marginTop: 30, marginBottom: 20 }}>
+                    <h3 style={{ marginTop: 5 }}>Thông báo nộp đơn xin nghiệm thu</h3>
                     <Button style={{ marginLeft: 10 }} type="primary" onClick={hanleOpenModalCreatelFile}>Tạo thông báo</Button>
                 </div>
 
@@ -578,7 +689,7 @@ const ManageSchedule = () => {
 
                 </Modal>
 
-                <Modal title="Tạo thông báo nộp đơn xin nghiệm thu và file báo cáo"
+                <Modal title="Tạo thông báo nộp đơn xin nghiệm thu"
                     open={openModalCreateFile}
                     onCancel={handleCancelCreateFile}
                     cancelButtonProps={{ style: { display: 'none' } }}
@@ -605,7 +716,7 @@ const ManageSchedule = () => {
                         fields={[
                             {
                                 name: ["name"],
-                                value: 'Thông báo nộp đơn xin nghiệm thu và file báo cáo',
+                                value: 'Thông báo nộp đơn xin nghiệm thu',
                             },
                         ]}
                     >
@@ -688,7 +799,7 @@ const ManageSchedule = () => {
 
                 </Modal>
 
-                <Modal title="Sửa thông báo nộp đơn xin nghiệm thu và file báo cáo"
+                <Modal title="Sửa thông báo nộp đơn xin nghiệm thu"
                     open={openModalUpdateFile}
                     onCancel={handleCancelUpdateFile}
                     cancelButtonProps={{ style: { display: 'none' } }}
@@ -775,8 +886,103 @@ const ManageSchedule = () => {
 
                 </Modal>
 
+                <Modal title="Sửa thông báo nộp hồ sơ thuyết minh"
+                    open={openModalEditNotificationAddExplanation}
+                    onCancel={handleCancelUpdateAddFileExplanation}
+                    cancelButtonProps={{ style: { display: 'none' } }}
+                    okButtonProps={{ style: { display: 'none' } }}
+                >
+                    <Form
+                        form={formUpdateAddFileExplanation}
+                        name="basic"
+                        labelCol={{
+                            span: 24,
+                        }}
+                        wrapperCol={{
+                            span: 24,
+                        }}
+                        style={{
+                            maxWidth: 600,
+                        }}
+                        initialValues={{
+                            remember: true,
+                        }}
+                        onFinish={onFinishUpdateAddFileExplanation}
+                        onFinishFailed={onFinishFailedUpdate}
+                        autoComplete="off"
+                        fields={[
+                            {
+                                name: ["name"],
+                                value: choosedNotiAddFileExplanation?.name,
+                            },
+                            {
+                                name: ["content"],
+                                value: choosedNotiAddFileExplanation?.content,
+                            },
+                        ]}
+
+                    >
+                        <Form.Item
+                            label="Tiêu đề"
+                            name="name"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Hãy nhập tiêu đề!',
+                                },
+                            ]}
+                        >
+                            <Input placeholder={choosedNotiCreate?.name} />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Nội dung"
+                            name="content"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Hãy nhập nội dung!',
+                                },
+                            ]}
+                        >
+                            <Input placeholder={choosedNotiCreate?.content} />
+                        </Form.Item>
+                        <Form.Item
+                            label="Chọn thời hạn"
+                            name="rangeTime"
+                            {...rangeConfig}
+                        >
+                            <RangePicker
+                                showTime={{
+                                    format: 'HH:mm',
+                                }}
+                                format="YYYY-MM-DD HH:mm"
+                            />
+                        </Form.Item>
+                        <Form.Item
+                            wrapperCol={{
+                                offset: 0,
+                                span: 24,
+                            }}
+                        >
+                            <Button style={{ marginTop: 20 }} type="primary" htmlType="submit">
+                                Sửa thông tin
+                            </Button>
+                        </Form.Item>
+                    </Form>
 
 
+                </Modal>
+
+                <ModalCreateNotificationAddExplanation
+                    openModalCreateNotificationAddExplanation={openModalCreateNotificationAddExplanation}
+                    setOpenModalCreateNotificationAddExplanation={setOpenModalCreateNotificationAddExplanation}
+                />
+
+                <ModalCreateNotificationStartReport
+                    openModalCreateNotificationStartReport={openModalCreateNotificationStartReport}
+                    setOpenModalCreateNotificationStartReport={setOpenModalCreateNotificationStartReport}
+                />
 
 
             </div>

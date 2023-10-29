@@ -12,12 +12,13 @@ export const accountAdminSlice = createSlice({
     initialState,
     // The `reducers` field lets us define reducers and generate associated actions
     reducers: {
-        // doLoginAction: (state, action) => {
-        //     state.isAuthenticated = true;
-        //     state.isLoading = false;
-        //     state.user = action.payload;
-        // },
+        doLoginAction: (state, action) => {
+            state.isAuthenticated = true;
+            state.isLoading = false;
+            state.user = action.payload;
+        },
         doGetAccountAdminAction: (state, action) => {
+            console.log('hehe', action.payload)
             state.isAuthenticated = true;
             state.isLoading = false;
             state.user = action.payload;

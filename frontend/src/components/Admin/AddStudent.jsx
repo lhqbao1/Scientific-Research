@@ -1,10 +1,10 @@
-import { Button, Form, Input, Modal, Select, Space } from "antd"
+import { Button, Form, Input, Modal, notification, Select, Space } from "antd"
 import { useState } from "react";
 import { useEffect } from "react";
-import { callGetMajors } from '../../../services/api'
+import { callCreateStudent, callCreateUser, callGetMajors } from '../../../services/api'
 
 const AddStudent = (props) => {
-    const { openModalAdd, setOpenModalAdd } = props
+    const { openModalAdd, setOpenModalAdd, reload, setReload } = props
     const [majorInfo, setMajorInfo] = useState([])
     const [form] = Form.useForm();
 
@@ -24,9 +24,28 @@ const AddStudent = (props) => {
         form.resetFields()
     };
 
-    const onFinish = (values) => {
-        console.log('Success:', values);
-        form.resetFields()
+    const onFinish = async (values) => {
+        try {
+            const resUser = await callCreateUser(values.student_email, '123456', 1)
+            if (resUser) {
+                const res = await callCreateStudent(resUser?.data?.payload?.id, values.student_name, values.student_class, values.student_code, values.student_email, values.student_grade, values.student_major, null, null)
+                if (res) {
+                    notification.success({
+                        message: 'Tạo sinh viên thành công',
+                        duration: 2
+                    })
+                    form.resetFields()
+                    setOpenModalAdd(false)
+                    setReload(!reload)
+                }
+            }
+        } catch (error) {
+            notification.error({
+                message: 'Email hoặc mã số sinh viên có thể đã tồn tại',
+                duration: 2
+            })
+        }
+
 
     };
     const onFinishFailed = (errorInfo) => {
@@ -41,6 +60,12 @@ const AddStudent = (props) => {
                 maskClosable={false}
                 cancelButtonProps={{ style: { display: 'none' } }}
                 okButtonProps={{ style: { display: 'none' } }}
+                style={{
+                    marginTop: -40,
+                    height: 780,
+                    overflow: 'scroll',
+                    borderRadius: 10
+                }}
             >
                 <Form
                     form={form}
@@ -168,11 +193,9 @@ const AddStudent = (props) => {
                         ]}
                     >
                         <Select
-                            // defaultValue="lucy"
                             style={{
                                 width: 315,
                             }}
-                        // onChange={handleChange}
                         >
                             {majorInfo.map((item, index) => {
                                 return (
@@ -191,8 +214,8 @@ const AddStudent = (props) => {
 
                     <Form.Item
                         wrapperCol={{
-                            offset: 17,
-                            span: 24,
+                            offset: 0,
+                            span: 0,
                         }}
                     >
                         <Button type="primary" htmlType="submit" >

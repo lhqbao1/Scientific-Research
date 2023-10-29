@@ -12,16 +12,12 @@ const SearchLecturer = (props) => {
     const onFinish = async (dataSearch) => {
         let keyword = '';
         keyword = dataSearch?.lecturer_name
-        console.log(keyword)
-        if (keyword) {
-            const res = await callSearchLecturer(`${keyword}`)
-            setUserSearch(res.data.payload.items)
-            if (res && res.data) {
-                props.handleSearch(res.data.payload)
+        const res = await callSearchLecturer(`${keyword}`)
+        setUserSearch(res.data.payload.items)
+        if (res && res.data) {
+            props.handleSearch(res.data.payload)
 
-            }
         }
-
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -43,7 +39,7 @@ const SearchLecturer = (props) => {
                 <Row>
                     <Col span={7} >
                         <Form.Item
-                            label="Find lecturer (lecturer name)"
+                            label="Tìm giảng viên (theo tên)"
                             name="lecturer_name"
 
                         >
@@ -57,10 +53,6 @@ const SearchLecturer = (props) => {
 
                 </Row>
 
-
-
-
-
                 <Form.Item
                     wrapperCol={{
                         offset: 0,
@@ -68,7 +60,7 @@ const SearchLecturer = (props) => {
                     }}
                 >
                     <Button type="primary" htmlType="submit">
-                        Submit
+                        Tìm
                     </Button>
                 </Form.Item>
             </Form>

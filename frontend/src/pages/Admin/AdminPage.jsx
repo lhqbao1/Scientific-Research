@@ -77,37 +77,22 @@ const AdminPage = () => {
   let items = []
   if (subRole === 'admin-ctu') {
     items = [
-      // getItem("Dashboard", "1", <PieChartOutlined />),
-      // getItem("Manage user", "sub1", <UserAddOutlined />, [
-      //   getItem("Student", "2", <RightCircleOutlined />),
-      //   getItem("Lecturer", "3", <RightCircleOutlined />),
-      //   getItem("Advisors", "4", <RightCircleOutlined />),
-      // ]),
-      getItem("Manage topic", "5", <ContainerOutlined />),
-      // getItem("Manage council", "sub2", <UsergroupAddOutlined />, [
-      //   getItem("Explanation council", "6", <RightCircleOutlined />),
-      //   getItem("Acceptance council", "7", <RightCircleOutlined />),
-      // ]),
-      getItem("Manage schedule", "8", <CalendarOutlined />),
-      // getItem("Quản lí biểu mẫu", "9", <CalendarOutlined />),
-
+      getItem("Quản lý đề tài", "5", <ContainerOutlined />),
+      getItem("Quản lý thông báo", "8", <CalendarOutlined />),
     ];
   }
   if (subRole === 'admin') {
     items = [
-      getItem("Dashboard", "1", <PieChartOutlined />),
-      getItem("Manage user", "sub1", <UserAddOutlined />, [
-        getItem("Student", "2", <RightCircleOutlined />),
-        getItem("Lecturer", "3", <RightCircleOutlined />),
-        getItem("Advisors", "4", <RightCircleOutlined />),
+      getItem("Trang chủ", "1", <PieChartOutlined />),
+      getItem("Quản lý người dùng", "sub1", <UserAddOutlined />, [
+        getItem("Sinh viên", "2", <RightCircleOutlined />),
+        getItem("Giảng viên", "3", <RightCircleOutlined />),
       ]),
-      getItem("Manage topic", "5", <ContainerOutlined />),
-      getItem("Manage council", "sub2", <UsergroupAddOutlined />, [
-        getItem("Explanation council", "6", <RightCircleOutlined />),
-        getItem("Acceptance council", "7", <RightCircleOutlined />),
+      getItem("Quản lý đề tài", "5", <ContainerOutlined />),
+      getItem("Quản lý hội đồng", "sub2", <UsergroupAddOutlined />, [
+        getItem("Hội đồng thuyết minh", "6", <RightCircleOutlined />),
+        getItem("Hội đồng nghiệm thu", "7", <RightCircleOutlined />),
       ]),
-      // getItem("Manage schedule", "8", <CalendarOutlined />),
-      getItem("Quản lí biểu mẫu", "9", <CalendarOutlined />),
 
     ];
   }
