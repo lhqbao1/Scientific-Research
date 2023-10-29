@@ -13,7 +13,6 @@ module.exports = function (app) {
 
   app.get(
     "/api/students/",
-    // [authJwt.verifyToken, authJwt.isAdmin],
     controller.findAll
   );
 
@@ -24,11 +23,9 @@ module.exports = function (app) {
 
   app.get("/api/student-code/:code", controller.findByCode);
 
-
   app.post("/api/student/", controller.create);
 
   app.post("/api/students/", controller.bulkCreate);
-
 
   app.delete("/api/students/delete/:id", controller.remove);
 

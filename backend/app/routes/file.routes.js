@@ -11,11 +11,11 @@ module.exports = function (app) {
         next();
     });
 
-    // app.get(
-    //     "/api/invitation/",
-    //     // [authJwt.verifyToken, authJwt.isAdmin],
-    //     controller.findAll
-    // );
+    app.get(
+        "/api/file/:topic_id",
+        // [authJwt.verifyToken, authJwt.isAdmin],
+        controller.findAll
+    );
 
 
     // app.get("/api/file/:id", controller.findById);

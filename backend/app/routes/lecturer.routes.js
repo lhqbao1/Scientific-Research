@@ -39,7 +39,7 @@ module.exports = function (app) {
 
 
 
-  // app.get("/api/students/:id", controller.findById);
+  app.post("/api/lecturers/", controller.bulkCreate);
 
   app.post("/api/lecturers", controller.create);
 

@@ -102,6 +102,62 @@ exports.findAllAddFile2 = async (req, res) => {
     }
 };
 
+exports.findAddFileExplanation = async (req, res) => {
+    try {
+        const notification = await NotificationModel.findAll({
+
+            where: {
+                [Op.or]: [
+                    {
+                        type: 'Thông báo nộp hồ sơ thuyết minh đợt 1'
+                    },
+                    {
+                        type: 'Thông báo nộp hồ sơ thuyết minh đợt 2'
+                    }
+                ]
+            }
+        });
+        res.json(
+            responsePayload(true, "Tải danh sách giảng viên thành công!", {
+                items: notification,
+
+            })
+        );
+    } catch (err) {
+        res.status(500).json(responsePayload(false, err.message, null));
+    }
+};
+
+exports.findStartReport = async (req, res) => {
+    try {
+
+
+        const notification = await NotificationModel.findAll({
+            where: {
+                [Op.or]: [
+                    {
+                        type: 'Bắt đầu nghiệm thu đợt 1'
+                    },
+                    {
+                        type: 'Bắt đầu nghiệm thu đợt 2'
+                    }
+                ]
+            }
+        });
+
+
+
+        res.json(
+            responsePayload(true, "Tải danh sách giảng viên thành công!", {
+                items: notification,
+
+            })
+        );
+    } catch (err) {
+        res.status(500).json(responsePayload(false, err.message, null));
+    }
+};
+
 exports.create = async (req, res) => {
     try {
 

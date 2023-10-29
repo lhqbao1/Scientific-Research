@@ -470,6 +470,10 @@ exports.findById = async (req, res) => {
       },
       include: [
         {
+          model: FileModel,
+          as: 'file'
+        },
+        {
           model: StatusModel,
           as: "status", // Specify the alias for MajorModel
           // attributes: ["status"],
@@ -510,13 +514,11 @@ exports.findById = async (req, res) => {
           include: [
             {
               model: LecturerModel,
-              as: "presidentInfo" // Specify the alias
-              // attributes: ["workplace_name"],
+              as: "presidentInfo"
             },
             {
               model: LecturerModel,
-              as: "secretaryInfo" // Specify the alias
-              // attributes: ["workplace_name"],
+              as: "secretaryInfo"
             },
             {
               model: CommissionerModel,
@@ -707,6 +709,66 @@ exports.findWithStudent = async (req, res) => {
         {
           model: FileModel,
           as: 'file'
+        },
+        {
+          model: ExplanationModel,
+          as: 'board',
+          include: [
+            {
+              model: LecturerModel,
+              as: "presidentInfo" // Specify the alias
+              // attributes: ["workplace_name"],
+            },
+            {
+              model: LecturerModel,
+              as: "secretaryInfo" // Specify the alias
+              // attributes: ["workplace_name"],
+            },
+            {
+              model: CommissionerModel,
+              as: 'commissioners',
+              include: [
+                {
+                  model: LecturerModel,
+                  as: 'lecturerInfo'
+                }
+              ]
+            },
+          ]
+        },
+        {
+          model: ExplanationModel,
+          as: 'accBoard',
+          include: [
+            {
+              model: LecturerModel,
+              as: "presidentInfo"
+            },
+            {
+              model: LecturerModel,
+              as: "secretaryInfo"
+            },
+            {
+              model: CommissionerModel,
+              as: 'commissioners',
+              include: [
+                {
+                  model: LecturerModel,
+                  as: 'lecturerInfo'
+                }
+              ]
+            },
+            {
+              model: CounterModel,
+              as: 'counter',
+              include: [
+                {
+                  model: LecturerModel,
+                  as: 'lecturerInfo'
+                }
+              ]
+            },
+          ]
         },
 
 

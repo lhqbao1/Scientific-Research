@@ -17,6 +17,16 @@ module.exports = function (app) {
         controller.findAll
     );
     app.get(
+        "/api/notifications-add-file-explanation/",
+        // [authJwt.verifyToken, authJwt.isAdmin],
+        controller.findAddFileExplanation
+    );
+    app.get(
+        "/api/notifications-start-report/",
+        // [authJwt.verifyToken, authJwt.isAdmin],
+        controller.findStartReport
+    );
+    app.get(
         "/api/notifications-2/",
         // [authJwt.verifyToken, authJwt.isAdmin],
         controller.findAllPhase2
@@ -37,12 +47,6 @@ module.exports = function (app) {
         // [authJwt.verifyToken, authJwt.isAdmin],
         controller.create
     );
-
-    // app.post(
-    //     "/api/notification-2/",
-    //     // [authJwt.verifyToken, authJwt.isAdmin],
-    //     controller.createPhase2
-    // );
 
     app.put(
         "/api/notification/:id",

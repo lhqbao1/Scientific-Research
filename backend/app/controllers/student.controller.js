@@ -175,18 +175,6 @@ exports.findByCode = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    // const {
-    //   user_id,
-    //   student_name,
-    //   student_class,
-    //   student_code,
-    //   email,
-    //   grade,
-    //   major_id,
-    //   topic_id,
-    //   role
-    // } = req.body;
-    // Create the new student record
     const newStudent = await StudentModel.create(req.body);
 
     res.json(responsePayload(true, "Tạo sinh viên thành công!", newStudent));
@@ -197,14 +185,6 @@ exports.create = async (req, res) => {
 
 exports.bulkCreate = async (req, res) => {
   try {
-
-    // Create the new student record
-    // const existStudent = await StudentModel.findAll()
-    // if(existStudent) {
-    //   existStudent.map(item => {
-
-    //   })
-    // }
     const newStudent = await StudentModel.bulkCreate(
       req.body
     );
@@ -229,7 +209,6 @@ exports.remove = async (req, res) => {
       return res.json(responsePayload(false, "Student not found!", null));
     }
 
-    // Delete the student
     await student.destroy();
 
     res.json(responsePayload(true, "Xóa sinh viên thành công!", student));

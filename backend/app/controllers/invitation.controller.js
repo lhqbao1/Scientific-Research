@@ -120,7 +120,7 @@ exports.getRefusedInvitation
 
             const invitation = await InvitationModel.findAll({
                 where: {
-                    status: 14,
+                    status: 7,
                     [Op.or]: [
                         { student: req.params.id },
                         { lecturer: req.params.id }

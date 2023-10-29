@@ -8,6 +8,36 @@ responsePayload = (status, message, payload) => ({
     payload,
 });
 
+exports.findAll = async (req, res) => {
+    try {
+        if (!req.params.topic_id) {
+            return res
+                .status(400)
+                .json(responsePayload(false, "Thiếu id topic!", null));
+        }
+
+        const file = await FileModel.findAll({
+            where: {
+                topic_id: req.params.topic_id
+            }
+        });
+        if (file && file.length > 0) {
+            file.map(item => {
+                item.file_url = new Buffer(item.file_url, 'base64').toString('binary')
+                return item
+            })
+        }
+        res.json(
+            responsePayload(true, "Tải danh sách chủ đề thành công!", {
+                items: file,
+                // subItem: fileUrl
+            })
+        );
+    } catch (err) {
+        res.status(500).json(responsePayload(false, err.message, null));
+    }
+};
+
 exports.findFiles = async (req, res) => {
     try {
         if (!req.params.topic_id) {

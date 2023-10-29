@@ -190,20 +190,67 @@ exports.findWithExplanation = async (req, res) => {
 
 exports.findWithAcceptance = async (req, res) => {
     try {
-
-        if (!req.params.topicid) {
+        if (!req.params.topic_id) {
             return res
                 .status(400)
                 .json(responsePayload(false, "Thiếu id topic!", null));
         }
 
-
-
         const transcript = await TranscriptModel.findAll({
             where: {
                 type: 'nghiệm thu',
                 status: '2',
-                topic: req.params.topicid
+                topic: req.params.topic_id
+            },
+            include: [
+                {
+                    model: LecturerModel,
+                    as: 'lecturerInfo'
+                },
+                {
+                    model: TopicModel,
+                    as: 'topicInfo'
+                },
+                {
+                    model: TranscriptCommentModel,
+                    as: 'commentInfo'
+                },
+                {
+                    model: TranscriptScoreModel,
+                    as: 'scoreInfo'
+                },
+
+            ]
+
+        });
+
+        if (!transcript) {
+            return res.json(
+                responsePayload(false, "Đề tài không tồn tại!", null)
+            );
+        }
+
+        res.json(
+            responsePayload(true, "Tải thông tin đề tài thành công!", transcript)
+        );
+    } catch (err) {
+        res.status(500).json(responsePayload(false, err.message, null));
+    }
+};
+
+exports.findWithAcceptance1 = async (req, res) => {
+    try {
+        if (!req.params.topic_id) {
+            return res
+                .status(400)
+                .json(responsePayload(false, "Thiếu id topic!", null));
+        }
+
+        const transcript = await TranscriptModel.findAll({
+            where: {
+                type: 'nghiệm thu',
+                status: '1',
+                topic: req.params.topic_id
             },
             include: [
                 {

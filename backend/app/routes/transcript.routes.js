@@ -27,19 +27,12 @@ module.exports = function (app) {
 
     app.get("/api/transcript/:topicid/", controller.findWithExplanation);
 
-    app.get("/api/transcript-acc/:topicid/", controller.findWithAcceptance);
+    app.get("/api/transcript-acc/:topic_id/", controller.findWithAcceptance);
+
+    app.get("/api/transcript-acc-1/:topic_id/", controller.findWithAcceptance1);
 
 
-    //   app.get("/api/topic/students/:id", controller.findWithStudent);
 
-    //   app.get("/api/topic/explanation/:explanationid", controller.findWithExplanation);
-
-
-    //   // app.get("/api/students/:id", controller.findById);
-
-    //   app.post("/api/topics", controller.create);
-
-    //   app.delete("/api/topics/delete/:id", controller.remove);
 
     app.put("/api/transcript/", controller.updateTranscript);
     app.put("/api/transcript-comment/", controller.updateTranscriptComment);

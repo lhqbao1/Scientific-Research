@@ -58,65 +58,25 @@ exports.findById = async (req, res) => {
   }
 };
 
-// exports.updateUser = async (req, res) => {
-//   try {
-//     if (!req.params.id)
-//       return res
-//         .status(400)
-//         .json(responsePayload(false, "Đường dẫn thiêú id người dùng!", null));
-//     const user = await User.findOne({
-//       where: {
-//         id: req.params.id,
-//       },
-//     });
-//     if (!user)
-//       return res
-//         .status(400)
-//         .json(responsePayload(false, "Người dùng không tồn tại!", user));
-//     for (const key in req.body) {
-//       user[key] = req.body[key];
-//     }
-//     await user.save();
-//     const savedUser = await User.findOne({
-//       where: {
-//         id: req.params.id,
-//       },
-//       inclue: Role,
-//     });
-//     res.json(
-//       responsePayload(
-//         true,
-//         "Cập nhật thông tin người dùng thành công!",
-//         savedUser
-//       )
-//     );
-//   } catch (err) {
-//     res.status(500).json(responsePayload(false, err.message, null));
-//   }
-// };
+exports.delete = async (req, res) => {
+  try {
+    const id = req.params.id;
+    // Find the student by ID
+    const user = await User.findOne({
+      where: {
+        id: id,
+      },
+    });
 
-// exports.updateStatus = async (req, res) => {
-//   try {
-//     if (!req.params.id)
-//       return res
-//         .status(400)
-//         .json(responsePayload(false, "Đường dẫn thiêú id người dùng!", null));
-//     const user = await User.findOne({
-//       where: {
-//         id: req.params.id,
-//       },
-//       include: Role,
-//     });
-//     if (!user)
-//       return res
-//         .status(400)
-//         .json(responsePayload(false, "Người dùng không tồn tại!", null));
-//     user.status = req.body.status || "active";
-//     await user.save();
-//     res.json(
-//       responsePayload(true, "Cập nhật trạng thái người dùng thành công!", user)
-//     );
-//   } catch (err) {
-//     res.status(500).json(responsePayload(false, err.message, null));
-//   }
-// };
+    if (!user) {
+      return res.json(responsePayload(false, "Student not found!", null));
+    }
+
+    await user.destroy();
+
+    res.json(responsePayload(true, "Xóa sinh viên thành công!", user));
+  } catch (err) {
+    res.status(500).json(responsePayload(false, err.message, null));
+  }
+};
+

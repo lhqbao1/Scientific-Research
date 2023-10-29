@@ -27,7 +27,7 @@ exports.findAll = async (req, res) => {
       ];
     }
     const page = req.query.page ? parseInt(req.query.page) - 1 : 0;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 1000;
     const offset = page * limit;
 
     const lecturers = await LecturerModel.findAll({
@@ -145,6 +145,18 @@ exports.findByCoucil = async (req, res) => {
     );
   } catch (err) {
     res.status(500).json(responsePayload(false, err.message, null));
+  }
+};
+
+exports.bulkCreate = async (req, res) => {
+  try {
+    const newLecturer = await LecturerModel.bulkCreate(
+      req.body
+    );
+
+    res.json(responsePayload(true, "Tạo sinh viên thành công!", newLecturer));
+  } catch (err) {
+    res.status(500).json(responsePayload(false, err, null, req.body));
   }
 };
 
